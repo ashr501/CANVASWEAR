@@ -1,0 +1,5 @@
+{
+  "name": "Fashion Fusion AI",
+  "description": "An application that uses the Gemini 'nano-banana' model to combine up to 4 images of a dress to generate a new photo of a model wearing it.",
+  "requestFramePermissions": []
+}
