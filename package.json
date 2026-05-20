@@ -1,22 +1,41 @@
 {
-  "name": "fashion-fusion-ai",
+  "name": "multi-brand-hydrogen",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "shopify hydrogen dev --codegen",
+    "build": "shopify hydrogen build --codegen",
+    "preview": "npm run build && shopify hydrogen preview",
+    "lint": "eslint --no-eslintrc -c .eslintrc.cjs --ext .js,.ts,.jsx,.tsx .",
+    "typecheck": "tsc --noEmit",
+    "codegen": "shopify hydrogen codegen"
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "@google/genai": "^1.19.0"
+    "@shopify/hydrogen": "^2024.7.0",
+    "@shopify/remix-oxygen": "^2.0.4",
+    "@remix-run/react": "^2.10.0",
+    "@remix-run/server-runtime": "^2.10.0",
+    "isbot": "^4.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "graphql": "^16.9.0",
+    "graphql-tag": "^2.12.6",
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
-    "@vitejs/plugin-react": "^5.0.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "@shopify/hydrogen-codegen": "^0.3.2",
+    "@shopify/mini-oxygen": "^3.0.3",
+    "@shopify/oxygen-workers-types": "^4.1.4",
+    "@shopify/cli": "^3.68.0",
+    "@remix-run/dev": "^2.10.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.40",
+    "tailwindcss": "^3.4.7",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0",
+    "vite-tsconfig-paths": "^5.0.1"
   }
 }
