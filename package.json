@@ -6,12 +6,16 @@
   "scripts": {
     "dev": "shopify hydrogen dev --codegen",
     "build": "shopify hydrogen build --codegen",
+    "build:vercel": "remix vite:build",
     "preview": "npm run build && shopify hydrogen preview",
     "lint": "eslint --no-eslintrc -c .eslintrc.cjs --ext .js,.ts,.jsx,.tsx .",
     "typecheck": "tsc --noEmit",
     "codegen": "shopify hydrogen codegen"
   },
   "dependencies": {
+    "@remix-run/express": "^2.10.0",
+    "@remix-run/node": "^2.10.0",
+    "express": "^4.19.2",
     "@shopify/hydrogen": "^2024.7.0",
     "@shopify/remix-oxygen": "^2.0.4",
     "@remix-run/react": "^2.10.0",

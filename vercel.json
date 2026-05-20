@@ -1,0 +1,22 @@
+{
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "dist/client",
+  "framework": null,
+  "functions": {
+    "api/server.js": {
+      "runtime": "nodejs20.x",
+      "memory": 1024
+    }
+  },
+  "routes": [
+    {
+      "src": "/build/(.*)",
+      "headers": {"Cache-Control": "public, max-age=31536000, immutable"},
+      "dest": "/build/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/server"
+    }
+  ]
+}
