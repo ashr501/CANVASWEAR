@@ -8,8 +8,8 @@ import clsx from 'clsx';
 
 export const meta = () => [{title: 'カート'}];
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const brand = getBrandConfig(context.env);
+export async function loader({request, context}: LoaderFunctionArgs) {
+  const brand = getBrandConfig(context.env, request);
   const cart = context.cart.get();
   return defer({cart, brandId: brand.id});
 }

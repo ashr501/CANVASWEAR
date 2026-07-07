@@ -8,8 +8,8 @@ import clsx from 'clsx';
 
 export const meta = () => [{title: 'ホーム'}];
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const brand = getBrandConfig(context.env);
+export async function loader({request, context}: LoaderFunctionArgs) {
+  const brand = getBrandConfig(context.env, request);
   const {storefront} = context;
 
   const products = storefront.query(HOME_PRODUCTS_QUERY, {

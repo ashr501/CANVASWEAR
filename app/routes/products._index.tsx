@@ -9,7 +9,7 @@ import clsx from 'clsx';
 export const meta = () => [{title: '商品一覧'}];
 
 export async function loader({request, context}: LoaderFunctionArgs) {
-  const brand = getBrandConfig(context.env);
+  const brand = getBrandConfig(context.env, request);
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const sortKey = (searchParams.get('sort') as any) || 'BEST_SELLING';

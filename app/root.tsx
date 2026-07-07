@@ -25,8 +25,8 @@ export function links() {
   ];
 }
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const brand = getBrandConfig(context.env);
+export async function loader({request, context}: LoaderFunctionArgs) {
+  const brand = getBrandConfig(context.env, request);
   const cart = context.cart.get();
 
   return defer({

@@ -94,8 +94,40 @@ const brandMeta: Record<
   },
 };
 
-export function getBrandConfig(env: Env): BrandConfig {
-  const id: BrandId = (env.BRAND_ID as BrandId) || 'elegant-plus';
+const BRAND_IDS: BrandId[] = ['elegant-plus', 'avant-garde'];
+
+function isBrandId(value: string | null | undefined): value is BrandId {
+  return !!value && (BRAND_IDS as string[]).includes(value);
+}
+
+/**
+ * ブランドの解決順序:
+ * 1. クエリパラメータ `?brand=` （プレビュー用。api/server.tsがCookieに保存する）
+ * 2. Cookie `brand=`
+ * 3. ホスト名に "noct" を含む → avant-garde（独自ドメイン運用時の自動判定）
+ * 4. 環境変数 BRAND_ID（本番の正式な指定方法）
+ * 5. デフォルト: elegant-plus
+ */
+export function resolveBrandId(env: Env, request?: Request): BrandId {
+  if (request) {
+    const url = new URL(request.url);
+
+    const fromQuery = url.searchParams.get('brand');
+    if (isBrandId(fromQuery)) return fromQuery;
+
+    const cookie = request.headers.get('cookie') ?? '';
+    const fromCookie = cookie.match(/(?:^|;\s*)brand=([^;]+)/)?.[1];
+    if (isBrandId(fromCookie)) return fromCookie;
+
+    if (url.hostname.includes('noct')) return 'avant-garde';
+  }
+
+  if (isBrandId(env.BRAND_ID)) return env.BRAND_ID;
+  return 'elegant-plus';
+}
+
+export function getBrandConfig(env: Env, request?: Request): BrandConfig {
+  const id = resolveBrandId(env, request);
   const meta = brandMeta[id];
   const theme = themes[id];
 

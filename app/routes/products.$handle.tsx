@@ -19,7 +19,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {handle} = params;
   if (!handle) throw new Response('Not found', {status: 404});
 
-  const brand = getBrandConfig(context.env);
+  const brand = getBrandConfig(context.env, request);
   const selectedOptions = getSelectedProductOptions(request);
 
   const product = await context.storefront.query(PRODUCT_QUERY, {

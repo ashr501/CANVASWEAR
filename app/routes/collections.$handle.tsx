@@ -10,11 +10,11 @@ export const meta = ({data}: any) => [
   {title: data?.collection?.title ?? 'コレクション'},
 ];
 
-export async function loader({params, context}: LoaderFunctionArgs) {
+export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {handle} = params;
   if (!handle) throw new Response('Not found', {status: 404});
 
-  const brand = getBrandConfig(context.env);
+  const brand = getBrandConfig(context.env, request);
 
   const collection = await context.storefront.query(COLLECTION_QUERY, {
     variables: {

@@ -4,7 +4,9 @@
     "app/**/*.ts",
     "app/**/*.tsx",
     "server.ts",
+    "api/**/*.ts",
     "vite.config.ts",
+    "vite.config.vercel.ts",
     "tailwind.config.ts"
   ],
   "compilerOptions": {
