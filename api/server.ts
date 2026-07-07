@@ -55,19 +55,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// ストア設定が全く無い場合の案内（フォールバックが未記入のままデプロイされた場合）
+// Storefrontトークン未設定時の案内ページ（設定が済むと自動的に本来のサイトが表示される）
 app.use((req, res, next) => {
   const env = getEnv();
   if (
     env.PUBLIC_STORE_DOMAIN.includes('REPLACE_ME') ||
     env.PUBLIC_STOREFRONT_API_TOKEN.includes('REPLACE_ME')
   ) {
-    res
-      .status(503)
-      .type('text/plain; charset=utf-8')
-      .send(
-        'ストア設定が未完了です。Vercelの環境変数 PUBLIC_STORE_DOMAIN / PUBLIC_STOREFRONT_API_TOKEN を設定するか、app/lib/brands.config.ts を更新してください。',
-      );
+    res.status(503).type('html').send(`<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>セットアップ中 | HAORI+ / NOCT.</title>
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0D0D0D;color:#E8E8E8;font-family:'Hiragino Sans','Noto Sans JP',sans-serif}
+.box{max-width:560px;padding:3rem 2rem;text-align:center}
+h1{font-size:1.4rem;letter-spacing:.3em;margin-bottom:1.5rem}
+p{color:#808080;font-size:.9rem;line-height:2}
+code{background:#1A1A1A;padding:.2em .5em;border-radius:3px;color:#C9A96E}
+.line{width:48px;height:1px;background:#CC0000;margin:2rem auto}
+</style></head><body><div class="box">
+<h1>HAORI+ / NOCT.</h1>
+<div class="line"></div>
+<p>デプロイは成功しています。<br>
+あとはShopifyの <strong>Storefront APIトークン</strong> を設定すると<br>
+ショップが表示されます。</p>
+<p>設定方法: Vercelの環境変数<br><code>PUBLIC_STOREFRONT_API_TOKEN</code> を追加<br>
+または <code>app/lib/brands.config.ts</code> を更新</p>
+</div></body></html>`);
     return;
   }
   next();
