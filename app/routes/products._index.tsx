@@ -20,6 +20,8 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       first: 24,
       sortKey,
       reverse,
+      // 1ストア内でブランドの商品だけに絞り込む
+      query: `tag:"${brand.productTag}"`,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },

@@ -11,7 +11,7 @@ export default async function handleRequest(
   remixContext: EntryContext,
   context: AppLoadContext,
 ) {
-  const {nonce, header, getScriptNonce} = createContentSecurityPolicy({
+  const {nonce, header} = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_STORE_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,

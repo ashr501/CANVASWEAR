@@ -1,5 +1,12 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
+  "include": [
+    "remix.env.d.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "server.ts",
+    "vite.config.ts",
+    "tailwind.config.ts"
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "isolatedModules": true,
@@ -11,6 +18,7 @@
     "target": "ES2022",
     "strict": true,
     "allowJs": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {

@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# 環境変数（APIトークンを含むためコミット禁止）
+.env
+.env.*
+!.env.example

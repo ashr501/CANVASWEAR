@@ -72,7 +72,9 @@ function getStorefrontHeaders(request: Request) {
   return {
     requestGroupId: headers.get('request-id'),
     buyerIp: headers.get('oxygen-buyer-ip'),
+    buyerIpSig: headers.get('oxygen-buyer-ip-sig'),
     cookie: headers.get('cookie') ?? '',
+    purpose: headers.get('purpose'),
   };
 }
 

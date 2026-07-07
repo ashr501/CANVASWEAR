@@ -1,5 +1,6 @@
 import {Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
+import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import clsx from 'clsx';
 import {useState} from 'react';
 
@@ -9,10 +10,7 @@ interface ProductCardProps {
     title: string;
     handle: string;
     priceRange: {
-      minVariantPrice: {
-        amount: string;
-        currencyCode: string;
-      };
+      minVariantPrice: MoneyV2;
     };
     featuredImage?: {
       url: string;

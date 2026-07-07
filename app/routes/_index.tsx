@@ -16,6 +16,8 @@ export async function loader({context}: LoaderFunctionArgs) {
     variables: {
       country: storefront.i18n.country,
       language: storefront.i18n.language,
+      featuredHandle: brand.collections.featured,
+      newArrivalsHandle: brand.collections.newArrivals,
     },
   });
 

@@ -9,6 +9,13 @@ export interface BrandConfig {
   storeDomain: string;
   storefrontApiToken: string;
   theme: BrandTheme;
+  /** Storefront APIの商品絞り込みに使うタグ（1ストア内でブランドを分離する） */
+  productTag: string;
+  /** ブランド専用スマートコレクションのハンドル */
+  collections: {
+    featured: string;
+    newArrivals: string;
+  };
 }
 
 export interface BrandTheme {
@@ -59,18 +66,31 @@ const themes: Record<BrandId, BrandTheme> = {
   },
 };
 
-const brandMeta: Record<BrandId, Pick<BrandConfig, 'name' | 'nameJa' | 'tagline' | 'taglineJa'>> = {
+const brandMeta: Record<
+  BrandId,
+  Pick<BrandConfig, 'name' | 'nameJa' | 'tagline' | 'taglineJa' | 'productTag' | 'collections'>
+> = {
   'elegant-plus': {
-    name: 'HAORI LUXE',
-    nameJa: '羽織ラグゼ',
+    name: 'HAORI+',
+    nameJa: 'ハオリプラス',
     tagline: 'Elegance Without Limits',
     taglineJa: '大きなサイズの美しさを、すべての女性へ',
+    productTag: 'brand:elegant-plus',
+    collections: {
+      featured: 'elegant-featured',
+      newArrivals: 'elegant-new-arrivals',
+    },
   },
   'avant-garde': {
-    name: 'KURO',
-    nameJa: '黒',
-    tagline: 'Fashion is not about conformity.',
-    taglineJa: '年齢は、スタイルを定義しない。',
+    name: 'NOCT.',
+    nameJa: 'ノクト',
+    tagline: 'After Midnight Forever',
+    taglineJa: '夜を知る大人のための、V系とY2Kの再解釈。',
+    productTag: 'brand:avant-garde',
+    collections: {
+      featured: 'noct-featured',
+      newArrivals: 'noct-new-arrivals',
+    },
   },
 };
 

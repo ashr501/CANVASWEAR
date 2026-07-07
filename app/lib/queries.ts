@@ -1,6 +1,4 @@
-import gql from 'graphql-tag';
-
-export const PRODUCT_CARD_FRAGMENT = gql`
+export const PRODUCT_CARD_FRAGMENT = `#graphql
   fragment ProductCard on Product {
     id
     title
@@ -31,11 +29,14 @@ export const PRODUCT_CARD_FRAGMENT = gql`
   }
 `;
 
-export const HOME_PRODUCTS_QUERY = gql`
-  #graphql
-  query HomeProducts($country: CountryCode, $language: LanguageCode)
-  @inContext(country: $country, language: $language) {
-    featured: collection(handle: "featured") {
+export const HOME_PRODUCTS_QUERY = `#graphql
+  query HomeProducts(
+    $country: CountryCode
+    $language: LanguageCode
+    $featuredHandle: String!
+    $newArrivalsHandle: String!
+  ) @inContext(country: $country, language: $language) {
+    featured: collection(handle: $featuredHandle) {
       id
       title
       handle
@@ -45,7 +46,7 @@ export const HOME_PRODUCTS_QUERY = gql`
         }
       }
     }
-    newArrivals: collection(handle: "new-arrivals") {
+    newArrivals: collection(handle: $newArrivalsHandle) {
       id
       title
       handle
@@ -59,8 +60,7 @@ export const HOME_PRODUCTS_QUERY = gql`
   ${PRODUCT_CARD_FRAGMENT}
 `;
 
-export const PRODUCTS_QUERY = gql`
-  #graphql
+export const PRODUCTS_QUERY = `#graphql
   query Products(
     $country: CountryCode
     $language: LanguageCode
@@ -95,8 +95,7 @@ export const PRODUCTS_QUERY = gql`
   ${PRODUCT_CARD_FRAGMENT}
 `;
 
-export const PRODUCT_QUERY = gql`
-  #graphql
+export const PRODUCT_QUERY = `#graphql
   query Product(
     $country: CountryCode
     $language: LanguageCode
@@ -181,8 +180,7 @@ export const PRODUCT_QUERY = gql`
   }
 `;
 
-export const COLLECTION_QUERY = gql`
-  #graphql
+export const COLLECTION_QUERY = `#graphql
   query Collection(
     $handle: String!
     $country: CountryCode
@@ -224,8 +222,7 @@ export const COLLECTION_QUERY = gql`
   ${PRODUCT_CARD_FRAGMENT}
 `;
 
-export const CART_QUERY = gql`
-  #graphql
+export const CART_QUERY = `#graphql
   query CartQuery($cartId: ID!, $country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
     cart(id: $cartId) {
