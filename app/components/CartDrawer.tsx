@@ -3,6 +3,7 @@ import {Image, Money} from '@shopify/hydrogen';
 import {Await} from '@remix-run/react';
 import {Suspense} from 'react';
 import clsx from 'clsx';
+import {isBoldBrand} from '~/lib/brands';
 
 interface CartDrawerProps {
   cart: any;
@@ -12,7 +13,7 @@ interface CartDrawerProps {
 }
 
 export default function CartDrawer({cart, isOpen, onClose, brand}: CartDrawerProps) {
-  const isAvantGarde = brand.id === 'avant-garde';
+  const isAvantGarde = isBoldBrand(brand.id);
 
   return (
     <>

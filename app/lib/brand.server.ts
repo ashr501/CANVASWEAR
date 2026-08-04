@@ -1,112 +1,27 @@
-export type BrandId = 'elegant-plus' | 'avant-garde';
+import {
+  BRANDS,
+  DEFAULT_BRAND_ID,
+  isBrandId,
+  type BrandDefinition,
+  type BrandId,
+} from './brands';
 
-export interface BrandConfig {
-  id: BrandId;
-  name: string;
-  nameJa: string;
-  tagline: string;
-  taglineJa: string;
+export type {BrandId, BrandTheme, BrandDefinition} from './brands';
+export {getCssVarsString} from './brands';
+
+/** ブランド定義に、環境変数から読んだストア接続情報を足したもの */
+export interface BrandConfig extends BrandDefinition {
   storeDomain: string;
   storefrontApiToken: string;
-  theme: BrandTheme;
-  /** Storefront APIの商品絞り込みに使うタグ（1ストア内でブランドを分離する） */
-  productTag: string;
-  /** ブランド専用スマートコレクションのハンドル */
-  collections: {
-    featured: string;
-    newArrivals: string;
-  };
-}
-
-export interface BrandTheme {
-  cssVars: Record<string, string>;
-  googleFonts: string;
-}
-
-const themes: Record<BrandId, BrandTheme> = {
-  'elegant-plus': {
-    cssVars: {
-      '--color-bg': '#FAFAF8',
-      '--color-surface': '#FFFFFF',
-      '--color-primary': '#C9A96E',
-      '--color-secondary': '#8B6914',
-      '--color-accent': '#C9A96E',
-      '--color-text': '#2C2416',
-      '--color-text-muted': '#8A7968',
-      '--color-border': '#E8E0D4',
-      '--font-heading': "'Cormorant Garamond'",
-      '--font-body': "'Noto Serif JP'",
-      '--section-spacing': '5rem',
-      '--gutter': '1.5rem',
-      '--ease': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-      '--radius': '2px',
-    },
-    googleFonts:
-      'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Serif+JP:wght@300;400;500&display=swap',
-  },
-  'avant-garde': {
-    cssVars: {
-      '--color-bg': '#0D0D0D',
-      '--color-surface': '#1A1A1A',
-      '--color-primary': '#E8E8E8',
-      '--color-secondary': '#B0B0B0',
-      '--color-accent': '#CC0000',
-      '--color-text': '#E8E8E8',
-      '--color-text-muted': '#808080',
-      '--color-border': '#2A2A2A',
-      '--font-heading': "'Bebas Neue'",
-      '--font-body': "'Noto Sans JP'",
-      '--section-spacing': '6rem',
-      '--gutter': '1.5rem',
-      '--ease': 'cubic-bezier(0.16, 1, 0.3, 1)',
-      '--radius': '0px',
-    },
-    googleFonts:
-      'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&display=swap',
-  },
-};
-
-const brandMeta: Record<
-  BrandId,
-  Pick<BrandConfig, 'name' | 'nameJa' | 'tagline' | 'taglineJa' | 'productTag' | 'collections'>
-> = {
-  'elegant-plus': {
-    name: 'HAORI+',
-    nameJa: 'ハオリプラス',
-    tagline: 'Elegance Without Limits',
-    taglineJa: '大きなサイズの美しさを、すべての女性へ',
-    productTag: 'brand:elegant-plus',
-    collections: {
-      featured: 'elegant-featured',
-      newArrivals: 'elegant-new-arrivals',
-    },
-  },
-  'avant-garde': {
-    name: 'NOCT.',
-    nameJa: 'ノクト',
-    tagline: 'After Midnight Forever',
-    taglineJa: '夜を知る大人のための、V系とY2Kの再解釈。',
-    productTag: 'brand:avant-garde',
-    collections: {
-      featured: 'noct-featured',
-      newArrivals: 'noct-new-arrivals',
-    },
-  },
-};
-
-const BRAND_IDS: BrandId[] = ['elegant-plus', 'avant-garde'];
-
-function isBrandId(value: string | null | undefined): value is BrandId {
-  return !!value && (BRAND_IDS as string[]).includes(value);
 }
 
 /**
  * ブランドの解決順序:
  * 1. クエリパラメータ `?brand=` （プレビュー用。api/server.tsがCookieに保存する）
  * 2. Cookie `brand=`
- * 3. ホスト名に "noct" を含む → avant-garde（独自ドメイン運用時の自動判定）
+ * 3. ホスト名が hostMatches に一致（独自ドメイン運用時の自動判定）
  * 4. 環境変数 BRAND_ID（本番の正式な指定方法）
- * 5. デフォルト: elegant-plus
+ * 5. DEFAULT_BRAND_ID
  */
 export function resolveBrandId(env: Env, request?: Request): BrandId {
   if (request) {
@@ -119,40 +34,28 @@ export function resolveBrandId(env: Env, request?: Request): BrandId {
     const fromCookie = cookie.match(/(?:^|;\s*)brand=([^;]+)/)?.[1];
     if (isBrandId(fromCookie)) return fromCookie;
 
-    if (url.hostname.includes('noct')) return 'avant-garde';
+    const hostname = url.hostname.toLowerCase();
+    for (const brand of Object.values(BRANDS)) {
+      if (brand.hostMatches.some((needle) => hostname.includes(needle))) {
+        return brand.id;
+      }
+    }
   }
 
   if (isBrandId(env.BRAND_ID)) return env.BRAND_ID;
-  return 'elegant-plus';
+  return DEFAULT_BRAND_ID;
 }
 
 export function getBrandConfig(env: Env, request?: Request): BrandConfig {
-  const id = resolveBrandId(env, request);
-  const meta = brandMeta[id];
-  const theme = themes[id];
-
-  let storeDomain: string;
-  let storefrontApiToken: string;
-
-  if (id === 'elegant-plus') {
-    storeDomain = env.BRAND1_STORE_DOMAIN || env.PUBLIC_STORE_DOMAIN;
-    storefrontApiToken = env.BRAND1_STOREFRONT_API_TOKEN || env.PUBLIC_STOREFRONT_API_TOKEN;
-  } else {
-    storeDomain = env.BRAND2_STORE_DOMAIN || env.PUBLIC_STORE_DOMAIN;
-    storefrontApiToken = env.BRAND2_STOREFRONT_API_TOKEN || env.PUBLIC_STOREFRONT_API_TOKEN;
-  }
+  const definition = BRANDS[resolveBrandId(env, request)];
+  const vars = env as unknown as Record<string, string | undefined>;
 
   return {
-    id,
-    ...meta,
-    storeDomain,
-    storefrontApiToken,
-    theme,
+    ...definition,
+    storeDomain:
+      vars[`${definition.envPrefix}_STORE_DOMAIN`] || env.PUBLIC_STORE_DOMAIN,
+    storefrontApiToken:
+      vars[`${definition.envPrefix}_STOREFRONT_API_TOKEN`] ||
+      env.PUBLIC_STOREFRONT_API_TOKEN,
   };
-}
-
-export function getCssVarsString(theme: BrandTheme): string {
-  return Object.entries(theme.cssVars)
-    .map(([k, v]) => `${k}: ${v}`)
-    .join('; ');
 }

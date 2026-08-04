@@ -2,19 +2,25 @@ import {Link} from '@remix-run/react';
 import {Suspense} from 'react';
 import {Await} from '@remix-run/react';
 import clsx from 'clsx';
+import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 interface HeaderProps {
-  brand: {
-    id: string;
-    name: string;
-    nameJa: string;
-  };
+  brand: PublicBrand;
   cart: any;
   onCartOpen: () => void;
 }
 
 export default function Header({brand, cart, onCartOpen}: HeaderProps) {
-  const isAvantGarde = brand.id === 'avant-garde';
+  const isAvantGarde = isBoldBrand(brand.id);
+
+  // ブランド固有のカテゴリ + 全商品。ブランドを追加すればナビも自動で入れ替わる
+  const links = [
+    ...brand.nav.map((item) => ({
+      to: `/collections/${item.handle}`,
+      label: item.label,
+    })),
+    {to: '/products', label: brand.copy.navAllItems},
+  ];
 
   return (
     <header
@@ -32,26 +38,19 @@ export default function Header({brand, cart, onCartOpen}: HeaderProps) {
       >
         {/* ナビ左 */}
         <nav className="hidden md:flex items-center gap-8">
-          <Link
-            to="/collections/all"
-            className="text-xs tracking-widest uppercase transition-colors"
-            style={{
-              color: 'var(--color-text-muted)',
-              fontFamily: isAvantGarde ? 'var(--font-body)' : 'var(--font-heading)',
-            }}
-          >
-            {isAvantGarde ? 'COLLECTION' : 'コレクション'}
-          </Link>
-          <Link
-            to="/products"
-            className="text-xs tracking-widest uppercase transition-colors"
-            style={{
-              color: 'var(--color-text-muted)',
-              fontFamily: isAvantGarde ? 'var(--font-body)' : 'var(--font-heading)',
-            }}
-          >
-            {isAvantGarde ? 'ALL ITEMS' : '全商品'}
-          </Link>
+          {links.map(({to, label}) => (
+            <Link
+              key={to}
+              to={to}
+              className="text-xs tracking-widest uppercase transition-colors hover:opacity-70"
+              style={{
+                color: 'var(--color-text-muted)',
+                fontFamily: isAvantGarde ? 'var(--font-body)' : 'var(--font-heading)',
+              }}
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
 
         {/* ロゴ中央 */}
@@ -95,20 +94,16 @@ export default function Header({brand, cart, onCartOpen}: HeaderProps) {
         className="md:hidden flex items-center gap-6 px-4 pb-2 overflow-x-auto"
         style={{marginTop: '-4px'}}
       >
-        <Link
-          to="/collections/all"
-          className="text-xs tracking-widest uppercase whitespace-nowrap"
-          style={{color: 'var(--color-text-muted)'}}
-        >
-          {isAvantGarde ? 'COLLECTION' : 'コレクション'}
-        </Link>
-        <Link
-          to="/products"
-          className="text-xs tracking-widest uppercase whitespace-nowrap"
-          style={{color: 'var(--color-text-muted)'}}
-        >
-          {isAvantGarde ? 'ALL ITEMS' : '全商品'}
-        </Link>
+        {links.map(({to, label}) => (
+          <Link
+            key={to}
+            to={to}
+            className="text-xs tracking-widest uppercase whitespace-nowrap"
+            style={{color: 'var(--color-text-muted)'}}
+          >
+            {label}
+          </Link>
+        ))}
       </nav>
     </header>
   );

@@ -1,38 +1,35 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
-import {PRODUCTS_QUERY} from '~/lib/queries';
+import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
+import {isBoldBrand} from '~/lib/brands';
 
 export const meta = () => [{title: '商品一覧'}];
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
-  const url = new URL(request.url);
-  const searchParams = new URLSearchParams(url.search);
-  const sortKey = (searchParams.get('sort') as any) || 'BEST_SELLING';
-  const reverse = searchParams.get('reverse') === 'true';
 
-  const products = context.storefront.query(PRODUCTS_QUERY, {
+  // 1つのShopifyストアを複数サイトで共有しているので、そのブランドの商品だけを
+  // 含むコレクション（brands.ts の collections.all）を一覧の母集合にする。
+  // 並び順はShopify側のコレクション設定に従う。
+  const products = context.storefront.query(COLLECTION_QUERY, {
     variables: {
+      handle: brand.collections.all,
       first: 24,
-      sortKey,
-      reverse,
-      // 1ストア内でブランドの商品だけに絞り込む
-      query: `tag:"${brand.productTag}"`,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
   });
 
-  return defer({products, brandId: brand.id});
+  return defer({products, brandId: brand.id, copy: brand.copy});
 }
 
 export default function ProductsIndex() {
-  const {products, brandId} = useLoaderData<typeof loader>();
-  const isAvantGarde = brandId === 'avant-garde';
+  const {products, brandId, copy} = useLoaderData<typeof loader>();
+  const isAvantGarde = isBoldBrand(brandId);
 
   return (
     <div className="section-pad">
@@ -46,7 +43,7 @@ export default function ProductsIndex() {
             className="text-xs tracking-widest uppercase mb-2"
             style={{color: isAvantGarde ? 'var(--color-accent)' : 'var(--color-primary)'}}
           >
-            {isAvantGarde ? 'ALL ITEMS' : '全商品'}
+            {copy.allItemsEyebrow}
           </p>
           <h1
             className={clsx(
@@ -55,7 +52,7 @@ export default function ProductsIndex() {
             )}
             style={{fontFamily: 'var(--font-heading)', color: 'var(--color-text)'}}
           >
-            {isAvantGarde ? 'COLLECTION' : 'すべてのアイテム'}
+            {copy.allItemsHeading}
           </h1>
         </div>
 
@@ -63,7 +60,7 @@ export default function ProductsIndex() {
         <Suspense fallback={<ProductGridSkeleton />}>
           <Await resolve={products}>
             {(data: any) => {
-              const items = data?.products?.nodes ?? [];
+              const items = data?.collection?.products?.nodes ?? [];
               if (items.length === 0) {
                 return (
                   <div className="text-center py-24">
@@ -71,7 +68,7 @@ export default function ProductsIndex() {
                       className="text-sm tracking-widest"
                       style={{color: 'var(--color-text-muted)'}}
                     >
-                      {isAvantGarde ? 'NO PRODUCTS FOUND' : '商品が見つかりませんでした'}
+                      {copy.empty}
                     </p>
                   </div>
                 );

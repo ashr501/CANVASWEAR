@@ -29,6 +29,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
   const cart = context.cart.get();
 
+  // storeDomain / storefrontApiToken はブラウザに渡さない
   return defer({
     brand: {
       id: brand.id,
@@ -36,10 +37,12 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       nameJa: brand.nameJa,
       tagline: brand.tagline,
       taglineJa: brand.taglineJa,
+      uiMode: brand.uiMode,
+      nav: brand.nav,
+      copy: brand.copy,
+      concept: brand.concept,
+      collections: brand.collections,
       googleFonts: brand.theme.googleFonts,
-      cssVarsString: Object.entries(brand.theme.cssVars)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join('; '),
     },
     cart,
   });
@@ -50,7 +53,7 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
 
   return (
-    <html lang="ja" data-brand={brand.id}>
+    <html lang="ja" data-brand={brand.id} data-ui={brand.uiMode}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />

@@ -60,11 +60,38 @@
 }
 
 /* ===================================
+   Brand tokens
+
+   ブランドを追加するときは app/lib/brands.ts の定義に合わせて
+   [data-brand="<id>"] のブロックをここにも足す。
+   :root は未知のブランドでも最低限成立させるための既定値。
+   =================================== */
+:root {
+  --color-bg: #FAFAF8;
+  --color-surface: #FFFFFF;
+  --color-hero-bg: #F0EBE3;
+  --color-primary: #C9A96E;
+  --color-secondary: #8B6914;
+  --color-accent: #C9A96E;
+  --color-text: #2C2416;
+  --color-text-muted: #8A7968;
+  --color-border: #E8E0D4;
+  --font-heading: 'Cormorant Garamond';
+  --font-body: 'Noto Serif JP';
+  --section-spacing: 5rem;
+  --gutter: 1.5rem;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --radius: 2px;
+  --header-height: 70px;
+}
+
+/* ===================================
    Brand: elegant-plus
    =================================== */
 [data-brand="elegant-plus"] {
   --color-bg: #FAFAF8;
   --color-surface: #FFFFFF;
+  --color-hero-bg: #F0EBE3;
   --color-primary: #C9A96E;
   --color-secondary: #8B6914;
   --color-accent: #C9A96E;
@@ -86,6 +113,7 @@
 [data-brand="avant-garde"] {
   --color-bg: #0D0D0D;
   --color-surface: #1A1A1A;
+  --color-hero-bg: #0D0D0D;
   --color-primary: #E8E8E8;
   --color-secondary: #B0B0B0;
   --color-accent: #CC0000;
@@ -99,6 +127,28 @@
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --radius: 0px;
   --header-height: 60px;
+}
+
+/* ===================================
+   Brand: bridal (BRILLAR)
+   =================================== */
+[data-brand="bridal"] {
+  --color-bg: #FBF8F6;
+  --color-surface: #FFFFFF;
+  --color-hero-bg: #F3EBE6;
+  --color-primary: #A88B7D;
+  --color-secondary: #7A5F55;
+  --color-accent: #A88B7D;
+  --color-text: #33292B;
+  --color-text-muted: #8A7A78;
+  --color-border: #EBE1DC;
+  --font-heading: 'Marcellus';
+  --font-body: 'Noto Serif JP';
+  --section-spacing: 5.5rem;
+  --gutter: 1.5rem;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --radius: 2px;
+  --header-height: 70px;
 }
 
 /* ===================================
@@ -119,8 +169,10 @@
     padding-bottom: var(--section-spacing);
   }
 
-  /* === elegant-plus Buttons === */
-  [data-brand="elegant-plus"] .btn-primary {
+  /* === Buttons ===
+     ブランドIDではなく uiMode（elegant / bold）で分岐するので、
+     ブランドを追加してもボタンは自動的にどちらかのスタイルになる。 */
+  [data-ui="elegant"] .btn-primary {
     @apply inline-block px-8 py-3 tracking-widest uppercase transition-all duration-300;
     background-color: var(--color-primary);
     color: var(--color-bg);
@@ -130,13 +182,13 @@
     font-size: 0.75rem;
   }
 
-  [data-brand="elegant-plus"] .btn-primary:hover {
+  [data-ui="elegant"] .btn-primary:hover {
     background-color: var(--color-secondary);
     transform: translateY(-1px);
     box-shadow: 0 8px 24px rgba(201, 169, 110, 0.3);
   }
 
-  [data-brand="elegant-plus"] .btn-outline {
+  [data-ui="elegant"] .btn-outline {
     @apply inline-block px-8 py-3 tracking-widest uppercase transition-all duration-300;
     border: 1px solid var(--color-primary);
     color: var(--color-primary);
@@ -146,13 +198,13 @@
     font-size: 0.75rem;
   }
 
-  [data-brand="elegant-plus"] .btn-outline:hover {
+  [data-ui="elegant"] .btn-outline:hover {
     background-color: var(--color-primary);
     color: var(--color-bg);
   }
 
-  /* === avant-garde Buttons === */
-  [data-brand="avant-garde"] .btn-primary {
+  /* === bold uiMode overrides === */
+  [data-ui="bold"] .btn-primary {
     @apply inline-block px-10 py-4 tracking-widest uppercase transition-all duration-200;
     background-color: var(--color-text);
     color: var(--color-bg);
@@ -162,12 +214,12 @@
     font-size: 0.85rem;
   }
 
-  [data-brand="avant-garde"] .btn-primary:hover {
+  [data-ui="bold"] .btn-primary:hover {
     background-color: var(--color-accent);
     transform: translateX(4px);
   }
 
-  [data-brand="avant-garde"] .btn-outline {
+  [data-ui="bold"] .btn-outline {
     @apply inline-block px-10 py-4 tracking-widest uppercase transition-all duration-200;
     border: 1px solid var(--color-text);
     color: var(--color-text);
@@ -177,7 +229,7 @@
     font-size: 0.85rem;
   }
 
-  [data-brand="avant-garde"] .btn-outline:hover {
+  [data-ui="bold"] .btn-outline:hover {
     border-color: var(--color-accent);
     color: var(--color-accent);
   }

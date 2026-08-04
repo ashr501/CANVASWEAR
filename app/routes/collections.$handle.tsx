@@ -5,6 +5,7 @@ import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
+import {isBoldBrand} from '~/lib/brands';
 
 export const meta = ({data}: any) => [
   {title: data?.collection?.title ?? 'コレクション'},
@@ -32,7 +33,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function CollectionPage() {
   const {collection, brandId} = useLoaderData<typeof loader>();
-  const isAvantGarde = brandId === 'avant-garde';
+  const isAvantGarde = isBoldBrand(brandId);
 
   return (
     <div>

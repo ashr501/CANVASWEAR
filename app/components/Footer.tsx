@@ -1,16 +1,13 @@
 import {Link} from '@remix-run/react';
 import clsx from 'clsx';
+import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 interface FooterProps {
-  brand: {
-    id: string;
-    name: string;
-    taglineJa: string;
-  };
+  brand: PublicBrand;
 }
 
 export default function Footer({brand}: FooterProps) {
-  const isAvantGarde = brand.id === 'avant-garde';
+  const isAvantGarde = isBoldBrand(brand.id);
 
   return (
     <footer
@@ -54,8 +51,11 @@ export default function Footer({brand}: FooterProps) {
             </h3>
             <ul className="space-y-3">
               {[
-                {label: isAvantGarde ? 'コレクション' : 'すべてのコレクション', href: '/collections/all'},
-                {label: isAvantGarde ? '全商品' : '商品一覧', href: '/products'},
+                ...brand.nav.map((item) => ({
+                  label: item.label,
+                  href: `/collections/${item.handle}`,
+                })),
+                {label: brand.copy.navAllItems, href: '/products'},
               ].map(({label, href}) => (
                 <li key={href}>
                   <Link

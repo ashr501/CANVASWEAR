@@ -2,15 +2,10 @@ import type {ReactNode} from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import CartDrawer from './CartDrawer';
+import type {PublicBrand} from '~/lib/brands';
 
 interface LayoutProps {
-  brand: {
-    id: string;
-    name: string;
-    nameJa: string;
-    tagline: string;
-    taglineJa: string;
-  };
+  brand: PublicBrand;
   cart: any;
   cartOpen: boolean;
   onCartOpen: () => void;

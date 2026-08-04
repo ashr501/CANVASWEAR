@@ -13,13 +13,17 @@ declare global {
     PRIVATE_STOREFRONT_API_TOKEN: string;
     PUBLIC_STORE_DOMAIN: string;
     PUBLIC_STOREFRONT_ID: string;
-    BRAND_ID: 'elegant-plus' | 'avant-garde';
-    // Brand 1
+    /** app/lib/brands.ts の BrandId。どのサイトとして動かすかを決める */
+    BRAND_ID: string;
+    // Brand 1: HAORI+ (elegant-plus)
     BRAND1_STORE_DOMAIN: string;
     BRAND1_STOREFRONT_API_TOKEN: string;
-    // Brand 2
+    // Brand 2: NOCT. (avant-garde)
     BRAND2_STORE_DOMAIN: string;
     BRAND2_STOREFRONT_API_TOKEN: string;
+    // Brand 3: BRILLAR (bridal)
+    BRAND3_STORE_DOMAIN: string;
+    BRAND3_STOREFRONT_API_TOKEN: string;
   }
 }
 

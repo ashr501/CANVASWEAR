@@ -1,18 +1,30 @@
-# Multi-Brand Hydrogen Storefront
+# Multi-Site Hydrogen Storefront
 
-1つのShopifyストアをバックエンドに、2つのブランドサイトを運営するヘッドレスECです。
+1つのShopifyストア（BridesmaidsJP）をバックエンドに、複数のブランドサイトを運営するヘッドレスECです。
 
-| ブランド | コンセプト | デザイン |
-|---|---|---|
-| **HAORI+**（ハオリプラス） | プラスサイズ向け羽織物 | 白×ゴールド・ラグジュアリー |
-| **NOCT.**（ノクト） | V系×Y2K・40代以上向け | 黒×赤・アバンギャルド |
+| BRAND_ID | ブランド | 取扱 | デザイン |
+|---|---|---|---|
+| `bridal` | **BRILLAR**（ブリラー） | ウェディングドレス・ブライダルアクセサリー | アイボリー×トープ |
+| `elegant-plus` | **HAORI+**（ハオリプラス） | プラスサイズ向け羽織物 | 白×ゴールド・ラグジュアリー |
+| `avant-garde` | **NOCT.**（ノクト） | V系×Y2K・40代以上向け | 黒×赤・アバンギャルド |
 
 ## 仕組み
 
 - **バックエンド**: Shopify（商品・在庫・注文・決済） + BuckyDrop（ドロップシッピング仕入れ）
 - **フロントエンド**: Shopify Hydrogen（Remix）+ Tailwind CSS
-- 商品はタグ `brand:elegant-plus` / `brand:avant-garde` でブランド別に振り分け
+- サイトごとの商品は、そのブランド専用のShopifyコレクション（`collections.all`）で切り分け
 - ブランドは `?brand=` パラメータ → Cookie → ホスト名 → 環境変数 `BRAND_ID` の順で解決
+
+## サイトを1つ追加する
+
+1. `app/lib/brands.ts` の `BRANDS` にブランドを1つ足す
+   （名前・配色・ナビ・使うコレクションのhandle・`envPrefix` を書く）
+2. `app/styles/app.css` に同じidの `[data-brand="<id>"]` ブロックを足す
+3. Shopifyでそのブランド用のコレクションを作る
+4. Vercelで新しいプロジェクトを作り `BRAND_ID=<id>` を設定する
+
+コンポーネント側の分岐は `uiMode`（`elegant` / `bold`）で行うため、
+ブランドを足しても各ページを触る必要はありません。
 
 ## ドキュメント
 

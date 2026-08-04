@@ -10,6 +10,7 @@ import {Image, Money, VariantSelector, getSelectedProductOptions} from '@shopify
 import {PRODUCT_QUERY} from '~/lib/queries';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
+import {isBoldBrand} from '~/lib/brands';
 
 export const meta = ({data}: any) => [
   {title: data?.product?.title ?? '商品'},
@@ -39,7 +40,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 export default function ProductDetail() {
   const {product, brandId} = useLoaderData<typeof loader>();
   const {onCartOpen} = useOutletContext<{onCartOpen: () => void}>();
-  const isAvantGarde = brandId === 'avant-garde';
+  const isAvantGarde = isBoldBrand(brandId);
   const [selectedImage, setSelectedImage] = useState(0);
   const [adding, setAdding] = useState(false);
 

@@ -5,6 +5,7 @@ import {HOME_PRODUCTS_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
+import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 export const meta = () => [{title: 'ホーム'}];
 
@@ -21,13 +22,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     },
   });
 
-  return defer({products, brandId: brand.id, brand});
+  // brandをそのまま返すとStorefrontトークンまでブラウザに渡ってしまうので、
+  // 表示用のブランド情報はroot.tsxのoutlet contextから受け取る
+  return defer({products, brandId: brand.id});
 }
 
 export default function Index() {
-  const {products, brandId, brand} = useLoaderData<typeof loader>();
-  const {onCartOpen} = useOutletContext<{onCartOpen: () => void}>();
-  const isAvantGarde = brandId === 'avant-garde';
+  const {products, brandId} = useLoaderData<typeof loader>();
+  const {brand} = useOutletContext<{brand: PublicBrand; onCartOpen: () => void}>();
+  const isAvantGarde = isBoldBrand(brandId);
+  const copy = brand.copy;
 
   return (
     <div>
@@ -43,7 +47,7 @@ export default function Index() {
                 className="text-xs tracking-widest uppercase mb-2"
                 style={{color: isAvantGarde ? 'var(--color-accent)' : 'var(--color-primary)'}}
               >
-                {isAvantGarde ? 'SELECTION' : 'おすすめ'}
+                {copy.featuredEyebrow}
               </p>
               <h2
                 className={clsx(
@@ -52,15 +56,15 @@ export default function Index() {
                 )}
                 style={{fontFamily: 'var(--font-heading)', color: 'var(--color-text)'}}
               >
-                {isAvantGarde ? 'FEATURED PIECES' : '注目のアイテム'}
+                {copy.featuredHeading}
               </h2>
             </div>
             <Link
-              to="/collections/all"
+              to={`/collections/${brand.collections.all}`}
               className="text-xs tracking-widest uppercase hidden md:block transition-opacity hover:opacity-60"
               style={{color: isAvantGarde ? 'var(--color-text-muted)' : 'var(--color-primary)'}}
             >
-              {isAvantGarde ? 'VIEW ALL →' : 'すべて見る →'}
+              {copy.viewAll}
             </Link>
           </div>
 
@@ -68,7 +72,7 @@ export default function Index() {
             <Await resolve={products}>
               {(data: any) => {
                 const items = data?.featured?.products?.nodes ?? [];
-                if (items.length === 0) return <EmptyState isAvantGarde={isAvantGarde} />;
+                if (items.length === 0) return <EmptyState label={copy.empty} />;
                 return (
                   <div className="product-grid">
                     {items.map((product: any) => (
@@ -93,7 +97,7 @@ export default function Index() {
               className="text-xs tracking-widest uppercase mb-2"
               style={{color: isAvantGarde ? 'var(--color-accent)' : 'var(--color-primary)'}}
             >
-              {isAvantGarde ? 'NEW ARRIVALS' : '新着アイテム'}
+              {copy.newEyebrow}
             </p>
             <h2
               className={clsx(
@@ -102,7 +106,7 @@ export default function Index() {
               )}
               style={{fontFamily: 'var(--font-heading)', color: 'var(--color-text)'}}
             >
-              {isAvantGarde ? 'NEW IN' : '新着'}
+              {copy.newHeading}
             </h2>
           </div>
 
@@ -110,7 +114,7 @@ export default function Index() {
             <Await resolve={products}>
               {(data: any) => {
                 const items = data?.newArrivals?.products?.nodes ?? [];
-                if (items.length === 0) return <EmptyState isAvantGarde={isAvantGarde} />;
+                if (items.length === 0) return <EmptyState label={copy.empty} />;
                 return (
                   <div className="product-grid">
                     {items.map((product: any) => (
@@ -127,11 +131,17 @@ export default function Index() {
   );
 }
 
-function HeroSection({brand, isAvantGarde}: {brand: any; isAvantGarde: boolean}) {
+function HeroSection({
+  brand,
+  isAvantGarde,
+}: {
+  brand: PublicBrand;
+  isAvantGarde: boolean;
+}) {
   return (
     <section
       className="relative min-h-[85vh] md:min-h-screen flex items-end overflow-hidden"
-      style={{backgroundColor: isAvantGarde ? '#0D0D0D' : '#F0EBE3'}}
+      style={{backgroundColor: 'var(--color-hero-bg)'}}
     >
       {/* 背景装飾 */}
       {isAvantGarde ? (
@@ -157,7 +167,8 @@ function HeroSection({brand, isAvantGarde}: {brand: any; isAvantGarde: boolean})
           <div
             className="absolute right-0 top-0 bottom-0 w-[55%] opacity-20"
             style={{
-              background: 'radial-gradient(ellipse at right, #C9A96E 0%, transparent 70%)',
+              background:
+                'radial-gradient(ellipse at right, var(--color-primary) 0%, transparent 70%)',
             }}
           />
         </div>
@@ -170,7 +181,7 @@ function HeroSection({brand, isAvantGarde}: {brand: any; isAvantGarde: boolean})
               className="text-xs tracking-[0.4em] uppercase mb-6"
               style={{color: 'var(--color-accent)'}}
             >
-              NEW COLLECTION
+              {brand.copy.heroEyebrow}
             </p>
             <h1
               className="leading-none tracking-[0.05em] uppercase mb-8"
@@ -193,11 +204,14 @@ function HeroSection({brand, isAvantGarde}: {brand: any; isAvantGarde: boolean})
               {brand.taglineJa}
             </p>
             <div className="flex items-center gap-6">
-              <Link to="/collections/all" className="btn-primary">
-                EXPLORE
+              <Link
+                to={`/collections/${brand.collections.all}`}
+                className="btn-primary"
+              >
+                {brand.copy.heroPrimaryCta}
               </Link>
               <Link to="/products" className="btn-outline">
-                ALL ITEMS
+                {brand.copy.heroSecondaryCta}
               </Link>
             </div>
           </div>
@@ -207,7 +221,7 @@ function HeroSection({brand, isAvantGarde}: {brand: any; isAvantGarde: boolean})
               className="text-xs tracking-[0.3em] uppercase mb-6"
               style={{fontFamily: 'var(--font-heading)', color: 'var(--color-primary)'}}
             >
-              NEW ARRIVAL
+              {brand.copy.heroEyebrow}
             </p>
             <h1
               className="leading-[1.05] mb-6"
@@ -228,11 +242,14 @@ function HeroSection({brand, isAvantGarde}: {brand: any; isAvantGarde: boolean})
               {brand.taglineJa}
             </p>
             <div className="flex items-center gap-6">
-              <Link to="/collections/all" className="btn-primary">
-                コレクションを見る
+              <Link
+                to={`/collections/${brand.collections.all}`}
+                className="btn-primary"
+              >
+                {brand.copy.heroPrimaryCta}
               </Link>
               <Link to="/products" className="btn-outline">
-                すべての商品
+                {brand.copy.heroSecondaryCta}
               </Link>
             </div>
           </div>
@@ -242,73 +259,78 @@ function HeroSection({brand, isAvantGarde}: {brand: any; isAvantGarde: boolean})
   );
 }
 
-function ConceptSection({brand, isAvantGarde}: {brand: any; isAvantGarde: boolean}) {
+function ConceptSection({
+  brand,
+  isAvantGarde,
+}: {
+  brand: PublicBrand;
+  isAvantGarde: boolean;
+}) {
+  const {eyebrow, heading, body} = brand.concept;
+
   return (
     <section
       className="section-pad"
-      style={{backgroundColor: isAvantGarde ? 'var(--color-surface)' : '#F0EBE3'}}
+      style={{
+        backgroundColor: isAvantGarde ? 'var(--color-surface)' : 'var(--color-hero-bg)',
+      }}
     >
       <div className="container-brand">
         <div className={clsx('max-w-2xl', isAvantGarde ? 'mx-auto text-center' : '')}>
           {isAvantGarde ? (
-            <>
-              <div
-                className="w-16 h-px mx-auto mb-8"
-                style={{backgroundColor: 'var(--color-accent)'}}
-              />
-              <h2
-                className="text-4xl md:text-6xl tracking-[0.15em] uppercase mb-6"
-                style={{fontFamily: 'var(--font-heading)', color: 'var(--color-text)'}}
-              >
-                OUR PHILOSOPHY
-              </h2>
-              <p
-                className="leading-loose tracking-wide text-sm md:text-base"
-                style={{color: 'var(--color-text-muted)'}}
-              >
-                {brand.taglineJa}
-                <br />
-                <br />
-                年齢や体型に関係なく、ファッションは自己表現の手段。
-                私たちは、独自のスタイルを持つ大人のための服を作ります。
-              </p>
-              <div
-                className="w-16 h-px mx-auto mt-8"
-                style={{backgroundColor: 'var(--color-accent)'}}
-              />
-            </>
+            <div
+              className="w-16 h-px mx-auto mb-8"
+              style={{backgroundColor: 'var(--color-accent)'}}
+            />
           ) : (
-            <>
-              <p
-                className="text-xs tracking-[0.3em] uppercase mb-4"
-                style={{fontFamily: 'var(--font-heading)', color: 'var(--color-primary)'}}
-              >
-                OUR STORY
-              </p>
-              <h2
-                className="text-3xl md:text-5xl mb-6 italic"
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 300,
-                  color: 'var(--color-text)',
-                }}
-              >
-                すべての体型に
-                <br />
-                美しい羽織を
-              </h2>
-              <p
-                className="text-sm leading-loose mb-8"
-                style={{fontFamily: 'var(--font-body)', color: 'var(--color-text-muted)'}}
-              >
-                プラスサイズの女性のための、上質な羽織物のコレクション。
-                エレガントなデザインと日本の美意識を融合させ、
-                あなたの美しさを引き立てるアイテムをお届けします。
-              </p>
-              <Link to="/pages/about" className="btn-outline">
-                ブランドについて
-              </Link>
-            </>
+            <p
+              className="text-xs tracking-[0.3em] uppercase mb-4"
+              style={{fontFamily: 'var(--font-heading)', color: 'var(--color-primary)'}}
+            >
+              {eyebrow}
+            </p>
+          )}
+
+          <h2
+            className={clsx(
+              'mb-6',
+              isAvantGarde
+                ? 'text-4xl md:text-6xl tracking-[0.15em] uppercase'
+                : 'text-3xl md:text-5xl italic',
+            )}
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontWeight: isAvantGarde ? 400 : 300,
+              color: 'var(--color-text)',
+            }}
+          >
+            {heading.map((line, i) => (
+              <span key={i} className="block">
+                {line}
+              </span>
+            ))}
+          </h2>
+
+          <p
+            className={clsx(
+              isAvantGarde
+                ? 'leading-loose tracking-wide text-sm md:text-base'
+                : 'text-sm leading-loose mb-8',
+            )}
+            style={{fontFamily: 'var(--font-body)', color: 'var(--color-text-muted)'}}
+          >
+            {body}
+          </p>
+
+          {isAvantGarde ? (
+            <div
+              className="w-16 h-px mx-auto mt-8"
+              style={{backgroundColor: 'var(--color-accent)'}}
+            />
+          ) : (
+            <Link to={`/collections/${brand.collections.all}`} className="btn-outline">
+              {brand.copy.heroPrimaryCta}
+            </Link>
           )}
         </div>
       </div>
@@ -339,14 +361,14 @@ function ProductGridSkeleton({count = 6}: {count?: number}) {
   );
 }
 
-function EmptyState({isAvantGarde}: {isAvantGarde: boolean}) {
+function EmptyState({label}: {label: string}) {
   return (
     <div className="text-center py-16">
       <p
         className="text-sm tracking-widest"
         style={{color: 'var(--color-text-muted)'}}
       >
-        {isAvantGarde ? 'NO PRODUCTS FOUND' : '商品がありません'}
+        {label}
       </p>
     </div>
   );

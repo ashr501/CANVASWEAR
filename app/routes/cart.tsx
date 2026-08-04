@@ -5,6 +5,7 @@ import {Image, Money} from '@shopify/hydrogen';
 import {defer} from '@shopify/remix-oxygen';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
+import {isBoldBrand} from '~/lib/brands';
 
 export const meta = () => [{title: 'カート'}];
 
@@ -16,7 +17,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
 export default function CartPage() {
   const {cart, brandId} = useLoaderData<typeof loader>();
-  const isAvantGarde = brandId === 'avant-garde';
+  const isAvantGarde = isBoldBrand(brandId);
 
   return (
     <div className="section-pad">

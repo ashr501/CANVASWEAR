@@ -3,6 +3,7 @@ import {Image, Money} from '@shopify/hydrogen';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import clsx from 'clsx';
 import {useState} from 'react';
+import {isBoldBrand} from '~/lib/brands';
 
 interface ProductCardProps {
   product: {
@@ -30,7 +31,7 @@ interface ProductCardProps {
 
 export default function ProductCard({product, brandId}: ProductCardProps) {
   const [hovered, setHovered] = useState(false);
-  const isAvantGarde = brandId === 'avant-garde';
+  const isAvantGarde = isBoldBrand(brandId);
   const isAvailable = product.variants.nodes[0]?.availableForSale;
 
   return (
