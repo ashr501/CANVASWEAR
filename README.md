@@ -1,13 +1,14 @@
 # Multi-Site Hydrogen Storefront
 
-1つのShopifyストア（BridesmaidsJP）をバックエンドに、複数のブランドサイトを運営するヘッドレスECです。
+1つのShopifyストア（BridesmaidsJP）をバックエンドに、4つのブランドサイトを運営するヘッドレスECです。
+Shopifyの契約は1つのままで、サイトはいくつでも増やせます。
 
 | BRAND_ID | ブランド | 取扱 | デザイン |
 |---|---|---|---|
 | `bridal` | **BRILLAR**（ブリラー） | ウェディングドレス・ブライダルアクセサリー | アイボリー×トープ |
 | `elegant-plus` | **HAORI+**（ハオリプラス） | プラスサイズ向け羽織物 | 白×ゴールド・ラグジュアリー |
 | `avant-garde` | **NOCT.**（ノクト） | V系×Y2K・40代以上向け | 黒×赤・アバンギャルド |
-| `custom-print` | **ALOLORE** | カスタムプリント（テスト運用中） | 白×コーラル・クリーン |
+| `custom-print` | **MOYO** | カスタムプリント（テスト運用中） | 白×コーラル・クリーン |
 
 ## 仕組み
 

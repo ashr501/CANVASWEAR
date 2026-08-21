@@ -1,13 +1,13 @@
 # デプロイ手順 — マルチサイト構成
 
-1つのShopifyストア（BridesmaidsJP）を、3つの独立したサイトとして配信します。
+1つのShopifyストア（BridesmaidsJP）を、4つの独立したサイトとして配信します。
 
 | BRAND_ID | サイト | 中身 |
 |---|---|---|
 | `bridal` | BRILLAR | ウェディングドレス・アクセサリー・ベール（bridesmaids.jpから分離） |
 | `elegant-plus` | HAORI+ | プラスサイズ羽織物 |
 | `avant-garde` | NOCT. | V系×Y2K |
-| `custom-print` | ALOLORE | カスタムプリント（テスト運用中） |
+| `custom-print` | MOYO | カスタムプリント（テスト運用中） |
 
 サイトを増やすときは `app/lib/brands.ts` にブランドを1つ足し、
 `app/styles/app.css` に同じidの `[data-brand="..."]` ブロックを足すだけです。
@@ -35,11 +35,11 @@ Hydrogenストアフロントを作るとトークンが自動発行され、デ
    npx shopify hydrogen deploy
    ```
 4. Shopify管理画面のストアフロント設定で、**環境変数 `BRAND_ID` を追加**
-   （`bridal` / `elegant-plus` / `avant-garde`）
+   （`bridal` / `elegant-plus` / `avant-garde` / `custom-print`）
 5. 独自ドメインを接続
 
-3サイト運用する場合は、**Hydrogenストアフロントを3つ作り**、それぞれに別の
-`BRAND_ID` を設定します。
+複数サイトを運用する場合は、**Hydrogenストアフロントをサイトの数だけ作り**、
+それぞれに別の `BRAND_ID` を設定します。1つのShopify契約のままで問題ありません。
 
 ### Oxygenでも必要な作業
 
@@ -98,11 +98,11 @@ Shopify管理画面 → **商品** → 全選択 → **一括編集** → 「販
 | `https://xxx.vercel.app/` | HAORI+（白・ラグジュアリー） |
 | `https://xxx.vercel.app/?brand=bridal` | BRILLAR（ブライダル） |
 | `https://xxx.vercel.app/?brand=avant-garde` | NOCT.（黒・アバンギャルド） |
-| `https://xxx.vercel.app/?brand=custom-print` | ALOLORE（カスタムプリント） |
+| `https://xxx.vercel.app/?brand=custom-print` | MOYO（カスタムプリント） |
 | `https://xxx.vercel.app/?brand=elegant-plus` | HAORI+に戻す |
 
 一度 ?brand= で切り替えるとCookieに保存され、ページ遷移しても維持されます。
-ホスト名に `noct` / `brillar` / `bridal` を含む独自ドメインを接続すると自動で切り替わります。
+ホスト名に `noct` / `brillar` / `bridal` / `moyo` を含む独自ドメインを接続すると自動で切り替わります。
 
 本番運用では下記の通りプロジェクトを分けて `BRAND_ID` を固定してください。
 
@@ -303,26 +303,26 @@ DNS設定はVercerが自動で案内してくれます。
 
 ---
 
-## カスタムプリントサイト（ALOLORE）
+## カスタムプリントサイト（MOYO）
 
-`alolore.shop` のカスタムプリント商品を想定したテストサイトです。
+柄を選んでウェアにプリントする商品を扱うサイトです。
 
 ### いまの接続先
 
-Aloloreストアにまだ接続していないため、**BridesmaidsJPの `custom-print`
+別ストアにまだ接続していないため、**BridesmaidsJPの `custom-print`
 コレクション（15点・タグ `print`）**を表示しています。動作確認用です。
 
-### Aloloreストアに切り替える
+### 別ストアに切り替える
 
-1. Aloloreストアで Hydrogenストアフロント（またはカスタムアプリ）を作りトークンを取得
+1. 別ストアで Hydrogenストアフロント（またはカスタムアプリ）を作りトークンを取得
 2. 環境変数を設定
    ```
    BRAND_ID                    = custom-print
-   BRAND4_STORE_DOMAIN         = alolore.myshopify.com
-   BRAND4_STOREFRONT_API_TOKEN = (Aloloreのトークン)
+   BRAND4_STORE_DOMAIN         = your-print-store.myshopify.com
+   BRAND4_STOREFRONT_API_TOKEN = (その ストアのトークン)
    ```
 3. `app/lib/brands.ts` の `custom-print` の `collections` と `nav` を
-   Alolore側のコレクションhandleに差し替える
+   別ストア側のコレクションhandleに差し替える
 
 他の3サイトはBridesmaidsJPを見たまま影響を受けません。
 

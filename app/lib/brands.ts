@@ -254,18 +254,18 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     },
   },
 
-  // カスタムプリント（alolore.shop 相当）のテストサイト。
+  // カスタムプリントのサイト。
   // いまは BridesmaidsJP の custom-print コレクション（15点・tag: print）を見ている。
-  // Aloloreストアに接続する際は BRAND4_STORE_DOMAIN / BRAND4_STOREFRONT_API_TOKEN を
-  // Aloloreの値に変え、下の collections / nav をAlolore側のhandleに差し替える。
+  // 別ストアに移す場合は BRAND4_STORE_DOMAIN / BRAND4_STOREFRONT_API_TOKEN を
+  // そのストアの値に変え、下の collections / nav をそのストアのhandleに差し替える。
   'custom-print': {
     id: 'custom-print',
-    name: 'ALOLORE',
-    nameJa: 'カスタムプリント',
-    tagline: 'Print What You Love',
-    taglineJa: '好きな柄を、そのまま身につける。',
+    name: 'MOYO',
+    nameJa: 'モヨウ',
+    tagline: 'Wear Your Pattern',
+    taglineJa: '好きな柄を、あなたのウェアに。',
     uiMode: 'clean',
-    hostMatches: ['alolore', 'custom-print'],
+    hostMatches: ['moyo', 'custom-print'],
     envPrefix: 'BRAND4',
     collections: {
       featured: 'custom-print',
