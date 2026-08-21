@@ -260,12 +260,12 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
   // そのストアの値に変え、下の collections / nav をそのストアのhandleに差し替える。
   'custom-print': {
     id: 'custom-print',
-    name: 'MOYO',
-    nameJa: 'モヨウ',
-    tagline: 'Wear Your Pattern',
-    taglineJa: '好きな柄を、あなたのウェアに。',
+    name: 'INKWEAR',
+    nameJa: 'インクウェア',
+    tagline: 'Print Anything',
+    taglineJa: '昇華プリントで、どんな柄も1点から。',
     uiMode: 'clean',
-    hostMatches: ['moyo', 'custom-print'],
+    hostMatches: ['inkwear', 'custom-print'],
     envPrefix: 'BRAND4',
     collections: {
       featured: 'custom-print',
@@ -274,9 +274,9 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     },
     nav: [{label: 'カスタムプリント', handle: 'custom-print'}],
     concept: {
-      eyebrow: 'HOW IT WORKS',
-      heading: ['柄を選ぶ。', '身につける。'],
-      body: 'お好みの柄を選んで、そのままウェアに。1点から製作するので、在庫の柄に縛られません。商品ページでプリント内容をご指定いただくと、その内容がそのまま注文情報に記録されます。',
+      eyebrow: 'ABOUT SUBLIMATION',
+      heading: ['どんな柄でも、', '1点から。'],
+      body: '昇華プリントなので、写真もイラストも全面フルカラーで再現できます。染料が生地の繊維そのものに定着するため、プリント部分がごわつかず、洗ってもひび割れや色落ちがありません。在庫の柄に縛られず、1点からお作りします。',
     },
     copy: {
       ...JA_COPY,

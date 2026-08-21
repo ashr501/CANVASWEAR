@@ -24,7 +24,7 @@ declare global {
     // Brand 3: BRILLAR (bridal)
     BRAND3_STORE_DOMAIN: string;
     BRAND3_STOREFRONT_API_TOKEN: string;
-    // Brand 4: MOYO (custom-print)
+    // Brand 4: INKWEAR (custom-print)
     BRAND4_STORE_DOMAIN: string;
     BRAND4_STOREFRONT_API_TOKEN: string;
   }
