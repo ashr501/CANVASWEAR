@@ -5,6 +5,11 @@ import {createStorefrontClient, createCartHandler, cartGetIdDefault, cartSetIdDe
 import {HydrogenSession} from '~/lib/session.server';
 import {getBrandConfig} from '~/lib/brand.server';
 import {isBrandId} from '~/lib/brands';
+// Remix/Viteがビルド時に生成する仮想モジュール。
+// これを取り込まないと remixBuild が未定義のまま参照され、
+// 全リクエストが ReferenceError で落ちる。
+// @ts-ignore -- 仮想モジュールのため型定義はない
+import * as remixBuild from 'virtual:remix/server-build';
 
 export default {
   async fetch(
@@ -183,5 +188,3 @@ function getStorefrontHeaders(request: Request) {
   };
 }
 
-// Replaced at build time
-declare const remixBuild: Parameters<typeof createRequestHandler>[0]['build'];
