@@ -36,7 +36,23 @@
 ```bash
 npm install
 cp .env.example .env  # 環境変数を設定
-npm run dev           # Shopify Oxygen互換の開発サーバー
+npm run dev           # 開発サーバー
+npm run build         # Oxygen用ビルド
 npm run build:vercel  # Vercel用ビルド
 npm run typecheck
 ```
+
+## デプロイ先
+
+**Shopify Oxygen（推奨・Shopifyプランに込みで追加費用なし）**
+
+```bash
+npx shopify hydrogen link      # Hydrogenストアフロントを選ぶ
+npx shopify hydrogen deploy
+```
+
+Storefront APIトークンはOxygenが自動で注入するため、手で設定する必要はありません。
+サイトごとに `BRAND_ID` だけShopify管理画面で設定します。
+
+Vercelにも対応しています（`api/server.ts` がExpressアダプタ）。手順は
+[DEPLOY.md](./DEPLOY.md) を参照してください。

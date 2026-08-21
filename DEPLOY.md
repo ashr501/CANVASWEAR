@@ -1,4 +1,4 @@
-# デプロイ手順 — マルチサイト Vercel構成
+# デプロイ手順 — マルチサイト構成
 
 1つのShopifyストア（BridesmaidsJP）を、3つの独立したサイトとして配信します。
 
@@ -10,6 +10,47 @@
 
 サイトを増やすときは `app/lib/brands.ts` にブランドを1つ足し、
 `app/styles/app.css` に同じidの `[data-brand="..."]` ブロックを足すだけです。
+
+---
+
+## 推奨: Shopify Oxygenにデプロイする
+
+Oxygenは**Shopify公式のHydrogen専用ホスティング**で、有料Shopifyプラン（Basic以上）に
+含まれています。**ホスティング費用の追加はありません。**
+
+Vercelとの一番の違いは、**Storefront APIトークンを手で扱わなくて済む**ことです。
+Hydrogenストアフロントを作るとトークンが自動発行され、デプロイ時に
+`PUBLIC_STORE_DOMAIN` / `PUBLIC_STOREFRONT_API_TOKEN` /
+`PRIVATE_STOREFRONT_API_TOKEN` が自動的に環境変数として注入されます。
+
+### 手順（サイト1つあたり）
+
+1. Shopify管理画面 → **設定** → **アプリと販売チャネル** → **Hydrogen** を追加
+2. **ストアフロントを作成**（例: `BRILLAR`）
+3. ローカルでリンクしてデプロイ
+   ```bash
+   npx shopify hydrogen link      # 作成したストアフロントを選ぶ
+   npx shopify hydrogen env pull  # トークン等を .env に取得（ローカル開発用）
+   npx shopify hydrogen deploy
+   ```
+4. Shopify管理画面のストアフロント設定で、**環境変数 `BRAND_ID` を追加**
+   （`bridal` / `elegant-plus` / `avant-garde`）
+5. 独自ドメインを接続
+
+3サイト運用する場合は、**Hydrogenストアフロントを3つ作り**、それぞれに別の
+`BRAND_ID` を設定します。
+
+### Oxygenでも必要な作業
+
+- 商品とコレクションを、そのHydrogenストアフロント（販売チャネル）に**公開**すること。
+  これをしないとトークンが正しくてもAPIは空を返します。
+
+### GitHub連携
+
+ストアフロント設定でGitHubリポジトリを接続すると、プッシュのたびに自動デプロイされ、
+プルリクエストごとにプレビューURLが発行されます。
+
+---
 
 ## 前提
 - GitHubリポジトリにプッシュ済み
@@ -222,3 +263,38 @@ DNS設定はVercerが自動で案内してくれます。
 
 現在ウェディングドレスは在庫3点のみです。ドレスを増やす場合は、商品名に
 「ウェディングドレス」を含めるか `bridal:dress` タグを付けてください。
+
+---
+
+## 将来、サイトを完全に独立させる
+
+いまは3サイトが1つのShopifyストア（BridesmaidsJP）を共有していますが、
+**コードを変えずに、ブランド単位で別のShopifyストアへ移せる**設計にしてあります。
+
+各ブランドは `app/lib/brands.ts` の `envPrefix` で自分の接続先を持ちます。
+
+| ブランド | 接続先を決める環境変数 |
+|---|---|
+| HAORI+ | `BRAND1_STORE_DOMAIN` / `BRAND1_STOREFRONT_API_TOKEN` |
+| NOCT. | `BRAND2_STORE_DOMAIN` / `BRAND2_STOREFRONT_API_TOKEN` |
+| BRILLAR | `BRAND3_STORE_DOMAIN` / `BRAND3_STOREFRONT_API_TOKEN` |
+
+### 独立させる手順
+
+1. 新しいShopifyストアを契約する
+2. 商品を移行する（Shopifyの CSV インポート、または移行アプリ）
+3. 新ストアでHydrogenストアフロントを作り、トークンを取得
+4. そのサイトの `BRAND3_STORE_DOMAIN` / `BRAND3_STOREFRONT_API_TOKEN` を
+   新ストアの値に差し替える
+
+**コードの変更もデプロイのやり直しも不要です。** 環境変数の入れ替えだけで、
+そのサイトだけが新しいストアを見るようになります。
+
+さらにリポジトリごと分けたい場合は、`app/lib/brands.ts` から他のブランドを
+削除するだけで単一ブランドのリポジトリになります。
+
+### 独立させると発生するもの
+
+- Shopifyプラン料金がストアの数だけかかります
+- 在庫・注文・顧客は完全に分かれます（同じ在庫を共有できなくなります）
+- 逆に、屋号・決済・配送設定・ドメインを完全に分けられます

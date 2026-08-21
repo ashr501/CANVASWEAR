@@ -15,6 +15,7 @@ import {
 import {HydrogenSession} from '../app/lib/session.server';
 import {FALLBACK_STORE} from '../app/lib/brands.config';
 import {isBrandId} from '../app/lib/brands';
+import {getBrandConfig} from '../app/lib/brand.server';
 // @ts-ignore -- buildCommand(remix vite:build)が生成する成果物。型定義はない
 import * as remixBuild from '../dist/server/index.js';
 
@@ -102,17 +103,19 @@ app.all(
       const cookie = req.get('cookie') ?? '';
       const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
 
-      const session = await HydrogenSession.init(
-        new Request(url, {headers: {cookie}}),
-        [env.SESSION_SECRET],
-      );
+      const incoming = new Request(url, {headers: {cookie}});
+      const session = await HydrogenSession.init(incoming, [env.SESSION_SECRET]);
+
+      // ブランドごとに別のShopifyストアを指せるよう、接続情報はブランドから取る
+      // （server.ts のOxygen版と同じ挙動にそろえている）
+      const brand = getBrandConfig(env, incoming);
 
       const {storefront} = createStorefrontClient({
         cache,
         i18n: {language: 'JA', country: 'JP'},
-        publicStorefrontToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+        publicStorefrontToken: brand.storefrontApiToken,
         privateStorefrontToken: env.PRIVATE_STOREFRONT_API_TOKEN || undefined,
-        storeDomain: env.PUBLIC_STORE_DOMAIN,
+        storeDomain: brand.storeDomain,
         storefrontId: env.PUBLIC_STOREFRONT_ID || undefined,
         storefrontHeaders: {
           requestGroupId: req.get('request-id') ?? null,

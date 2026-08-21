@@ -3,6 +3,8 @@ import {storefrontRedirect} from '@shopify/hydrogen';
 import {AppLoadContext} from '@remix-run/server-runtime';
 import {createStorefrontClient, createCartHandler, cartGetIdDefault, cartSetIdDefault} from '@shopify/hydrogen';
 import {HydrogenSession} from '~/lib/session.server';
+import {getBrandConfig} from '~/lib/brand.server';
+import {isBrandId} from '~/lib/brands';
 
 export default {
   async fetch(
@@ -17,13 +19,18 @@ export default {
         HydrogenSession.init(request, [env.SESSION_SECRET]),
       ]);
 
+      // どのサイトとして応答するかを先に決める。
+      // ブランドごとに別のShopifyストアを指せるよう、接続情報もここから取る
+      // （将来ブランドを独立したストアに移すときは環境変数を変えるだけでよい）。
+      const brand = getBrandConfig(env, request);
+
       const {storefront} = createStorefrontClient({
         cache,
         waitUntil,
         i18n: getLocaleFromRequest(request),
-        publicStorefrontToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+        publicStorefrontToken: brand.storefrontApiToken,
         privateStorefrontToken: env.PRIVATE_STOREFRONT_API_TOKEN,
-        storeDomain: env.PUBLIC_STORE_DOMAIN,
+        storeDomain: brand.storeDomain,
         storefrontId: env.PUBLIC_STOREFRONT_ID,
         storefrontHeaders: getStorefrontHeaders(request),
       });
@@ -48,13 +55,13 @@ export default {
         },
       });
 
-      const response = await handleRequest(request);
+      let response = await handleRequest(request);
 
       if (response.status === 404) {
-        return storefrontRedirect({request, response, storefront});
+        response = await storefrontRedirect({request, response, storefront});
       }
 
-      return response;
+      return withBrandPreviewCookie(request, response);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -62,6 +69,28 @@ export default {
     }
   },
 };
+
+/**
+ * プレビュー用ブランド切り替え。
+ * `?brand=bridal` のように指定されたらCookieに保存し、ページ遷移しても維持する。
+ * （1デプロイで全サイトを確認するための仕組み。本番は BRAND_ID で固定する）
+ */
+function withBrandPreviewCookie(request: Request, response: Response): Response {
+  const brand = new URL(request.url).searchParams.get('brand');
+  if (!isBrandId(brand)) return response;
+
+  const headers = new Headers(response.headers);
+  headers.append(
+    'Set-Cookie',
+    `brand=${brand}; Path=/; Max-Age=31536000; SameSite=Lax`,
+  );
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
 
 function getLocaleFromRequest(request: Request) {
   return {language: 'JA', country: 'JP'} as const;
