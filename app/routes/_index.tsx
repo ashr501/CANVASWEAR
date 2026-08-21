@@ -36,7 +36,7 @@ export default function Index() {
   return (
     <div>
       {/* ヒーロー */}
-      <HeroSection brand={brand} isAvantGarde={isAvantGarde} />
+      <HeroSection brand={brand} isAvantGarde={isAvantGarde} products={products} />
 
       {/* フィーチャード商品 */}
       <section className="section-pad">
@@ -131,13 +131,158 @@ export default function Index() {
   );
 }
 
+/** 右側に並べる商品カードの位置（%指定なので画面幅に追従する） */
+const HERO_CARD_LAYOUT = [
+  {left: '5%', top: '13%', rotate: '-5deg', zIndex: 1},
+  {left: '31%', top: '25%', rotate: '3deg', zIndex: 2},
+  {left: '57%', top: '9%', rotate: '7deg', zIndex: 1},
+];
+
+/**
+ * 和文の見出しを主役にしたヒーロー。右側には実際の売り物を並べる。
+ * 「何を売っている店か」を文字と現物の両方で伝えるための構成。
+ */
+function SplitHero({brand, products}: {brand: PublicBrand; products: any}) {
+  return (
+    <section
+      className="relative overflow-hidden"
+      style={{backgroundColor: 'var(--color-bg)'}}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 md:min-h-[72vh]">
+        {/* コピー */}
+        <div className="flex flex-col justify-center py-14 md:py-20 order-2 md:order-1">
+          <div className="container-brand md:pr-16 md:max-w-[46rem] md:ml-auto md:mr-0 w-full">
+            <p
+              className="text-xs tracking-[0.3em] uppercase mb-5"
+              style={{fontFamily: 'var(--font-heading)', color: 'var(--color-accent)'}}
+            >
+              {brand.copy.heroEyebrow}
+            </p>
+            <h1
+              className="mb-6"
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'clamp(2rem, 4.4vw, 3.75rem)',
+                fontWeight: 700,
+                lineHeight: 1.28,
+                letterSpacing: '-0.01em',
+                color: 'var(--color-text)',
+                textWrap: 'pretty',
+              }}
+            >
+              {(brand.heroHeading ?? [brand.taglineJa]).map((line, i) => (
+                <span key={i} className="block">
+                  {line}
+                </span>
+              ))}
+            </h1>
+            <p
+              className="text-sm leading-loose max-w-md mb-9"
+              style={{fontFamily: 'var(--font-body)', color: 'var(--color-text-muted)'}}
+            >
+              {brand.heroBody ?? brand.taglineJa}
+            </p>
+            <div className="flex flex-wrap items-center gap-4">
+              <Link
+                to={`/collections/${brand.collections.all}`}
+                className="btn-primary"
+              >
+                {brand.copy.heroPrimaryCta}
+              </Link>
+              <Link to="/products" className="btn-outline">
+                {brand.copy.heroSecondaryCta}
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* 実際の商品 */}
+        <div
+          className="relative overflow-hidden min-h-[360px] md:min-h-full order-1 md:order-2"
+          style={{backgroundColor: 'var(--color-hero-bg)'}}
+        >
+          <Suspense fallback={<HeroCardsSkeleton />}>
+            <Await resolve={products}>
+              {(data: any) => {
+                const items = (data?.featured?.products?.nodes ?? []).slice(0, 3);
+                if (items.length === 0) return <HeroCardsSkeleton />;
+                return (
+                  <div className="absolute inset-0">
+                    {items.map((product: any, i: number) => {
+                      const pos = HERO_CARD_LAYOUT[i];
+                      return (
+                        <Link
+                          key={product.id}
+                          to={`/products/${product.handle}`}
+                          className="absolute block w-[34%] overflow-hidden transition-transform duration-500 hover:-translate-y-1"
+                          style={{
+                            left: pos.left,
+                            top: pos.top,
+                            zIndex: pos.zIndex,
+                            aspectRatio: '3 / 4',
+                            transform: `rotate(${pos.rotate})`,
+                            borderRadius: 'var(--radius)',
+                            boxShadow: '0 18px 40px rgba(20, 20, 20, 0.16)',
+                            backgroundColor: 'var(--color-surface)',
+                          }}
+                        >
+                          {product.featuredImage?.url && (
+                            <img
+                              src={product.featuredImage.url}
+                              alt={product.featuredImage.altText ?? product.title}
+                              className="w-full h-full object-cover"
+                              loading="eager"
+                            />
+                          )}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                );
+              }}
+            </Await>
+          </Suspense>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroCardsSkeleton() {
+  return (
+    <div className="absolute inset-0">
+      {HERO_CARD_LAYOUT.map((pos, i) => (
+        <div
+          key={i}
+          className="absolute w-[34%] animate-pulse"
+          style={{
+            left: pos.left,
+            top: pos.top,
+            zIndex: pos.zIndex,
+            aspectRatio: '3 / 4',
+            transform: `rotate(${pos.rotate})`,
+            borderRadius: 'var(--radius)',
+            backgroundColor: 'var(--color-border)',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function HeroSection({
   brand,
   isAvantGarde,
+  products,
 }: {
   brand: PublicBrand;
   isAvantGarde: boolean;
+  products: any;
 }) {
+  if (brand.heroLayout === 'split') {
+    return <SplitHero brand={brand} products={products} />;
+  }
+
   return (
     <section
       className="relative min-h-[85vh] md:min-h-screen flex items-end overflow-hidden"
