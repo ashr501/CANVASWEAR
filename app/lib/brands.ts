@@ -260,12 +260,12 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
   // そのストアの値に変え、下の collections / nav をそのストアのhandleに差し替える。
   'custom-print': {
     id: 'custom-print',
-    name: 'INKWEAR',
-    nameJa: 'インクウェア',
-    tagline: 'Print Anything',
+    name: 'CANVASWEAR',
+    nameJa: 'キャンバスウェア',
+    tagline: 'Your Canvas',
     taglineJa: '昇華プリントで、どんな柄も1点から。',
     uiMode: 'clean',
-    hostMatches: ['inkwear', 'custom-print'],
+    hostMatches: ['canvaswear', 'custom-print'],
     envPrefix: 'BRAND4',
     collections: {
       featured: 'custom-print',
