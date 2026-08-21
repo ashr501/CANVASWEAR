@@ -152,6 +152,28 @@
 }
 
 /* ===================================
+   Brand: custom-print (ALOLORE)
+   =================================== */
+[data-brand="custom-print"] {
+  --color-bg: #FFFFFF;
+  --color-surface: #F7F7F5;
+  --color-hero-bg: #EFEDE9;
+  --color-primary: #1F1F1F;
+  --color-secondary: #4A4A4A;
+  --color-accent: #FF5A36;
+  --color-text: #141414;
+  --color-text-muted: #767676;
+  --color-border: #E2E0DC;
+  --font-heading: 'Outfit';
+  --font-body: 'Noto Sans JP';
+  --section-spacing: 4.5rem;
+  --gutter: 1.25rem;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius: 8px;
+  --header-height: 64px;
+}
+
+/* ===================================
    Layout Utilities
    =================================== */
 @layer components {
@@ -232,6 +254,37 @@
   [data-ui="bold"] .btn-outline:hover {
     border-color: var(--color-accent);
     color: var(--color-accent);
+  }
+
+  /* === clean uiMode（スポーツ/カジュアル系） === */
+  [data-ui="clean"] .btn-primary {
+    @apply inline-block px-8 py-3.5 transition-all duration-200;
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+    border-radius: var(--radius);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    font-size: 0.9rem;
+  }
+
+  [data-ui="clean"] .btn-primary:hover {
+    background-color: var(--color-accent);
+  }
+
+  [data-ui="clean"] .btn-outline {
+    @apply inline-block px-8 py-3.5 transition-all duration-200;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    border-radius: var(--radius);
+    font-family: var(--font-heading);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    font-size: 0.9rem;
+  }
+
+  [data-ui="clean"] .btn-outline:hover {
+    border-color: var(--color-text);
   }
 
   /* Product grid */

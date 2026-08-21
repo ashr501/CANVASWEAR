@@ -7,10 +7,15 @@
  * から読む（app/lib/brand.server.ts を参照）。
  */
 
-export type BrandId = 'elegant-plus' | 'avant-garde' | 'bridal';
+export type BrandId = 'elegant-plus' | 'avant-garde' | 'bridal' | 'custom-print';
 
-/** 見た目の系統。ボタン・余白・和文/英文ラベルの出し分けに使う */
-export type BrandUiMode = 'elegant' | 'bold';
+/**
+ * 見た目の系統。ボタン・余白・和文/英文ラベルの出し分けに使う。
+ * - elegant: セリフ体・細い罫線（HAORI+ / BRILLAR）
+ * - bold:    極太・大文字・英文ラベル（NOCT.）
+ * - clean:   サンセリフ・角丸（スポーツ/カジュアル系）
+ */
+export type BrandUiMode = 'elegant' | 'bold' | 'clean';
 
 export interface BrandTheme {
   cssVars: Record<string, string>;
@@ -246,6 +251,63 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
       },
       googleFonts:
         'https://fonts.googleapis.com/css2?family=Marcellus&family=Noto+Serif+JP:wght@300;400;500&display=swap',
+    },
+  },
+
+  // カスタムプリント（alolore.shop 相当）のテストサイト。
+  // いまは BridesmaidsJP の custom-print コレクション（15点・tag: print）を見ている。
+  // Aloloreストアに接続する際は BRAND4_STORE_DOMAIN / BRAND4_STOREFRONT_API_TOKEN を
+  // Aloloreの値に変え、下の collections / nav をAlolore側のhandleに差し替える。
+  'custom-print': {
+    id: 'custom-print',
+    name: 'ALOLORE',
+    nameJa: 'カスタムプリント',
+    tagline: 'Print What You Love',
+    taglineJa: '好きな柄を、そのまま身につける。',
+    uiMode: 'clean',
+    hostMatches: ['alolore', 'custom-print'],
+    envPrefix: 'BRAND4',
+    collections: {
+      featured: 'custom-print',
+      newArrivals: 'custom-print',
+      all: 'custom-print',
+    },
+    nav: [{label: 'カスタムプリント', handle: 'custom-print'}],
+    concept: {
+      eyebrow: 'HOW IT WORKS',
+      heading: ['柄を選ぶ。', '身につける。'],
+      body: 'お好みの柄を選んで、そのままウェアに。1点から製作するので、在庫の柄に縛られません。商品ページでプリント内容をご指定いただくと、その内容がそのまま注文情報に記録されます。',
+    },
+    copy: {
+      ...JA_COPY,
+      heroEyebrow: 'CUSTOM PRINT',
+      featuredEyebrow: '人気の柄',
+      featuredHeading: 'ピックアップ',
+      allItemsEyebrow: 'ALL PRINTS',
+      allItemsHeading: 'すべての柄',
+      heroPrimaryCta: '柄を見る',
+      heroSecondaryCta: 'すべての柄',
+    },
+    theme: {
+      cssVars: {
+        '--color-bg': '#FFFFFF',
+        '--color-surface': '#F7F7F5',
+        '--color-hero-bg': '#EFEDE9',
+        '--color-primary': '#1F1F1F',
+        '--color-secondary': '#4A4A4A',
+        '--color-accent': '#FF5A36',
+        '--color-text': '#141414',
+        '--color-text-muted': '#767676',
+        '--color-border': '#E2E0DC',
+        '--font-heading': "'Outfit'",
+        '--font-body': "'Noto Sans JP'",
+        '--section-spacing': '4.5rem',
+        '--gutter': '1.25rem',
+        '--ease': 'cubic-bezier(0.22, 1, 0.36, 1)',
+        '--radius': '8px',
+      },
+      googleFonts:
+        'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap',
     },
   },
 };

@@ -6,7 +6,13 @@ import {
   Link,
 } from '@remix-run/react';
 import {Suspense, useState} from 'react';
-import {Image, Money, VariantSelector, getSelectedProductOptions} from '@shopify/hydrogen';
+import {
+  Image,
+  Money,
+  VariantSelector,
+  getSelectedProductOptions,
+  CartForm,
+} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/queries';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
@@ -42,20 +48,20 @@ export default function ProductDetail() {
   const {onCartOpen} = useOutletContext<{onCartOpen: () => void}>();
   const isAvantGarde = isBoldBrand(brandId);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [adding, setAdding] = useState(false);
+  const [printNote, setPrintNote] = useState('');
 
   const selectedVariant = product.selectedVariant ?? product.variants.nodes[0];
   const isAvailable = selectedVariant?.availableForSale;
 
-  async function handleAddToCart() {
-    if (!selectedVariant?.id) return;
-    setAdding(true);
-    try {
-      onCartOpen();
-    } finally {
-      setTimeout(() => setAdding(false), 800);
-    }
-  }
+  // カスタムプリント商品は、印刷内容を注文明細（line item properties）として持たせる。
+  // Shopifyの商品に `custom-print` タグを付けると入力欄が出る。
+  const isCustomPrint = product.tags.some(
+    (tag: string) => tag.toLowerCase() === 'custom-print',
+  );
+  const attributes =
+    isCustomPrint && printNote.trim()
+      ? [{key: 'プリント内容', value: printNote.trim()}]
+      : [];
 
   return (
     <div className="section-pad">
@@ -197,25 +203,77 @@ export default function ProductDetail() {
               )}
             </VariantSelector>
 
+            {/* カスタムプリントの指定 */}
+            {isCustomPrint && (
+              <div className="mb-6">
+                <label
+                  htmlFor="print-note"
+                  className="block text-xs tracking-widest uppercase mb-3"
+                  style={{color: 'var(--color-text-muted)'}}
+                >
+                  プリント内容
+                </label>
+                <textarea
+                  id="print-note"
+                  value={printNote}
+                  onChange={(e) => setPrintNote(e.target.value)}
+                  rows={3}
+                  maxLength={200}
+                  placeholder="お名前・文字・ご希望のデザインなどをご記入ください"
+                  className="w-full p-3 text-sm"
+                  style={{
+                    backgroundColor: 'var(--color-surface)',
+                    color: 'var(--color-text)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius)',
+                    fontFamily: 'var(--font-body)',
+                  }}
+                />
+                <p className="text-xs mt-2" style={{color: 'var(--color-text-muted)'}}>
+                  ご記入内容がそのまま注文情報に記録されます（{printNote.length}/200）
+                </p>
+              </div>
+            )}
+
             {/* カートボタン */}
             <div className="space-y-3 mb-8">
-              {isAvailable ? (
-                <button
-                  onClick={handleAddToCart}
-                  disabled={adding}
-                  className={clsx(
-                    'btn-primary w-full text-center transition-opacity',
-                    adding && 'opacity-60',
-                  )}
+              {isAvailable && selectedVariant?.id ? (
+                <CartForm
+                  route="/cart"
+                  action={CartForm.ACTIONS.LinesAdd}
+                  inputs={{
+                    lines: [
+                      {
+                        merchandiseId: selectedVariant.id,
+                        quantity: 1,
+                        attributes,
+                      },
+                    ],
+                  }}
                 >
-                  {adding
-                    ? isAvantGarde
-                      ? 'ADDING...'
-                      : '追加中...'
-                    : isAvantGarde
-                    ? 'ADD TO CART'
-                    : 'カートに追加'}
-                </button>
+                  {(fetcher: any) => {
+                    const adding = fetcher.state !== 'idle';
+                    return (
+                      <button
+                        type="submit"
+                        onClick={onCartOpen}
+                        disabled={adding}
+                        className={clsx(
+                          'btn-primary w-full text-center transition-opacity',
+                          adding && 'opacity-60',
+                        )}
+                      >
+                        {adding
+                          ? isAvantGarde
+                            ? 'ADDING...'
+                            : '追加中...'
+                          : isAvantGarde
+                          ? 'ADD TO CART'
+                          : 'カートに追加'}
+                      </button>
+                    );
+                  }}
+                </CartForm>
               ) : (
                 <button
                   disabled

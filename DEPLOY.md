@@ -7,6 +7,7 @@
 | `bridal` | BRILLAR | ウェディングドレス・アクセサリー・ベール（bridesmaids.jpから分離） |
 | `elegant-plus` | HAORI+ | プラスサイズ羽織物 |
 | `avant-garde` | NOCT. | V系×Y2K |
+| `custom-print` | ALOLORE | カスタムプリント（テスト運用中） |
 
 サイトを増やすときは `app/lib/brands.ts` にブランドを1つ足し、
 `app/styles/app.css` に同じidの `[data-brand="..."]` ブロックを足すだけです。
@@ -97,6 +98,7 @@ Shopify管理画面 → **商品** → 全選択 → **一括編集** → 「販
 | `https://xxx.vercel.app/` | HAORI+（白・ラグジュアリー） |
 | `https://xxx.vercel.app/?brand=bridal` | BRILLAR（ブライダル） |
 | `https://xxx.vercel.app/?brand=avant-garde` | NOCT.（黒・アバンギャルド） |
+| `https://xxx.vercel.app/?brand=custom-print` | ALOLORE（カスタムプリント） |
 | `https://xxx.vercel.app/?brand=elegant-plus` | HAORI+に戻す |
 
 一度 ?brand= で切り替えるとCookieに保存され、ページ遷移しても維持されます。
@@ -298,3 +300,37 @@ DNS設定はVercerが自動で案内してくれます。
 - Shopifyプラン料金がストアの数だけかかります
 - 在庫・注文・顧客は完全に分かれます（同じ在庫を共有できなくなります）
 - 逆に、屋号・決済・配送設定・ドメインを完全に分けられます
+
+---
+
+## カスタムプリントサイト（ALOLORE）
+
+`alolore.shop` のカスタムプリント商品を想定したテストサイトです。
+
+### いまの接続先
+
+Aloloreストアにまだ接続していないため、**BridesmaidsJPの `custom-print`
+コレクション（15点・タグ `print`）**を表示しています。動作確認用です。
+
+### Aloloreストアに切り替える
+
+1. Aloloreストアで Hydrogenストアフロント（またはカスタムアプリ）を作りトークンを取得
+2. 環境変数を設定
+   ```
+   BRAND_ID                    = custom-print
+   BRAND4_STORE_DOMAIN         = alolore.myshopify.com
+   BRAND4_STOREFRONT_API_TOKEN = (Aloloreのトークン)
+   ```
+3. `app/lib/brands.ts` の `custom-print` の `collections` と `nav` を
+   Alolore側のコレクションhandleに差し替える
+
+他の3サイトはBridesmaidsJPを見たまま影響を受けません。
+
+### プリント内容の受け取り方
+
+商品に **`custom-print` タグ**を付けると、商品ページに「プリント内容」の
+入力欄が出ます。入力された内容は注文明細の line item property として記録され、
+カート画面とShopifyの注文画面の両方に表示されます。
+
+柄を選ぶだけ（バリアント選択）で完結する商品は、タグを付けなければ
+通常の商品ページとして動作します。

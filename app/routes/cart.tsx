@@ -1,13 +1,59 @@
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  json,
+  defer,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link} from '@remix-run/react';
 import {Suspense} from 'react';
-import {Image, Money} from '@shopify/hydrogen';
-import {defer} from '@shopify/remix-oxygen';
+import {Image, Money, CartForm, type CartQueryDataReturn} from '@shopify/hydrogen';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
 import {isBoldBrand} from '~/lib/brands';
 
 export const meta = () => [{title: 'カート'}];
+
+/**
+ * サイト全体のカート操作をここで受ける。
+ * 商品ページやカートドロワーの <CartForm route="/cart"> がこのactionに送信する。
+ */
+export async function action({request, context}: ActionFunctionArgs) {
+  const {cart} = context;
+  const formData = await request.formData();
+  const {action: cartAction, inputs} = CartForm.getFormInput(formData);
+
+  if (!cartAction) {
+    throw new Error('カート操作が指定されていません');
+  }
+
+  let result: CartQueryDataReturn;
+
+  switch (cartAction) {
+    case CartForm.ACTIONS.LinesAdd:
+      result = await cart.addLines(inputs.lines);
+      break;
+    case CartForm.ACTIONS.LinesUpdate:
+      result = await cart.updateLines(inputs.lines);
+      break;
+    case CartForm.ACTIONS.LinesRemove:
+      result = await cart.removeLines(inputs.lineIds);
+      break;
+    case CartForm.ACTIONS.DiscountCodesUpdate: {
+      const formDiscountCode = inputs.discountCode;
+      const discountCodes = (formDiscountCode ? [formDiscountCode] : []) as string[];
+      discountCodes.push(...inputs.discountCodes);
+      result = await cart.updateDiscountCodes(discountCodes);
+      break;
+    }
+    default:
+      throw new Error(`未対応のカート操作です: ${cartAction}`);
+  }
+
+  // 新規カートのIDをCookieに書き戻す（これを忘れると毎回空のカートになる）
+  const headers = result?.cart?.id ? cart.setCartId(result.cart.id) : new Headers();
+
+  return json(result, {status: 200, headers});
+}
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
@@ -95,16 +141,44 @@ export default function CartPage() {
                                 .map((o: any) => o.value)
                                 .join(' / ')}
                             </p>
+
+                            {/* カスタムプリント等の指定内容（line item properties） */}
+                            {line.attributes?.length > 0 && (
+                              <ul className="mt-2 space-y-0.5">
+                                {line.attributes.map((attr: any) => (
+                                  <li
+                                    key={attr.key}
+                                    className="text-xs"
+                                    style={{color: 'var(--color-text-muted)'}}
+                                  >
+                                    {attr.key}: {attr.value}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+
                             <div className="flex items-center justify-between mt-4">
-                              <p className="text-xs" style={{color: 'var(--color-text-muted)'}}>
-                                ×{line.quantity}
-                              </p>
+                              <CartLineQuantity line={line} />
                               <Money
                                 data={line.cost.totalAmount}
                                 className="text-sm"
                                 style={{color: 'var(--color-text)'} as any}
                               />
                             </div>
+
+                            <CartForm
+                              route="/cart"
+                              action={CartForm.ACTIONS.LinesRemove}
+                              inputs={{lineIds: [line.id]}}
+                            >
+                              <button
+                                type="submit"
+                                className="text-xs mt-3 underline transition-opacity hover:opacity-60"
+                                style={{color: 'var(--color-text-muted)'}}
+                              >
+                                削除
+                              </button>
+                            </CartForm>
                           </div>
                         </li>
                       ))}
@@ -168,6 +242,48 @@ export default function CartPage() {
           </Await>
         </Suspense>
       </div>
+    </div>
+  );
+}
+
+function CartLineQuantity({line}: {line: any}) {
+  const {id, quantity} = line;
+
+  return (
+    <div className="flex items-center gap-3">
+      <CartForm
+        route="/cart"
+        action={CartForm.ACTIONS.LinesUpdate}
+        inputs={{lines: [{id, quantity: Math.max(0, quantity - 1)}]}}
+      >
+        <button
+          type="submit"
+          className="w-7 h-7 flex items-center justify-center text-sm transition-opacity hover:opacity-60"
+          style={{border: '1px solid var(--color-border)', color: 'var(--color-text)'}}
+          aria-label="数量を減らす"
+        >
+          −
+        </button>
+      </CartForm>
+
+      <span className="text-xs w-4 text-center" style={{color: 'var(--color-text)'}}>
+        {quantity}
+      </span>
+
+      <CartForm
+        route="/cart"
+        action={CartForm.ACTIONS.LinesUpdate}
+        inputs={{lines: [{id, quantity: quantity + 1}]}}
+      >
+        <button
+          type="submit"
+          className="w-7 h-7 flex items-center justify-center text-sm transition-opacity hover:opacity-60"
+          style={{border: '1px solid var(--color-border)', color: 'var(--color-text)'}}
+          aria-label="数量を増やす"
+        >
+          +
+        </button>
+      </CartForm>
     </div>
   );
 }
