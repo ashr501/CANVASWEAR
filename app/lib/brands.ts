@@ -53,6 +53,13 @@ export interface BrandCopy {
   empty: string;
 }
 
+/**
+ * ヒーローの構成。
+ * - tagline: 英字タグラインを大きく出す（HAORI+ / NOCT. / BRILLAR）
+ * - split:   和文の見出しを主役にし、右に実際の商品を並べる（CANVASWEAR）
+ */
+export type BrandHeroLayout = 'tagline' | 'split';
+
 export interface BrandDefinition {
   id: BrandId;
   name: string;
@@ -60,6 +67,11 @@ export interface BrandDefinition {
   tagline: string;
   taglineJa: string;
   uiMode: BrandUiMode;
+  heroLayout: BrandHeroLayout;
+  /** heroLayout: 'split' のときの見出し（改行位置を保つため行ごと） */
+  heroHeading?: string[];
+  /** heroLayout: 'split' のときの説明文 */
+  heroBody?: string;
   /** ホスト名にこの文字列が含まれていればこのブランドと判定（独自ドメイン運用時） */
   hostMatches: string[];
   /** ストア接続情報を読む環境変数の接頭辞 */
@@ -118,6 +130,7 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     tagline: 'Elegance Without Limits',
     taglineJa: '大きなサイズの美しさを、すべての女性へ',
     uiMode: 'elegant',
+    heroLayout: 'tagline',
     hostMatches: ['haori'],
     envPrefix: 'BRAND1',
     collections: {
@@ -162,6 +175,7 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     tagline: 'After Midnight Forever',
     taglineJa: '夜を知る大人のための、V系とY2Kの再解釈。',
     uiMode: 'bold',
+    heroLayout: 'tagline',
     hostMatches: ['noct'],
     envPrefix: 'BRAND2',
     collections: {
@@ -208,6 +222,7 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     tagline: 'For Your One Day',
     taglineJa: 'ウェディングドレスとブライダルアクセサリーの専門店',
     uiMode: 'elegant',
+    heroLayout: 'tagline',
     hostMatches: ['brillar', 'bridal'],
     envPrefix: 'BRAND3',
     collections: {
@@ -265,6 +280,10 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     tagline: 'Your Canvas',
     taglineJa: '昇華プリントで、どんな柄も1点から。',
     uiMode: 'clean',
+    heroLayout: 'split',
+    heroHeading: ['どんな柄でも、', '1点から。'],
+    heroBody:
+      '写真もイラストも全面フルカラー。染料が繊維そのものを染めるので、ごわつかず、洗っても色落ちしません。',
     hostMatches: ['canvaswear', 'custom-print'],
     envPrefix: 'BRAND4',
     collections: {
@@ -286,7 +305,7 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
       allItemsEyebrow: 'ALL PRINTS',
       allItemsHeading: 'すべての柄',
       heroPrimaryCta: '柄を見る',
-      heroSecondaryCta: 'すべての柄',
+      heroSecondaryCta: 'データを入稿する',
     },
     theme: {
       cssVars: {
@@ -324,6 +343,9 @@ export type PublicBrand = Pick<
   | 'tagline'
   | 'taglineJa'
   | 'uiMode'
+  | 'heroLayout'
+  | 'heroHeading'
+  | 'heroBody'
   | 'nav'
   | 'copy'
   | 'concept'
