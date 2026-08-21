@@ -332,7 +332,11 @@ export type PublicBrand = Pick<
 
 export const BRAND_IDS = Object.keys(BRANDS) as BrandId[];
 
-export const DEFAULT_BRAND_ID: BrandId = 'elegant-plus';
+/**
+ * 環境変数 BRAND_ID が未設定のときに表示するサイト。
+ * 他のサイトとして動かすときは、デプロイ先で BRAND_ID を設定する。
+ */
+export const DEFAULT_BRAND_ID: BrandId = 'custom-print';
 
 export function isBrandId(value: unknown): value is BrandId {
   return typeof value === 'string' && (BRAND_IDS as string[]).includes(value);
