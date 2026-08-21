@@ -49,19 +49,58 @@ export default function ProductDetail() {
   const isAvantGarde = isBoldBrand(brandId);
   const [selectedImage, setSelectedImage] = useState(0);
   const [printNote, setPrintNote] = useState('');
+  const [printFile, setPrintFile] = useState<{url: string; fileName: string} | null>(
+    null,
+  );
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const selectedVariant = product.selectedVariant ?? product.variants.nodes[0];
   const isAvailable = selectedVariant?.availableForSale;
 
-  // カスタムプリント商品は、印刷内容を注文明細（line item properties）として持たせる。
-  // Shopifyの商品に `custom-print` タグを付けると入力欄が出る。
+  // カスタムプリント商品は、入稿データと指定内容を注文明細
+  // （line item properties）として持たせる。
+  // Shopifyの商品に `custom-print` タグを付けると入稿欄が出る。
   const isCustomPrint = product.tags.some(
     (tag: string) => tag.toLowerCase() === 'custom-print',
   );
-  const attributes =
-    isCustomPrint && printNote.trim()
-      ? [{key: 'プリント内容', value: printNote.trim()}]
-      : [];
+
+  const attributes = isCustomPrint
+    ? [
+        ...(printFile
+          ? [
+              {key: 'プリント画像', value: printFile.url},
+              {key: 'ファイル名', value: printFile.fileName},
+            ]
+          : []),
+        ...(printNote.trim() ? [{key: 'プリント内容', value: printNote.trim()}] : []),
+      ]
+    : [];
+
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const body = new FormData();
+      body.append('file', file);
+      const response = await fetch('/api/upload', {method: 'POST', body});
+      const data: any = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error ?? 'アップロードに失敗しました');
+      }
+      setPrintFile({url: data.url, fileName: data.fileName});
+    } catch (error) {
+      setUploadError(
+        error instanceof Error ? error.message : 'アップロードに失敗しました',
+      );
+      setPrintFile(null);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   return (
     <div className="section-pad">
@@ -203,6 +242,73 @@ export default function ProductDetail() {
               )}
             </VariantSelector>
 
+            {/* カスタムプリントの入稿 */}
+            {isCustomPrint && (
+              <div className="mb-6">
+                <p
+                  className="block text-xs tracking-widest uppercase mb-3"
+                  style={{color: 'var(--color-text-muted)'}}
+                >
+                  デザインデータ
+                </p>
+
+                <label
+                  className="flex items-center justify-center gap-2 w-full p-4 text-sm cursor-pointer transition-colors"
+                  style={{
+                    border: '1px dashed var(--color-border)',
+                    borderRadius: 'var(--radius)',
+                    color: 'var(--color-text-muted)',
+                    backgroundColor: 'var(--color-surface)',
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml,application/pdf"
+                    onChange={handleFileChange}
+                    disabled={uploading}
+                    className="hidden"
+                  />
+                  {uploading
+                    ? 'アップロード中...'
+                    : printFile
+                    ? `${printFile.fileName} を選択中（変更する）`
+                    : 'ファイルを選ぶ（PNG / JPEG / WebP / SVG / PDF・20MBまで）'}
+                </label>
+
+                {printFile && (
+                  <div className="flex items-center gap-3 mt-3">
+                    <img
+                      src={printFile.url}
+                      alt="入稿データのプレビュー"
+                      className="w-16 h-16 object-cover"
+                      style={{
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius)',
+                      }}
+                      onError={(e) => {
+                        // PDF等はプレビューできないので枠だけ残す
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setPrintFile(null)}
+                      className="text-xs underline transition-opacity hover:opacity-60"
+                      style={{color: 'var(--color-text-muted)'}}
+                    >
+                      取り消す
+                    </button>
+                  </div>
+                )}
+
+                {uploadError && (
+                  <p className="text-xs mt-2" style={{color: 'var(--color-accent)'}}>
+                    {uploadError}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* カスタムプリントの指定 */}
             {isCustomPrint && (
               <div className="mb-6">
@@ -211,7 +317,7 @@ export default function ProductDetail() {
                   className="block text-xs tracking-widest uppercase mb-3"
                   style={{color: 'var(--color-text-muted)'}}
                 >
-                  プリント内容
+                  ご指定・ご要望
                 </label>
                 <textarea
                   id="print-note"
@@ -219,7 +325,7 @@ export default function ProductDetail() {
                   onChange={(e) => setPrintNote(e.target.value)}
                   rows={3}
                   maxLength={200}
-                  placeholder="お名前・文字・ご希望のデザインなどをご記入ください"
+                  placeholder="入れる文字、配置、色味のご希望などをご記入ください"
                   className="w-full p-3 text-sm"
                   style={{
                     backgroundColor: 'var(--color-surface)',
