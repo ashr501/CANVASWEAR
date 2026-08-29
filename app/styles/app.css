@@ -155,21 +155,21 @@
    Brand: custom-print (CANVASWEAR)
    =================================== */
 [data-brand="custom-print"] {
-  --color-bg: #FFFFFF;
-  --color-surface: #F7F7F5;
-  --color-hero-bg: #EFEDE9;
-  --color-primary: #1F1F1F;
-  --color-secondary: #4A4A4A;
-  --color-accent: #FF5A36;
-  --color-text: #141414;
-  --color-text-muted: #767676;
-  --color-border: #E2E0DC;
-  --font-heading: 'Outfit';
+  --color-bg: #FDF9F6;
+  --color-surface: #FFFFFF;
+  --color-hero-bg: #FDE8EC;
+  --color-primary: #D71920;
+  --color-secondary: #C73351;
+  --color-accent: #D04865;
+  --color-text: #333333;
+  --color-text-muted: #4B5563;
+  --color-border: #F3E3E6;
+  --font-heading: 'Noto Serif JP';
   --font-body: 'Noto Sans JP';
-  --section-spacing: 4.5rem;
+  --section-spacing: 4rem;
   --gutter: 1.25rem;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --radius: 8px;
+  --radius: 24px;
   --header-height: 64px;
 }
 
@@ -261,22 +261,25 @@
     @apply inline-block px-8 py-3.5 transition-all duration-200;
     background-color: var(--color-primary);
     color: #FFFFFF;
-    border-radius: var(--radius);
+    border-radius: 9999px;
     font-family: var(--font-heading);
     font-weight: 600;
     letter-spacing: 0.02em;
     font-size: 0.9rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
   }
 
   [data-ui="clean"] .btn-primary:hover {
-    background-color: var(--color-accent);
+    background-color: var(--color-secondary);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+    transform: translateY(-1px);
   }
 
   [data-ui="clean"] .btn-outline {
     @apply inline-block px-8 py-3.5 transition-all duration-200;
     border: 1px solid var(--color-border);
     color: var(--color-text);
-    border-radius: var(--radius);
+    border-radius: 9999px;
     font-family: var(--font-heading);
     font-weight: 500;
     letter-spacing: 0.02em;

@@ -30,6 +30,11 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 export default function Index() {
   const {products, brandId} = useLoaderData<typeof loader>();
   const {brand} = useOutletContext<{brand: PublicBrand; onCartOpen: () => void}>();
+
+  if (brandId === 'custom-print') {
+    return <CanvaswearHome brand={brand} products={products} />;
+  }
+
   const isAvantGarde = isBoldBrand(brandId);
   const copy = brand.copy;
 
@@ -516,5 +521,380 @@ function EmptyState({label}: {label: string}) {
         {label}
       </p>
     </div>
+  );
+}
+
+/* ===================================================================
+   CANVASWEAR（custom-print）専用トップページ
+   design.md（暖色・丸みのある和文プレミアムテンプレート）の
+   配色・タイポグラフィ・レイアウトパターンを、実際の商品データに
+   合わせて再構成したもの。
+   =================================================================== */
+
+function CanvaswearHome({brand, products}: {brand: PublicBrand; products: any}) {
+  const copy = brand.copy;
+
+  return (
+    <div>
+      <CanvaswearHero brand={brand} products={products} />
+      <InfoBanner />
+
+      <CommitmentSection brand={brand} />
+
+      {/* featured/newArrivalsが同じコレクション（custom-print）を参照しており
+          2セクション表示すると同じ商品が重複するため、新着のみ表示する */}
+      <section className="section-pad" style={{backgroundColor: 'var(--color-surface)'}}>
+        <div className="container-brand">
+          <SectionHeading
+            eyebrow={copy.newEyebrow}
+            heading={copy.newHeading}
+            viewAllHref={`/collections/${brand.collections.all}`}
+            viewAllLabel={copy.viewAll}
+          />
+          <Suspense fallback={<ProductGridSkeleton />}>
+            <Await resolve={products}>
+              {(data: any) => {
+                // featuredの方が取得件数が多い(6件)ため、同じcustom-printコレクションでも
+                // こちらをソースにして一覧を充実させる
+                const items = data?.featured?.products?.nodes ?? [];
+                if (items.length === 0) return <EmptyState label={copy.empty} />;
+                return <MenuGrid items={items} brandId={brand.id} highlightFirst />;
+              }}
+            </Await>
+          </Suspense>
+        </div>
+      </section>
+
+      <FaqSection />
+    </div>
+  );
+}
+
+/** ヒーロー: 2カラム（左に和文コピー、右に実商品の角丸大判画像）。design.mdの
+ *  「Hero: 2-column asymmetric grid + deeply rounded image」を再現。 */
+function CanvaswearHero({brand, products}: {brand: PublicBrand; products: any}) {
+  const heading = brand.heroHeading ?? [brand.taglineJa];
+
+  return (
+    <section className="relative overflow-hidden" style={{backgroundColor: 'var(--color-bg)'}}>
+      <div className="container-brand py-14 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+          <div>
+            <span
+              className="inline-block px-4 py-1.5 rounded-full text-xs tracking-[0.2em] uppercase mb-6"
+              style={{
+                backgroundColor: 'var(--color-hero-bg)',
+                color: 'var(--color-primary)',
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 700,
+              }}
+            >
+              {brand.copy.heroEyebrow}
+            </span>
+            <h1
+              className="mb-6"
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 700,
+                fontSize: 'clamp(2.25rem, 4.6vw, 3.75rem)',
+                lineHeight: 1.3,
+                color: 'var(--color-text)',
+                textWrap: 'pretty',
+              }}
+            >
+              {heading.map((line, i) => (
+                <span
+                  key={i}
+                  className="block"
+                  style={i === heading.length - 1 ? {color: 'var(--color-primary)'} : undefined}
+                >
+                  {line}
+                </span>
+              ))}
+            </h1>
+            <p
+              className="text-sm leading-loose max-w-md mb-9"
+              style={{fontFamily: 'var(--font-body)', color: 'var(--color-text-muted)'}}
+            >
+              {brand.heroBody ?? brand.taglineJa}
+            </p>
+            <div className="flex flex-wrap items-center gap-4">
+              <Link to={`/collections/${brand.collections.all}`} className="btn-primary">
+                {brand.copy.heroPrimaryCta}
+              </Link>
+              <Link to="/products" className="btn-outline">
+                {brand.copy.heroSecondaryCta}
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative aspect-[4/5] md:aspect-[4/5] max-h-[440px]">
+            <Suspense fallback={<HeroImageSkeleton />}>
+              <Await resolve={products}>
+                {(data: any) => {
+                  const items = data?.featured?.products?.nodes ?? [];
+                  if (items.length === 0) return <HeroImageSkeleton />;
+                  const [main] = items;
+                  if (!main?.featuredImage?.url) return <HeroImageSkeleton />;
+                  return (
+                    <Link
+                      to={`/products/${main.handle}`}
+                      className="block absolute inset-0 overflow-hidden"
+                      style={{
+                        borderRadius: '32px',
+                        backgroundColor: 'var(--color-hero-bg)',
+                        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.12)',
+                      }}
+                    >
+                      <img
+                        src={main.featuredImage.url}
+                        alt={main.featuredImage.altText ?? main.title}
+                        className="w-full h-full object-cover"
+                        loading="eager"
+                      />
+                    </Link>
+                  );
+                }}
+              </Await>
+            </Suspense>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroImageSkeleton() {
+  return (
+    <div
+      className="absolute inset-0 animate-pulse"
+      style={{borderRadius: '32px', backgroundColor: 'var(--color-border)'}}
+    />
+  );
+}
+
+/** 全幅の案内バー。design.mdの Notice Banner に相当。
+ *  入稿できるデータ形式・サイズという既に確定している事実だけを載せる。 */
+function InfoBanner() {
+  return (
+    <div className="py-4" style={{backgroundColor: 'var(--color-hero-bg)'}}>
+      <p
+        className="container-brand text-center text-xs md:text-sm tracking-wide"
+        style={{color: 'var(--color-secondary)', fontFamily: 'var(--font-body)'}}
+      >
+        入稿データは PNG・JPEG・WebP・SVG・PDF に対応（20MBまで）。商品ページからそのままアップロードできます。
+      </p>
+    </div>
+  );
+}
+
+function SectionHeading({
+  eyebrow,
+  heading,
+  viewAllHref,
+  viewAllLabel,
+}: {
+  eyebrow: string;
+  heading: string;
+  viewAllHref: string;
+  viewAllLabel: string;
+}) {
+  return (
+    <div className="flex items-end justify-between mb-10">
+      <div>
+        <p
+          className="text-xs tracking-widest uppercase mb-2"
+          style={{color: 'var(--color-primary)'}}
+        >
+          {eyebrow}
+        </p>
+        <h2
+          className="text-display-md"
+          style={{fontFamily: 'var(--font-heading)', fontWeight: 700, color: 'var(--color-text)'}}
+        >
+          {heading}
+        </h2>
+      </div>
+      <Link
+        to={viewAllHref}
+        className="text-xs tracking-widest uppercase hidden md:block transition-opacity hover:opacity-60"
+        style={{color: 'var(--color-primary)'}}
+      >
+        {viewAllLabel}
+      </Link>
+    </div>
+  );
+}
+
+/** design.mdの Menu Card（画像+リボン+タイトル+価格）を、既存の
+ *  ProductCardに「人気」リボンとホバーで浮き上がる動きを足して再現。 */
+function MenuGrid({
+  items,
+  brandId,
+  highlightFirst,
+}: {
+  items: any[];
+  brandId: string;
+  highlightFirst?: boolean;
+}) {
+  return (
+    <div className="product-grid">
+      {items.map((product: any, i: number) => (
+        <div key={product.id} className="relative transition-transform duration-300 hover:-translate-y-1">
+          {highlightFirst && i === 0 && (
+            <span
+              className="absolute top-2 left-2 z-10 px-3 py-1 rounded-full text-[10px] tracking-widest uppercase font-semibold"
+              style={{backgroundColor: 'var(--color-primary)', color: '#FFFFFF'}}
+            >
+              人気
+            </span>
+          )}
+          <ProductCard product={product} brandId={brandId} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** design.mdの Commitment Section（2カラム・こだわりの説明）。
+ *  実写素材の代わりに、染料を重ねる昇華プリントのイメージを抽象マークで表現。 */
+function CommitmentSection({brand}: {brand: PublicBrand}) {
+  const {eyebrow, heading, body} = brand.concept;
+
+  return (
+    <section
+      className="section-pad"
+      style={{background: 'linear-gradient(180deg, var(--color-hero-bg) 0%, var(--color-bg) 100%)'}}
+    >
+      <div className="container-brand">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+          <div
+            className="aspect-[4/3] flex items-center justify-center"
+            style={{borderRadius: '32px', backgroundColor: 'var(--color-surface)'}}
+          >
+            <SublimationMark />
+          </div>
+          <div>
+            <p
+              className="text-xs tracking-widest uppercase mb-4"
+              style={{color: 'var(--color-primary)'}}
+            >
+              {eyebrow}
+            </p>
+            <h2
+              className="mb-6"
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 700,
+                fontSize: 'clamp(1.75rem, 3.4vw, 2.75rem)',
+                lineHeight: 1.35,
+                color: 'var(--color-text)',
+              }}
+            >
+              {heading.map((line, i) => (
+                <span key={i} className="block">
+                  {line}
+                </span>
+              ))}
+            </h2>
+            <p
+              className="text-sm leading-loose"
+              style={{fontFamily: 'var(--font-body)', color: 'var(--color-text-muted)'}}
+            >
+              {body}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SublimationMark() {
+  return (
+    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+      <circle cx="46" cy="46" r="34" fill="var(--color-primary)" opacity="0.85" />
+      <circle cx="74" cy="52" r="30" fill="var(--color-accent)" opacity="0.75" />
+      <circle cx="58" cy="78" r="26" fill="var(--color-secondary)" opacity="0.7" />
+    </svg>
+  );
+}
+
+const CANVASWEAR_FAQ = [
+  {
+    q: 'どんなデータを送ればいいですか？',
+    a: 'PNG・JPEG・WebP・SVG・PDFに対応しています（20MBまで）。商品ページのアップロード欄からそのまま送信できます。',
+  },
+  {
+    q: '何点から注文できますか？',
+    a: '1点から製作できます。柄の在庫を持たないので、思い立ったときにオーダーいただけます。',
+  },
+  {
+    q: '洗濯すると色落ちしませんか？',
+    a: '昇華プリントは染料が生地の繊維そのものに定着するため、洗濯を重ねてもひび割れや色落ちが起きにくい仕上がりです。',
+  },
+  {
+    q: '写真でもイラストでも大丈夫ですか？',
+    a: 'はい、写真もイラストも全面フルカラーで再現できます。ご希望の配置や色味はご要望欄からお伝えください。',
+  },
+];
+
+/** design.mdの FAQ Accordion。ネイティブ <details>/<summary> でキーボード操作にも対応。 */
+function FaqSection() {
+  return (
+    <section className="section-pad" style={{backgroundColor: 'var(--color-surface)'}}>
+      <div className="container-brand max-w-3xl mx-auto">
+        <p
+          className="text-xs tracking-widest uppercase mb-2 text-center"
+          style={{color: 'var(--color-primary)'}}
+        >
+          FAQ
+        </p>
+        <h2
+          className="text-center mb-10"
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 700,
+            fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+            color: 'var(--color-text)',
+          }}
+        >
+          よくあるご質問
+        </h2>
+        <div className="space-y-3">
+          {CANVASWEAR_FAQ.map(({q, a}) => (
+            <details
+              key={q}
+              className="group"
+              style={{
+                borderRadius: '16px',
+                border: '1px solid var(--color-border)',
+                backgroundColor: 'var(--color-bg)',
+              }}
+            >
+              <summary
+                className="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-4 text-sm md:text-base"
+                style={{color: 'var(--color-text)', fontFamily: 'var(--font-body)', fontWeight: 500}}
+              >
+                {q}
+                <span
+                  className="shrink-0 transition-transform duration-300 group-open:rotate-180"
+                  style={{color: 'var(--color-primary)'}}
+                  aria-hidden="true"
+                >
+                  ▾
+                </span>
+              </summary>
+              <p
+                className="px-6 pb-5 text-sm leading-loose"
+                style={{color: 'var(--color-text-muted)', fontFamily: 'var(--font-body)'}}
+              >
+                {a}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
