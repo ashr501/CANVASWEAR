@@ -29,7 +29,25 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
 
-  if (!collection.collection) throw new Response('Not found', {status: 404});
+  if (!collection.collection) {
+    // 一時デバッグ: 本番だけ再現する原因調査のため、詳細を画面に出す
+    throw new Response(
+      JSON.stringify(
+        {
+          handle,
+          storeDomain: brand.storeDomain,
+          i18n: {
+            country: context.storefront.i18n.country,
+            language: context.storefront.i18n.language,
+          },
+          rawResponse: collection,
+        },
+        null,
+        2,
+      ),
+      {status: 404},
+    );
+  }
 
   return defer({collection: collection.collection, brandId: brand.id});
 }
