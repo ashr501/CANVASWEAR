@@ -291,10 +291,20 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
       newArrivals: 'custom-print',
       all: 'custom-print',
     },
+    // Alolore（msgreenery）ストアの「カスタムプリント」コレクション配下、
+    // 既存タグによるカテゴリー分けをそのままナビに反映
     nav: [
-      {label: 'ワンピース', handle: 'カスタムプリント-ワンピース'},
-      {label: 'ボトムス', handle: 'カスタムプリント-ボトムス'},
-      {label: 'トップス・アウター', handle: 'カスタムプリント-トップス-アウター'},
+      {label: 'レディース', handle: 'womens'},
+      {label: 'メンズ', handle: 'mens'},
+      {label: 'キッズ・ベビー', handle: 'kids'},
+      {label: 'ユニセックス', handle: 'unisex'},
+      {label: 'バッグ', handle: 'bags'},
+      {label: 'シューズ', handle: 'shoes'},
+      {label: '水着', handle: 'swimwear'},
+      {label: 'スポーツ・アウトドア', handle: 'sports'},
+      {label: 'ルームウェア・パジャマ', handle: 'roomwear'},
+      {label: 'キッチン・食卓', handle: 'kitchen'},
+      {label: 'ペット', handle: 'pet'},
     ],
     concept: {
       eyebrow: 'ABOUT SUBLIMATION',
