@@ -60,10 +60,13 @@ export default function ProductDetail() {
 
   // カスタムプリント商品は、入稿データと指定内容を注文明細
   // （line item properties）として持たせる。
-  // Shopifyの商品に `custom-print` タグを付けると入稿欄が出る。
-  const isCustomPrint = product.tags.some(
-    (tag: string) => tag.toLowerCase() === 'custom-print',
-  );
+  // CANVASWEARサイトは全商品がカスタムプリント対応（Aloloreの
+  // カスタムプリントコレクションのみを表示するため）。
+  // 他ブランドで個別商品にだけ入稿欄を出したい場合のために
+  // `custom-print` タグでも判定できるようにしておく。
+  const isCustomPrint =
+    brandId === 'custom-print' ||
+    product.tags.some((tag: string) => tag.toLowerCase() === 'custom-print');
 
   const attributes = isCustomPrint
     ? [
