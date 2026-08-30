@@ -22,6 +22,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
+    cache: context.storefront.CacheShort(),
   });
 
   return defer({products, brandId: brand.id, copy: brand.copy});

@@ -24,6 +24,9 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
+    // コレクション公開状態の変更が長時間キャッシュされて反映されない
+    // ことがあったため、明示的に短いキャッシュにしておく
+    cache: context.storefront.CacheShort(),
   });
 
   if (!collection.collection) throw new Response('Not found', {status: 404});
