@@ -90,7 +90,7 @@ export default function CartDrawer({cart, isOpen, onClose, brand}: CartDrawerPro
                         小計
                       </span>
                       <span className="font-medium" style={{color: 'var(--color-text)'}}>
-                        <Money data={resolvedCart.cost.subtotalAmount} />
+                        <Money as="span" data={resolvedCart.cost.subtotalAmount} />
                       </span>
                     </div>
                     <p className="text-xs" style={{color: 'var(--color-text-muted)'}}>
@@ -123,7 +123,7 @@ export default function CartDrawer({cart, isOpen, onClose, brand}: CartDrawerPro
 function CartLines({lines, isAvantGarde}: {lines: any; isAvantGarde: boolean}) {
   return (
     <ul style={{borderBottom: '1px solid var(--color-border)'}}>
-      {lines.nodes.map((line: any) => (
+      {lines.edges.map(({node: line}: any) => (
         <li
           key={line.id}
           className="flex gap-4 px-6 py-5"

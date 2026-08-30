@@ -110,7 +110,7 @@ export default function CartPage() {
                   {/* アイテムリスト */}
                   <div className="md:col-span-2">
                     <ul style={{borderTop: '1px solid var(--color-border)'}}>
-                      {resolvedCart.lines.nodes.map((line: any) => (
+                      {resolvedCart.lines.edges.map(({node: line}: any) => (
                         <li
                           key={line.id}
                           className="flex gap-5 py-6"
