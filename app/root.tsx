@@ -5,6 +5,8 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteError,
+  isRouteErrorResponse,
 } from '@remix-run/react';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {defer} from '@shopify/remix-oxygen';
@@ -82,6 +84,19 @@ export default function App() {
 }
 
 export function ErrorBoundary() {
+  const error = useRouteError();
+
+  let detail = '';
+  if (isRouteErrorResponse(error)) {
+    detail = `${error.status} ${error.statusText}\n${
+      typeof error.data === 'string' ? error.data : JSON.stringify(error.data)
+    }`;
+  } else if (error instanceof Error) {
+    detail = `${error.message}\n${error.stack ?? ''}`;
+  } else {
+    detail = String(error);
+  }
+
   return (
     <html lang="ja">
       <head>
@@ -100,6 +115,9 @@ export function ErrorBoundary() {
       >
         <h1>エラーが発生しました</h1>
         <p>ページの読み込み中にエラーが発生しました。</p>
+        <pre style={{whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.8rem'}}>
+          {detail}
+        </pre>
         <Scripts />
       </body>
     </html>
