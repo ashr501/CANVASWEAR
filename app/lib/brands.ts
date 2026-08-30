@@ -291,7 +291,11 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
       newArrivals: 'custom-print',
       all: 'custom-print',
     },
-    nav: [{label: 'カスタムプリント', handle: 'custom-print'}],
+    nav: [
+      {label: 'ワンピース', handle: 'カスタムプリント-ワンピース'},
+      {label: 'ボトムス', handle: 'カスタムプリント-ボトムス'},
+      {label: 'トップス・アウター', handle: 'カスタムプリント-トップス-アウター'},
+    ],
     concept: {
       eyebrow: 'ABOUT SUBLIMATION',
       heading: ['どんな柄でも、', '1点から。'],
