@@ -3,6 +3,7 @@ import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
+import {NonceContext} from '~/lib/nonce-context';
 
 export default async function handleRequest(
   request: Request,
@@ -21,7 +22,9 @@ export default async function handleRequest(
   });
 
   const body = await renderToReadableStream(
-    <RemixServer context={remixContext} url={request.url} nonce={nonce} />,
+    <NonceContext.Provider value={nonce}>
+      <RemixServer context={remixContext} url={request.url} nonce={nonce} />
+    </NonceContext.Provider>,
     {
       nonce,
       signal: request.signal,

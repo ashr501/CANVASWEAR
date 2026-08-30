@@ -12,6 +12,7 @@ import {getBrandConfig} from '~/lib/brand.server';
 import appStyles from '~/styles/app.css?url';
 import Layout from '~/components/Layout';
 import {useState} from 'react';
+import {useNonce} from '~/lib/nonce-context';
 
 export function links() {
   return [
@@ -54,6 +55,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 export default function App() {
   const {brand, cart} = useLoaderData<typeof loader>();
   const [cartOpen, setCartOpen] = useState(false);
+  const nonce = useNonce();
 
   return (
     <html lang="ja" data-brand={brand.id} data-ui={brand.uiMode}>
@@ -74,14 +76,16 @@ export default function App() {
         >
           <Outlet context={{brand, onCartOpen: () => setCartOpen(true)}} />
         </Layout>
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
 }
 
 export function ErrorBoundary() {
+  const nonce = useNonce();
+
   return (
     <html lang="ja">
       <head>
@@ -100,7 +104,7 @@ export function ErrorBoundary() {
       >
         <h1>エラーが発生しました</h1>
         <p>ページの読み込み中にエラーが発生しました。</p>
-        <Scripts />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
