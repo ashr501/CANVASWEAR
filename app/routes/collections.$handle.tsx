@@ -30,7 +30,16 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   });
 
   if (!collection.collection) {
-    // 一時デバッグ: 本番だけ再現する原因調査のため、詳細を画面に出す
+    // 一時デバッグ: 同一リクエスト内でcustom-printも問い合わせて比較する
+    const control = await context.storefront.query(COLLECTION_QUERY, {
+      variables: {
+        handle: 'custom-print',
+        first: 1,
+        country: context.storefront.i18n.country,
+        language: context.storefront.i18n.language,
+      },
+      cache: context.storefront.CacheShort(),
+    });
     throw new Response(
       JSON.stringify(
         {
@@ -41,6 +50,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
             language: context.storefront.i18n.language,
           },
           rawResponse: collection,
+          controlCustomPrint: control,
         },
         null,
         2,
