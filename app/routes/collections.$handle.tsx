@@ -29,35 +29,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
 
-  if (!collection.collection) {
-    // 一時デバッグ: 同一リクエスト内でcustom-printも問い合わせて比較する
-    const control = await context.storefront.query(COLLECTION_QUERY, {
-      variables: {
-        handle: 'custom-print',
-        first: 1,
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
-      },
-      cache: context.storefront.CacheShort(),
-    });
-    throw new Response(
-      JSON.stringify(
-        {
-          handle,
-          storeDomain: brand.storeDomain,
-          i18n: {
-            country: context.storefront.i18n.country,
-            language: context.storefront.i18n.language,
-          },
-          rawResponse: collection,
-          controlCustomPrint: control,
-        },
-        null,
-        2,
-      ),
-      {status: 404},
-    );
-  }
+  if (!collection.collection) throw new Response('Not found', {status: 404});
 
   return defer({collection: collection.collection, brandId: brand.id});
 }
