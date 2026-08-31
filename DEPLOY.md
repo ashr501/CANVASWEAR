@@ -7,7 +7,7 @@
 | `bridal` | BRILLAR | ウェディングドレス・アクセサリー・ベール（bridesmaids.jpから分離） |
 | `elegant-plus` | HAORI+ | プラスサイズ羽織物 |
 | `avant-garde` | NOCT. | V系×Y2K |
-| `custom-print` | CANVASWEAR | カスタムプリント（テスト運用中） |
+| `custom-print` | CANVASWEARS | カスタムプリント（テスト運用中） |
 
 サイトを増やすときは `app/lib/brands.ts` にブランドを1つ足し、
 `app/styles/app.css` に同じidの `[data-brand="..."]` ブロックを足すだけです。
@@ -98,7 +98,7 @@ Shopify管理画面 → **商品** → 全選択 → **一括編集** → 「販
 | `https://xxx.vercel.app/` | HAORI+（白・ラグジュアリー） |
 | `https://xxx.vercel.app/?brand=bridal` | BRILLAR（ブライダル） |
 | `https://xxx.vercel.app/?brand=avant-garde` | NOCT.（黒・アバンギャルド） |
-| `https://xxx.vercel.app/?brand=custom-print` | CANVASWEAR（カスタムプリント） |
+| `https://xxx.vercel.app/?brand=custom-print` | CANVASWEARS（カスタムプリント） |
 | `https://xxx.vercel.app/?brand=elegant-plus` | HAORI+に戻す |
 
 一度 ?brand= で切り替えるとCookieに保存され、ページ遷移しても維持されます。
@@ -303,7 +303,7 @@ DNS設定はVercerが自動で案内してくれます。
 
 ---
 
-## カスタムプリントサイト（CANVASWEAR）
+## カスタムプリントサイト（CANVASWEARS）
 
 昇華プリントのカスタムウェアを扱うサイトです。写真・イラストを含め、どんな柄も全面フルカラーで1点から製作できます。
 

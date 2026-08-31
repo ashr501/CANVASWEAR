@@ -195,7 +195,7 @@ export default function ProductDetail() {
                   color: isAvantGarde ? 'var(--color-text)' : 'var(--color-primary)',
                 }}
               >
-                {selectedVariant && <Money data={selectedVariant.price} />}
+                {selectedVariant && <Money as="span" data={selectedVariant.price} />}
               </p>
             </div>
 

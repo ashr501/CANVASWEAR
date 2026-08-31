@@ -117,7 +117,7 @@ export default function ProductCard({product, brandId}: ProductCardProps) {
             fontFamily: 'var(--font-body)',
           }}
         >
-          <Money data={product.priceRange.minVariantPrice} />
+          <Money as="span" data={product.priceRange.minVariantPrice} />
         </p>
       </div>
     </Link>
