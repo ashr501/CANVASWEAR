@@ -1,6 +1,6 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData} from '@remix-run/react';
-import {Suspense} from 'react';
+import {useLoaderData} from '@remix-run/react';
+import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import {getBrandConfig} from '~/lib/brand.server';
@@ -16,11 +16,12 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   if (!handle) throw new Response('Not found', {status: 404});
 
   const brand = getBrandConfig(context.env, request);
+  const paginationVariables = getPaginationVariables(request, {pageBy: 24});
 
   const collection = await context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle,
-      first: 24,
+      ...paginationVariables,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
@@ -89,11 +90,39 @@ export default function CollectionPage() {
               </p>
             </div>
           ) : (
-            <div className="product-grid">
-              {collection.products.nodes.map((product: any) => (
-                <ProductCard key={product.id} product={product} brandId={brandId} />
-              ))}
-            </div>
+            <Pagination connection={collection.products}>
+              {({nodes, isLoading, PreviousLink, NextLink}) => (
+                <>
+                  <div className="text-center mb-8">
+                    <PreviousLink className="btn-outline">
+                      {isLoading
+                        ? isAvantGarde
+                          ? 'LOADING...'
+                          : '読み込み中...'
+                        : isAvantGarde
+                        ? 'LOAD PREVIOUS'
+                        : '前を表示'}
+                    </PreviousLink>
+                  </div>
+                  <div className="product-grid">
+                    {nodes.map((product: any) => (
+                      <ProductCard key={product.id} product={product} brandId={brandId} />
+                    ))}
+                  </div>
+                  <div className="text-center mt-12">
+                    <NextLink className="btn-outline">
+                      {isLoading
+                        ? isAvantGarde
+                          ? 'LOADING...'
+                          : '読み込み中...'
+                        : isAvantGarde
+                        ? 'LOAD MORE'
+                        : 'もっと見る'}
+                    </NextLink>
+                  </div>
+                </>
+              )}
+            </Pagination>
           )}
         </div>
       </div>

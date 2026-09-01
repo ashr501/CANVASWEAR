@@ -1,6 +1,7 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
+import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import {getBrandConfig} from '~/lib/brand.server';
@@ -11,6 +12,7 @@ export const meta = () => [{title: '商品一覧'}];
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
+  const paginationVariables = getPaginationVariables(request, {pageBy: 24});
 
   // 1つのShopifyストアを複数サイトで共有しているので、そのブランドの商品だけを
   // 含むコレクション（brands.ts の collections.all）を一覧の母集合にする。
@@ -18,7 +20,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const products = context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle: brand.collections.all,
-      first: 24,
+      ...paginationVariables,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
@@ -61,8 +63,8 @@ export default function ProductsIndex() {
         <Suspense fallback={<ProductGridSkeleton />}>
           <Await resolve={products}>
             {(data: any) => {
-              const items = data?.collection?.products?.nodes ?? [];
-              if (items.length === 0) {
+              const connection = data?.collection?.products;
+              if (!connection || connection.nodes.length === 0) {
                 return (
                   <div className="text-center py-24">
                     <p
@@ -75,11 +77,27 @@ export default function ProductsIndex() {
                 );
               }
               return (
-                <div className="product-grid">
-                  {items.map((product: any) => (
-                    <ProductCard key={product.id} product={product} brandId={brandId} />
-                  ))}
-                </div>
+                <Pagination connection={connection}>
+                  {({nodes, isLoading, PreviousLink, NextLink}) => (
+                    <>
+                      <div className="text-center mb-8">
+                        <PreviousLink className="btn-outline">
+                          {isLoading ? '読み込み中...' : '前を表示'}
+                        </PreviousLink>
+                      </div>
+                      <div className="product-grid">
+                        {nodes.map((product: any) => (
+                          <ProductCard key={product.id} product={product} brandId={brandId} />
+                        ))}
+                      </div>
+                      <div className="text-center mt-12">
+                        <NextLink className="btn-outline">
+                          {isLoading ? '読み込み中...' : 'もっと見る'}
+                        </NextLink>
+                      </div>
+                    </>
+                  )}
+                </Pagination>
               );
             }}
           </Await>
