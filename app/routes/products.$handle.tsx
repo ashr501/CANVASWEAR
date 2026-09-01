@@ -88,22 +88,30 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   if (!product.product) throw new Response('Not found', {status: 404});
 
-  // 「同じジャンルの商品」として、素材タグを除く最初のタグで絞り込む。
+  // 「同じジャンルの商品」として、ナビゲーションのカテゴリ名と一致する
+  // タグ（例: バッグ・レディース）を優先し、なければ素材タグや商品コード
+  // （P37Bのような英数字のみのタグ）を除く最初のタグで絞り込む。
   // ギャラリー等は待たせたくないので defer して後から流し込む。
-  const relatedTag = product.product.tags.find(
-    (tag: string) => !tag.startsWith('素材:'),
-  );
+  const navLabels = new Set(brand.nav.map((n) => n.label));
+  const skuLikeTag = /^[a-z0-9]+$/i;
+  const relatedTag =
+    product.product.tags.find((tag: string) => navLabels.has(tag)) ??
+    product.product.tags.find(
+      (tag: string) => !tag.startsWith('素材:') && !skuLikeTag.test(tag),
+    );
   const relatedProducts = relatedTag
     ? context.storefront
         .query(RELATED_PRODUCTS_QUERY, {
           variables: {
             searchQuery: `tag:'${relatedTag}' -handle:'${handle}'`,
-            first: 4,
+            first: 5,
             country: context.storefront.i18n.country,
             language: context.storefront.i18n.language,
           },
         })
-        .then((data: any) => data.products.nodes)
+        .then((data: any) =>
+          data.products.nodes.filter((p: any) => p.handle !== handle).slice(0, 4),
+        )
     : Promise.resolve([]);
 
   return defer({product: product.product, brandId: brand.id, relatedProducts});
