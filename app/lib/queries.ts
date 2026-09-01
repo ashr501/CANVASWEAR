@@ -126,6 +126,22 @@ export const PRODUCT_QUERY = `#graphql
           height
         }
       }
+      media(first: 20) {
+        nodes {
+          __typename
+          ... on Video {
+            id
+            alt
+            previewImage {
+              url
+            }
+            sources {
+              url
+              format
+            }
+          }
+        }
+      }
       options {
         name
         values
@@ -178,6 +194,22 @@ export const PRODUCT_QUERY = `#graphql
       }
     }
   }
+`;
+
+export const RELATED_PRODUCTS_QUERY = `#graphql
+  query RelatedProducts(
+    $country: CountryCode
+    $language: LanguageCode
+    $searchQuery: String!
+    $first: Int
+  ) @inContext(country: $country, language: $language) {
+    products(first: $first, query: $searchQuery) {
+      nodes {
+        ...ProductCard
+      }
+    }
+  }
+  ${PRODUCT_CARD_FRAGMENT}
 `;
 
 export const COLLECTION_QUERY = `#graphql
