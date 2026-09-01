@@ -339,12 +339,29 @@ export default function ProductDetail() {
                 {product.title}
               </h1>
               <p
-                className="text-xl"
+                className="flex items-baseline gap-2"
                 style={{
                   color: isAvantGarde ? 'var(--color-text)' : 'var(--color-primary)',
                 }}
               >
-                {selectedVariant && <Money as="span" data={selectedVariant.price} />}
+                {selectedVariant && (
+                  <span
+                    className="font-bold"
+                    style={{fontSize: 'clamp(1.75rem, 4vw, 2.25rem)'}}
+                  >
+                    <Money
+                      as="span"
+                      data={selectedVariant.price}
+                      withoutTrailingZeros
+                    />
+                  </span>
+                )}
+                <span
+                  className="text-xs"
+                  style={{color: 'var(--color-text-muted)'}}
+                >
+                  {isAvantGarde ? 'TAX INCL.' : '税込'}
+                </span>
               </p>
             </div>
 
