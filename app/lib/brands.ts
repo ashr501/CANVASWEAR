@@ -305,6 +305,7 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
       {label: 'ルームウェア・パジャマ', handle: 'roomwear'},
       {label: 'キッチン・食卓', handle: 'kitchen'},
       {label: 'ペット', handle: 'pet'},
+      {label: '雑貨・小物', handle: 'goods'},
     ],
     concept: {
       eyebrow: 'ABOUT SUBLIMATION',

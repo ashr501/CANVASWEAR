@@ -1,12 +1,13 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData} from '@remix-run/react';
+import {Await, useLoaderData, useOutletContext} from '@remix-run/react';
 import {Suspense} from 'react';
 import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen';
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
+import CategoryFilterChips from '~/components/CategoryFilterChips';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
-import {isBoldBrand} from '~/lib/brands';
+import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 export const meta = ({data}: any) =>
   getSeoMeta({title: '商品一覧', url: data?.seoUrl});
@@ -33,6 +34,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
 export default function ProductsIndex() {
   const {products, brandId, copy} = useLoaderData<typeof loader>();
+  const {brand} = useOutletContext<{brand: PublicBrand}>();
   const isAvantGarde = isBoldBrand(brandId);
 
   return (
@@ -59,6 +61,9 @@ export default function ProductsIndex() {
             {copy.allItemsHeading}
           </h1>
         </div>
+
+        {/* カテゴリ絞り込み */}
+        <CategoryFilterChips nav={brand.nav} />
 
         {/* 商品グリッド */}
         <Suspense fallback={<ProductGridSkeleton />}>

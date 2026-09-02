@@ -1,11 +1,12 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData} from '@remix-run/react';
+import {useLoaderData, useOutletContext} from '@remix-run/react';
 import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen';
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
+import CategoryFilterChips from '~/components/CategoryFilterChips';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
-import {isBoldBrand} from '~/lib/brands';
+import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 export const meta = ({data}: any) => {
   if (!data?.collection) return [{title: 'コレクション'}];
@@ -48,11 +49,13 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     collection: collection.collection,
     brandId: brand.id,
     seoUrl: request.url,
+    handle,
   });
 }
 
 export default function CollectionPage() {
-  const {collection, brandId} = useLoaderData<typeof loader>();
+  const {collection, brandId, handle} = useLoaderData<typeof loader>();
+  const {brand} = useOutletContext<{brand: PublicBrand}>();
   const isAvantGarde = isBoldBrand(brandId);
 
   return (
@@ -96,6 +99,9 @@ export default function CollectionPage() {
       {/* 商品グリッド */}
       <div className="section-pad">
         <div className="container-brand">
+          {/* カテゴリ絞り込み */}
+          <CategoryFilterChips nav={brand.nav} activeHandle={handle} />
+
           {collection.products.nodes.length === 0 ? (
             <div className="text-center py-24">
               <p
