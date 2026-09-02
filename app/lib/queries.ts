@@ -212,6 +212,41 @@ export const RELATED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_CARD_FRAGMENT}
 `;
 
+export const SEARCH_PRODUCTS_QUERY = `#graphql
+  query SearchProducts(
+    $country: CountryCode
+    $language: LanguageCode
+    $searchQuery: String!
+    $first: Int
+    $last: Int
+    $startCursor: String
+    $endCursor: String
+    $sortKey: ProductSortKeys
+    $reverse: Boolean
+  ) @inContext(country: $country, language: $language) {
+    products(
+      first: $first
+      last: $last
+      before: $startCursor
+      after: $endCursor
+      query: $searchQuery
+      sortKey: $sortKey
+      reverse: $reverse
+    ) {
+      nodes {
+        ...ProductCard
+      }
+      pageInfo {
+        hasPreviousPage
+        hasNextPage
+        endCursor
+        startCursor
+      }
+    }
+  }
+  ${PRODUCT_CARD_FRAGMENT}
+`;
+
 export const COLLECTION_QUERY = `#graphql
   query Collection(
     $handle: String!

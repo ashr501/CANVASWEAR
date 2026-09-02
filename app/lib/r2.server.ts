@@ -11,9 +11,6 @@ import {AwsClient} from 'aws4fetch';
 const ALLOWED_TYPES: Record<string, string> = {
   'image/png': 'png',
   'image/jpeg': 'jpg',
-  'image/webp': 'webp',
-  'image/svg+xml': 'svg',
-  'application/pdf': 'pdf',
 };
 
 /** 1ファイルの上限。昇華プリントは高解像度データが多いので余裕を持たせる */
@@ -80,7 +77,7 @@ export async function uploadPrintFile(
   const extension = ALLOWED_TYPES[file.type];
   if (!extension) {
     throw new UploadError(
-      'この形式のファイルは受け付けていません（PNG / JPEG / WebP / SVG / PDF）。',
+      'この形式のファイルは受け付けていません（PNG / JPEG）。',
     );
   }
 

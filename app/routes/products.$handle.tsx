@@ -117,6 +117,17 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   if (!product.product) throw new Response('Not found', {status: 404});
 
+  // このShopifyストアは他ブランド（BridesmaidsJP等）と共有されているため、
+  // custom-printブランドではタイトルが「カスタムプリント」を含む商品のみ許可する
+  // （custom-printコレクションの絞り込みルールと同じ条件）。
+  // これがないと、他ブランドの商品handleを直接叩けば表示できてしまう。
+  if (
+    brand.id === 'custom-print' &&
+    !product.product.title.includes('カスタムプリント')
+  ) {
+    throw new Response('Not found', {status: 404});
+  }
+
   // 「同じジャンルの商品」として、ナビゲーションのカテゴリ名と一致する
   // タグ（例: バッグ・レディース）を優先し、なければ素材タグや商品コード
   // （P37Bのような英数字のみのタグ）を除く最初のタグで絞り込む。
@@ -465,7 +476,7 @@ export default function ProductDetail() {
                 >
                   <input
                     type="file"
-                    accept="image/png,image/jpeg,image/webp,image/svg+xml,application/pdf"
+                    accept="image/png,image/jpeg"
                     onChange={handleFileChange}
                     disabled={uploading}
                     className="hidden"
@@ -474,7 +485,7 @@ export default function ProductDetail() {
                     ? 'アップロード中...'
                     : printFile
                     ? `${printFile.fileName} を選択中（変更する）`
-                    : 'ファイルを選ぶ（PNG / JPEG / WebP / SVG / PDF・20MBまで）'}
+                    : 'ファイルを選ぶ（PNG / JPEG・20MBまで）'}
                 </label>
 
                 {printFile && (

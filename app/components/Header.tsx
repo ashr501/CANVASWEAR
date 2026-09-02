@@ -3,6 +3,7 @@ import {Suspense} from 'react';
 import {Await} from '@remix-run/react';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
+import SearchBar from './SearchBar';
 
 interface HeaderProps {
   brand: PublicBrand;
@@ -36,22 +37,8 @@ export default function Header({brand, cart, onCartOpen}: HeaderProps) {
         className="container-brand h-full flex items-center justify-between relative"
         style={{height: 'var(--header-height)'}}
       >
-        {/* ナビ左 */}
-        <nav className="hidden md:flex items-center gap-8">
-          {links.map(({to, label}) => (
-            <Link
-              key={to}
-              to={to}
-              className="text-xs tracking-widest uppercase transition-colors hover:opacity-70"
-              style={{
-                color: 'var(--color-text-muted)',
-                fontFamily: isAvantGarde ? 'var(--font-body)' : 'var(--font-heading)',
-              }}
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
+        {/* 検索 */}
+        <SearchBar />
 
         {/* ロゴ中央 */}
         <Link to="/" className="absolute left-1/2 -translate-x-1/2">
@@ -89,17 +76,20 @@ export default function Header({brand, cart, onCartOpen}: HeaderProps) {
         </div>
       </div>
 
-      {/* モバイルナビ */}
+      {/* ナビ（カテゴリが多いためロゴと同じ行には置かず、常に専用の行で横スクロール表示する） */}
       <nav
-        className="md:hidden flex items-center gap-6 px-4 pb-2 overflow-x-auto"
-        style={{marginTop: '-4px'}}
+        className="flex items-center gap-6 px-4 overflow-x-auto"
+        style={{height: 'var(--nav-height)'}}
       >
         {links.map(({to, label}) => (
           <Link
             key={to}
             to={to}
-            className="text-xs tracking-widest uppercase whitespace-nowrap"
-            style={{color: 'var(--color-text-muted)'}}
+            className="text-xs tracking-widest uppercase whitespace-nowrap transition-colors hover:opacity-70"
+            style={{
+              color: 'var(--color-text-muted)',
+              fontFamily: isAvantGarde ? 'var(--font-body)' : 'var(--font-heading)',
+            }}
           >
             {label}
           </Link>

@@ -695,7 +695,7 @@ function InfoBanner() {
         className="container-brand text-center text-xs md:text-sm tracking-wide"
         style={{color: 'var(--color-secondary)', fontFamily: 'var(--font-body)'}}
       >
-        入稿データは PNG・JPEG・WebP・SVG・PDF に対応（20MBまで）。商品ページからそのままアップロードできます。
+        入稿データは PNG・JPEG に対応（20MBまで）。商品ページからそのままアップロードできます。
       </p>
     </div>
   );

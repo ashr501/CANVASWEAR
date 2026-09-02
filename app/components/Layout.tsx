@@ -24,7 +24,10 @@ export default function Layout({
   return (
     <>
       <Header brand={brand} onCartOpen={onCartOpen} cart={cart} />
-      <main style={{paddingTop: 'var(--header-height)'}} className="min-h-screen">
+      <main
+        style={{paddingTop: 'calc(var(--header-height) + var(--nav-height))'}}
+        className="min-h-screen"
+      >
         {children}
       </main>
       <Footer brand={brand} />
