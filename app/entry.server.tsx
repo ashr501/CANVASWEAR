@@ -19,6 +19,8 @@ export default async function handleRequest(
     },
     styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
     fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+    // LINE公式アカウントのQRコード画像（お問い合わせページ）を許可
+    imgSrc: ["'self'", 'data:', 'https://cdn.shopify.com', 'https://qr-official.line.me'],
   });
 
   const body = await renderToReadableStream(

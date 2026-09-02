@@ -296,7 +296,7 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     nav: [
       {label: 'レディース', handle: 'womens'},
       {label: 'メンズ', handle: 'mens'},
-      {label: 'キッズ・ベビー', handle: 'kids'},
+      {label: 'キッズ', handle: 'kids'},
       {label: 'ユニセックス', handle: 'unisex'},
       {label: 'バッグ', handle: 'bags'},
       {label: 'シューズ', handle: 'shoes'},
