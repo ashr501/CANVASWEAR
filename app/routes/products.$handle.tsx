@@ -11,18 +11,47 @@ import {
   Money,
   VariantSelector,
   getSelectedProductOptions,
+  getSeoMeta,
   CartForm,
 } from '@shopify/hydrogen';
 import {PRODUCT_QUERY, RELATED_PRODUCTS_QUERY} from '~/lib/queries';
 import {getBrandConfig} from '~/lib/brand.server';
+import {stripHtml} from '~/lib/seo';
 import clsx from 'clsx';
 import {isBoldBrand} from '~/lib/brands';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 
-export const meta = ({data}: any) => [
-  {title: data?.product?.title ?? '商品'},
-];
+export const meta = ({data}: any) => {
+  if (!data?.product) return [{title: '商品'}];
+  const {product, seoUrl} = data;
+  const price = product.selectedVariant?.price ?? product.priceRange.minVariantPrice;
+  return getSeoMeta({
+    title: product.title,
+    description: product.descriptionHtml ? stripHtml(product.descriptionHtml) : undefined,
+    url: seoUrl,
+    media: product.images.nodes[0]
+      ? {url: product.images.nodes[0].url, altText: product.images.nodes[0].altText ?? product.title}
+      : undefined,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.title,
+      description: product.descriptionHtml ? stripHtml(product.descriptionHtml) : undefined,
+      image: product.images.nodes.map((img: any) => img.url),
+      sku: product.selectedVariant?.sku ?? undefined,
+      offers: {
+        '@type': 'Offer',
+        url: seoUrl,
+        priceCurrency: price.currencyCode,
+        price: price.amount,
+        availability: product.selectedVariant?.availableForSale
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
+      },
+    },
+  });
+};
 
 const TRUST_ICONS: Record<'delivery' | 'material' | 'care' | 'print', JSX.Element> = {
   delivery: (
@@ -114,7 +143,12 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
         )
     : Promise.resolve([]);
 
-  return defer({product: product.product, brandId: brand.id, relatedProducts});
+  return defer({
+    product: product.product,
+    brandId: brand.id,
+    relatedProducts,
+    seoUrl: request.url,
+  });
 }
 
 export default function ProductDetail() {

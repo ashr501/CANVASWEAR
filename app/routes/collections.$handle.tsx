@@ -1,15 +1,27 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
-import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen';
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
 import {isBoldBrand} from '~/lib/brands';
 
-export const meta = ({data}: any) => [
-  {title: data?.collection?.title ?? 'コレクション'},
-];
+export const meta = ({data}: any) => {
+  if (!data?.collection) return [{title: 'コレクション'}];
+  return getSeoMeta({
+    title: data.collection.title,
+    description: data.collection.description || undefined,
+    url: data.seoUrl,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: data.collection.title,
+      description: data.collection.description || undefined,
+      url: data.seoUrl,
+    },
+  });
+};
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {handle} = params;
@@ -32,7 +44,11 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   if (!collection.collection) throw new Response('Not found', {status: 404});
 
-  return defer({collection: collection.collection, brandId: brand.id});
+  return defer({
+    collection: collection.collection,
+    brandId: brand.id,
+    seoUrl: request.url,
+  });
 }
 
 export default function CollectionPage() {

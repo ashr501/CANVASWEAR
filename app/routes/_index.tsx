@@ -1,6 +1,7 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, useOutletContext, Link} from '@remix-run/react';
 import {Suspense} from 'react';
+import {getSeoMeta} from '@shopify/hydrogen';
 import {HOME_PRODUCTS_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
@@ -8,7 +9,12 @@ import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
-export const meta = () => [{title: 'ホーム'}];
+export const meta = ({data}: any) =>
+  getSeoMeta({
+    title: data?.seoTitle,
+    description: data?.seoDescription,
+    url: data?.seoUrl,
+  });
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
@@ -25,7 +31,13 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   // brandをそのまま返すとStorefrontトークンまでブラウザに渡ってしまうので、
   // 表示用のブランド情報はroot.tsxのoutlet contextから受け取る
-  return defer({products, brandId: brand.id});
+  return defer({
+    products,
+    brandId: brand.id,
+    seoTitle: `${brand.nameJa}｜${brand.taglineJa}`,
+    seoDescription: brand.taglineJa,
+    seoUrl: request.url,
+  });
 }
 
 export default function Index() {

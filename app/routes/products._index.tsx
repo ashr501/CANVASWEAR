@@ -1,14 +1,15 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
-import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen';
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
 import {isBoldBrand} from '~/lib/brands';
 
-export const meta = () => [{title: '商品一覧'}];
+export const meta = ({data}: any) =>
+  getSeoMeta({title: '商品一覧', url: data?.seoUrl});
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
@@ -27,7 +28,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
 
-  return defer({products, brandId: brand.id, copy: brand.copy});
+  return defer({products, brandId: brand.id, copy: brand.copy, seoUrl: request.url});
 }
 
 export default function ProductsIndex() {
