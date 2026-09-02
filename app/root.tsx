@@ -5,6 +5,9 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteError,
+  useRouteLoaderData,
+  isRouteErrorResponse,
 } from '@remix-run/react';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {defer} from '@shopify/remix-oxygen';
@@ -85,25 +88,59 @@ export default function App() {
 
 export function ErrorBoundary() {
   const nonce = useNonce();
+  const error = useRouteError();
+  const rootData = useRouteLoaderData<typeof loader>('root');
+  const brand = rootData?.brand;
+  const is404 = isRouteErrorResponse(error) && error.status === 404;
 
   return (
-    <html lang="ja">
+    <html lang="ja" data-brand={brand?.id} data-ui={brand?.uiMode}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {brand?.googleFonts && <link rel="stylesheet" href={brand.googleFonts} />}
         <Meta />
         <Links />
       </head>
-      <body
-        style={{
-          backgroundColor: '#0D0D0D',
-          color: '#E8E8E8',
-          padding: '2rem',
-          fontFamily: 'monospace',
-        }}
-      >
-        <h1>エラーが発生しました</h1>
-        <p>ページの読み込み中にエラーが発生しました。</p>
+      <body style={{backgroundColor: 'var(--color-bg)', color: 'var(--color-text)'}}>
+        <div
+          style={{
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '2rem',
+            fontFamily: 'var(--font-body)',
+          }}
+        >
+          <h1
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+              marginBottom: '1rem',
+              color: 'var(--color-text)',
+            }}
+          >
+            {is404 ? 'ページが見つかりません' : 'エラーが発生しました'}
+          </h1>
+          <p
+            className="text-sm"
+            style={{color: 'var(--color-text-muted)', marginBottom: '2rem'}}
+          >
+            {is404
+              ? 'お探しのページは存在しないか、移動した可能性があります。'
+              : 'ページの読み込み中に問題が発生しました。しばらくしてから再度お試しください。'}
+          </p>
+          <a
+            href="/"
+            className="btn-primary"
+            style={{textDecoration: 'none', display: 'inline-block'}}
+          >
+            トップページに戻る
+          </a>
+        </div>
         <Scripts nonce={nonce} />
       </body>
     </html>
