@@ -4,7 +4,9 @@ import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen'
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import CategoryFilterChips from '~/components/CategoryFilterChips';
+import SortSelect from '~/components/SortSelect';
 import {getBrandConfig} from '~/lib/brand.server';
+import {getSortVariables} from '~/lib/sort';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
@@ -30,11 +32,13 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   const brand = getBrandConfig(context.env, request);
   const paginationVariables = getPaginationVariables(request, {pageBy: 24});
+  const sortVariables = getSortVariables(new URL(request.url).searchParams.get('sort'));
 
   const collection = await context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle,
       ...paginationVariables,
+      ...sortVariables,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
@@ -99,8 +103,11 @@ export default function CollectionPage() {
       {/* 商品グリッド */}
       <div className="section-pad">
         <div className="container-brand">
-          {/* カテゴリ絞り込み */}
-          <CategoryFilterChips nav={brand.nav} activeHandle={handle} />
+          {/* カテゴリ絞り込み・並び替え */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
+            <CategoryFilterChips nav={brand.nav} activeHandle={handle} />
+            <SortSelect />
+          </div>
 
           {collection.products.nodes.length === 0 ? (
             <div className="text-center py-24">

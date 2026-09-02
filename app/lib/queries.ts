@@ -221,6 +221,8 @@ export const COLLECTION_QUERY = `#graphql
     $last: Int
     $startCursor: String
     $endCursor: String
+    $sortKey: ProductCollectionSortKeys
+    $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
@@ -238,6 +240,8 @@ export const COLLECTION_QUERY = `#graphql
         last: $last
         before: $startCursor
         after: $endCursor
+        sortKey: $sortKey
+        reverse: $reverse
       ) {
         nodes {
           ...ProductCard
@@ -252,6 +256,46 @@ export const COLLECTION_QUERY = `#graphql
     }
   }
   ${PRODUCT_CARD_FRAGMENT}
+`;
+
+export const VIDEO_PRODUCTS_QUERY = `#graphql
+  query VideoProducts(
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+    $first: Int!
+    $after: String
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: $first, after: $after) {
+        nodes {
+          id
+          title
+          handle
+          media(first: 30) {
+            nodes {
+              __typename
+              ... on Video {
+                id
+                alt
+                previewImage {
+                  url
+                }
+                sources {
+                  url
+                  format
+                }
+              }
+            }
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
 `;
 
 export const CART_QUERY = `#graphql

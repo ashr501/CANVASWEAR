@@ -17,7 +17,7 @@ export default function Footer({brand}: FooterProps) {
       }}
     >
       <div className="container-brand section-pad">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* ブランド */}
           <div>
             <p
@@ -56,6 +56,7 @@ export default function Footer({brand}: FooterProps) {
                   href: `/collections/${item.handle}`,
                 })),
                 {label: brand.copy.navAllItems, href: '/products'},
+                {label: '動画でみる', href: '/videos'},
               ].map(({label, href}) => (
                 <li key={href}>
                   <Link
@@ -80,9 +81,10 @@ export default function Footer({brand}: FooterProps) {
             </h3>
             <ul className="space-y-3">
               {[
-                {label: 'サイズガイド', href: '/pages/size-guide'},
                 {label: '配送・返品', href: '/pages/shipping'},
                 {label: 'お問い合わせ', href: '/pages/contact'},
+                {label: '会社概要', href: '/pages/company'},
+                {label: '特定商取引法に基づく表記', href: '/pages/specified'},
               ].map(({label, href}) => (
                 <li key={href}>
                   <Link
@@ -94,6 +96,38 @@ export default function Footer({brand}: FooterProps) {
                   </Link>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          {/* フォロー */}
+          <div>
+            <h3
+              className="text-xs tracking-widest uppercase mb-6"
+              style={{color: 'var(--color-text-muted)'}}
+            >
+              FOLLOW
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <a
+                  href="https://www.instagram.com/canvas_wears_tokyo"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm transition-colors"
+                  style={{color: 'var(--color-text-muted)'}}
+                >
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <Link
+                  to="/pages/contact"
+                  className="text-sm transition-colors"
+                  style={{color: 'var(--color-text-muted)'}}
+                >
+                  LINEで相談する
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

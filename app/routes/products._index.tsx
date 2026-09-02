@@ -5,7 +5,9 @@ import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen'
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import CategoryFilterChips from '~/components/CategoryFilterChips';
+import SortSelect from '~/components/SortSelect';
 import {getBrandConfig} from '~/lib/brand.server';
+import {getSortVariables} from '~/lib/sort';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
@@ -15,14 +17,15 @@ export const meta = ({data}: any) =>
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
   const paginationVariables = getPaginationVariables(request, {pageBy: 24});
+  const sortVariables = getSortVariables(new URL(request.url).searchParams.get('sort'));
 
   // 1つのShopifyストアを複数サイトで共有しているので、そのブランドの商品だけを
   // 含むコレクション（brands.ts の collections.all）を一覧の母集合にする。
-  // 並び順はShopify側のコレクション設定に従う。
   const products = context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle: brand.collections.all,
       ...paginationVariables,
+      ...sortVariables,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
@@ -62,8 +65,11 @@ export default function ProductsIndex() {
           </h1>
         </div>
 
-        {/* カテゴリ絞り込み */}
-        <CategoryFilterChips nav={brand.nav} />
+        {/* カテゴリ絞り込み・並び替え */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
+          <CategoryFilterChips nav={brand.nav} />
+          <SortSelect />
+        </div>
 
         {/* 商品グリッド */}
         <Suspense fallback={<ProductGridSkeleton />}>
