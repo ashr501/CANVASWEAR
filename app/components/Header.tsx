@@ -31,10 +31,11 @@ export default function Header({brand, cart, onCartOpen}: HeaderProps) {
           ? 'border-b border-[var(--color-border)] bg-[var(--color-bg)]/95 backdrop-blur-sm'
           : 'bg-[var(--color-surface)]/90 backdrop-blur-sm border-b border-[var(--color-border)]',
       )}
-      style={{height: 'var(--header-height)'}}
     >
+      {/* ヘッダー全体の高さはロゴ行+ナビ行の合計。<header>に固定高を付けると
+          下線がロゴ行の位置に引かれ、ナビ行が別のバーのように見えてしまう。 */}
       <div
-        className="container-brand h-full flex items-center justify-between relative"
+        className="container-brand flex items-center justify-between relative"
         style={{height: 'var(--header-height)'}}
       >
         {/* 検索 */}
@@ -78,7 +79,7 @@ export default function Header({brand, cart, onCartOpen}: HeaderProps) {
 
       {/* ナビ（カテゴリが多いためロゴと同じ行には置かず、常に専用の行で横スクロール表示する） */}
       <nav
-        className="flex items-center gap-6 px-4 overflow-x-auto"
+        className="container-brand flex items-center gap-6 overflow-x-auto no-scrollbar"
         style={{height: 'var(--nav-height)'}}
       >
         {links.map(({to, label}) => (

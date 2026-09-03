@@ -353,6 +353,18 @@
    =================================== */
 ::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
+}
+
+/* 横スクロールする帯（ヘッダーのカテゴリナビなど）でスクロールバーを隠す。
+   スクロール自体は効いたままにする。 */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 ::-webkit-scrollbar-track {

@@ -10,8 +10,13 @@ import {getBrandConfig} from '~/lib/brand.server';
 import {getSortVariables} from '~/lib/sort';
 import type {PublicBrand} from '~/lib/brands';
 
+// 検索結果ページは中身が無限に増える上に独自の価値がないため、
+// 検索エンジンにはインデックスさせず、リンクだけ辿らせる。
 export const meta = ({data}: any) =>
-  getSeoMeta({title: data?.term ? `「${data.term}」の検索結果` : '検索'});
+  getSeoMeta({
+    title: data?.term ? `「${data.term}」の検索結果` : '検索',
+    robots: {noIndex: true, noFollow: false},
+  });
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);

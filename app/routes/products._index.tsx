@@ -7,12 +7,19 @@ import ProductCard from '~/components/ProductCard';
 import CategoryFilterChips from '~/components/CategoryFilterChips';
 import SortSelect from '~/components/SortSelect';
 import {getBrandConfig} from '~/lib/brand.server';
+import {titleTemplate} from '~/lib/seo';
 import {getSortVariables} from '~/lib/sort';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 export const meta = ({data}: any) =>
-  getSeoMeta({title: '商品一覧', url: data?.seoUrl});
+  getSeoMeta({
+    title: '商品一覧',
+    titleTemplate: titleTemplate(data?.brandName ?? ''),
+    description:
+      'カスタムプリント商品の全ラインナップ。レディース・メンズ・キッズからバッグ・シューズ・キッチン用品まで、お好きな柄を1点から製作します。',
+    url: data?.seoUrl,
+  });
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
@@ -32,7 +39,13 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
 
-  return defer({products, brandId: brand.id, copy: brand.copy, seoUrl: request.url});
+  return defer({
+    products,
+    brandId: brand.id,
+    copy: brand.copy,
+    seoUrl: request.url,
+    brandName: brand.name,
+  });
 }
 
 export default function ProductsIndex() {

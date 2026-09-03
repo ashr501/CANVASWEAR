@@ -3,12 +3,19 @@ import {Link, useLoaderData} from '@remix-run/react';
 import {getSeoMeta} from '@shopify/hydrogen';
 import {VIDEO_PRODUCTS_QUERY} from '~/lib/queries';
 import {getBrandConfig} from '~/lib/brand.server';
+import {titleTemplate} from '~/lib/seo';
 import {isBoldBrand} from '~/lib/brands';
 
 const MAX_PAGES = 5; // 250件 x 5 = 1250件までの商品をスキャンする
 
 export const meta = ({data}: any) =>
-  getSeoMeta({title: '動画でみる', url: data?.seoUrl});
+  getSeoMeta({
+    title: '動画でみる',
+    titleTemplate: titleTemplate(data?.brandName ?? ''),
+    description:
+      'カスタムプリント商品の着用イメージや質感を動画でご覧いただけます。生地感やシルエットを確認してからご注文ください。',
+    url: data?.seoUrl,
+  });
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
@@ -59,7 +66,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     after = connection.pageInfo.endCursor;
   }
 
-  return {videos, brandId: brand.id, seoUrl: request.url};
+  return {videos, brandId: brand.id, seoUrl: request.url, brandName: brand.name};
 }
 
 export default function VideosPage() {

@@ -16,7 +16,7 @@ import {
 } from '@shopify/hydrogen';
 import {PRODUCT_QUERY, RELATED_PRODUCTS_QUERY} from '~/lib/queries';
 import {getBrandConfig} from '~/lib/brand.server';
-import {stripHtml} from '~/lib/seo';
+import {stripHtml, titleTemplate, breadcrumbJsonLd, originOf} from '~/lib/seo';
 import clsx from 'clsx';
 import {isBoldBrand} from '~/lib/brands';
 import ProductCard from '~/components/ProductCard';
@@ -24,32 +24,48 @@ import FaqSection from '~/components/FaqSection';
 
 export const meta = ({data}: any) => {
   if (!data?.product) return [{title: '商品'}];
-  const {product, seoUrl} = data;
+  const {product, seoUrl, brandName, origin} = data;
   const price = product.selectedVariant?.price ?? product.priceRange.minVariantPrice;
+  const canonical = seoUrl.split('?')[0];
+  const description = product.descriptionHtml
+    ? stripHtml(product.descriptionHtml)
+    : undefined;
+
   return getSeoMeta({
     title: product.title,
-    description: product.descriptionHtml ? stripHtml(product.descriptionHtml) : undefined,
+    titleTemplate: titleTemplate(brandName),
+    description,
     url: seoUrl,
     media: product.images.nodes[0]
       ? {url: product.images.nodes[0].url, altText: product.images.nodes[0].altText ?? product.title}
       : undefined,
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: product.title,
-      description: product.descriptionHtml ? stripHtml(product.descriptionHtml) : undefined,
-      image: product.images.nodes.map((img: any) => img.url),
-      sku: product.selectedVariant?.sku ?? undefined,
-      offers: {
-        '@type': 'Offer',
-        url: seoUrl,
-        priceCurrency: price.currencyCode,
-        price: price.amount,
-        availability: product.selectedVariant?.availableForSale
-          ? 'https://schema.org/InStock'
-          : 'https://schema.org/OutOfStock',
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.title,
+        description,
+        image: product.images.nodes.map((img: any) => img.url),
+        sku: product.selectedVariant?.sku ?? undefined,
+        brand: {'@type': 'Brand', name: brandName},
+        offers: {
+          '@type': 'Offer',
+          url: canonical,
+          priceCurrency: price.currencyCode,
+          price: price.amount,
+          itemCondition: 'https://schema.org/NewCondition',
+          availability: product.selectedVariant?.availableForSale
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
+          seller: {'@type': 'Organization', name: brandName},
+        },
       },
-    },
+      breadcrumbJsonLd(origin, [
+        {name: 'ホーム', path: '/'},
+        {name: '全商品', path: '/products'},
+        {name: product.title, path: `/products/${product.handle}`},
+      ]),
+    ],
   });
 };
 
@@ -159,6 +175,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     brandId: brand.id,
     relatedProducts,
     seoUrl: request.url,
+    brandName: brand.name,
+    origin: originOf(request),
   });
 }
 

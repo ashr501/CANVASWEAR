@@ -2,10 +2,11 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, useOutletContext, Link} from '@remix-run/react';
 import {Suspense} from 'react';
 import {getSeoMeta} from '@shopify/hydrogen';
-import {HOME_PRODUCTS_QUERY} from '~/lib/queries';
+import {HOME_PRODUCTS_QUERY, COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 import {getBrandConfig} from '~/lib/brand.server';
+import {siteJsonLd, originOf} from '~/lib/seo';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
@@ -14,6 +15,16 @@ export const meta = ({data}: any) =>
     title: data?.seoTitle,
     description: data?.seoDescription,
     url: data?.seoUrl,
+    // jsonLdはloaderで作らずここで組み立てる。loaderに入れると
+    // ハイドレーション用のJSONにも同じ内容が載って二重に転送されるため。
+    jsonLd: data?.origin
+      ? siteJsonLd({
+          origin: data.origin,
+          name: data.brandName,
+          description: data.seoDescription,
+          sameAs: data.sameAs ?? [],
+        })
+      : undefined,
   });
 
 export async function loader({request, context}: LoaderFunctionArgs) {
@@ -29,23 +40,62 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     },
   });
 
+  // トップページのカテゴリ切り替え。?cat=<handle> で表示するコレクションを選ぶ。
+  // 未指定なら全商品コレクション。ナビにないhandleは無視する（不正値対策）。
+  const requestedCat = new URL(request.url).searchParams.get('cat');
+  const activeCat =
+    requestedCat && brand.nav.some((n) => n.handle === requestedCat)
+      ? requestedCat
+      : brand.collections.all;
+
+  const categoryProducts = storefront.query(COLLECTION_QUERY, {
+    variables: {
+      handle: activeCat,
+      first: 8,
+      country: storefront.i18n.country,
+      language: storefront.i18n.language,
+    },
+    cache: storefront.CacheShort(),
+  });
+
+  const origin = originOf(request);
+
   // brandをそのまま返すとStorefrontトークンまでブラウザに渡ってしまうので、
   // 表示用のブランド情報はroot.tsxのoutlet contextから受け取る
   return defer({
     products,
+    categoryProducts,
+    activeCat,
     brandId: brand.id,
     seoTitle: `${brand.nameJa}｜${brand.taglineJa}`,
-    seoDescription: brand.taglineJa,
+    seoDescription:
+      brand.id === 'custom-print'
+        ? '写真もイラストも全面フルカラーの昇華プリント。Tシャツ・ドレス・バッグ・シューズ・キッチン用品まで1点から製作します。データを入稿するだけ、オリジナルグッズのオーダーメイド通販。'
+        : brand.taglineJa,
     seoUrl: request.url,
+    brandName: brand.name,
+    // custom-print以外のブランドではOrganization/WebSiteを出さない
+    origin: brand.id === 'custom-print' ? origin : undefined,
+    sameAs:
+      brand.id === 'custom-print'
+        ? ['https://www.instagram.com/canvas_wears_tokyo']
+        : [],
   });
 }
 
 export default function Index() {
-  const {products, brandId} = useLoaderData<typeof loader>();
+  const {products, categoryProducts, activeCat, brandId} = useLoaderData<typeof loader>();
   const {brand} = useOutletContext<{brand: PublicBrand; onCartOpen: () => void}>();
 
   if (brandId === 'custom-print') {
-    return <CanvaswearHome brand={brand} products={products} />;
+    return (
+      <CanvaswearHome
+        brand={brand}
+        products={products}
+        categoryProducts={categoryProducts}
+        activeCat={activeCat}
+      />
+    );
   }
 
   const isAvantGarde = isBoldBrand(brandId);
@@ -544,8 +594,20 @@ function EmptyState({label}: {label: string}) {
    合わせて再構成したもの。
    =================================================================== */
 
-function CanvaswearHome({brand, products}: {brand: PublicBrand; products: any}) {
+function CanvaswearHome({
+  brand,
+  products,
+  categoryProducts,
+  activeCat,
+}: {
+  brand: PublicBrand;
+  products: any;
+  categoryProducts: any;
+  activeCat: string;
+}) {
   const copy = brand.copy;
+  const isAll = activeCat === brand.collections.all;
+  const activeLabel = brand.nav.find((n) => n.handle === activeCat)?.label;
 
   return (
     <div>
@@ -554,24 +616,33 @@ function CanvaswearHome({brand, products}: {brand: PublicBrand; products: any}) 
 
       <CommitmentSection brand={brand} />
 
-      {/* featured/newArrivalsが同じコレクション（custom-print）を参照しており
-          2セクション表示すると同じ商品が重複するため、新着のみ表示する */}
-      <section className="section-pad" style={{backgroundColor: 'var(--color-surface)'}}>
+      {/* カテゴリを選んで商品を切り替えられるセクション。
+          ?cat=<handle> で選択（SSR。クライアント状態を持たない） */}
+      <section
+        id="category"
+        className="section-pad"
+        style={{
+          backgroundColor: 'var(--color-surface)',
+          // 固定ヘッダーの下に見出しが隠れないようアンカー位置をずらす
+          scrollMarginTop: 'calc(var(--header-height) + var(--nav-height))',
+        }}
+      >
         <div className="container-brand">
           <SectionHeading
-            eyebrow={copy.newEyebrow}
-            heading={copy.newHeading}
-            viewAllHref={`/collections/${brand.collections.all}`}
+            eyebrow="SHOP BY CATEGORY"
+            heading={isAll ? 'カテゴリから探す' : (activeLabel ?? copy.newHeading)}
+            viewAllHref={`/collections/${activeCat}`}
             viewAllLabel={copy.viewAll}
           />
+
+          <CategoryTabs nav={brand.nav} allHandle={brand.collections.all} activeCat={activeCat} />
+
           <Suspense fallback={<ProductGridSkeleton />}>
-            <Await resolve={products}>
+            <Await resolve={categoryProducts}>
               {(data: any) => {
-                // featuredの方が取得件数が多い(6件)ため、同じcustom-printコレクションでも
-                // こちらをソースにして一覧を充実させる
-                const items = data?.featured?.products?.nodes ?? [];
+                const items = data?.collection?.products?.nodes ?? [];
                 if (items.length === 0) return <EmptyState label={copy.empty} />;
-                return <MenuGrid items={items} brandId={brand.id} highlightFirst />;
+                return <MenuGrid items={items} brandId={brand.id} />;
               }}
             </Await>
           </Suspense>
@@ -579,6 +650,45 @@ function CanvaswearHome({brand, products}: {brand: PublicBrand; products: any}) 
       </section>
 
       <FaqSection />
+    </div>
+  );
+}
+
+/** トップページのカテゴリ切り替えタブ。?cat= を付け替えるだけのリンクなので
+ *  JSなしでも動き、スクロール位置は #category で維持される。 */
+function CategoryTabs({
+  nav,
+  allHandle,
+  activeCat,
+}: {
+  nav: PublicBrand['nav'];
+  allHandle: string;
+  activeCat: string;
+}) {
+  const tabs = [{label: 'すべて', handle: allHandle}, ...nav];
+
+  return (
+    <div className="flex flex-wrap gap-2 mb-10">
+      {tabs.map(({label, handle}) => {
+        const isActive = handle === activeCat;
+        return (
+          <Link
+            key={handle}
+            to={handle === allHandle ? '/#category' : `/?cat=${handle}#category`}
+            preventScrollReset
+            prefetch="intent"
+            className="px-4 py-2 text-xs tracking-wider transition-all duration-150"
+            style={{
+              borderRadius: 'var(--radius)',
+              backgroundColor: isActive ? 'var(--color-text)' : 'transparent',
+              color: isActive ? 'var(--color-bg)' : 'var(--color-text)',
+              border: '1px solid var(--color-border)',
+            }}
+          >
+            {label}
+          </Link>
+        );
+      })}
     </div>
   );
 }

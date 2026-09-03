@@ -7,22 +7,50 @@ import CategoryFilterChips from '~/components/CategoryFilterChips';
 import SortSelect from '~/components/SortSelect';
 import {getBrandConfig} from '~/lib/brand.server';
 import {getSortVariables} from '~/lib/sort';
+import {breadcrumbJsonLd, originOf, stripHtml, titleTemplate} from '~/lib/seo';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 export const meta = ({data}: any) => {
   if (!data?.collection) return [{title: 'コレクション'}];
+  const {collection, seoUrl, brandName, origin, handle} = data;
+  const canonical = seoUrl.split('?')[0];
+
   return getSeoMeta({
-    title: data.collection.title,
-    description: data.collection.description || undefined,
-    url: data.seoUrl,
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      name: data.collection.title,
-      description: data.collection.description || undefined,
-      url: data.seoUrl,
-    },
+    title: collection.title,
+    titleTemplate: titleTemplate(brandName),
+    description: collection.description
+      ? stripHtml(collection.description)
+      : undefined,
+    url: seoUrl,
+    media: collection.image?.url ?? undefined,
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: collection.title,
+        description: collection.description || undefined,
+        url: canonical,
+      },
+      breadcrumbJsonLd(origin, [
+        {name: 'ホーム', path: '/'},
+        {name: '全商品', path: '/products'},
+        {name: collection.title, path: `/collections/${handle}`},
+      ]),
+      // 一覧の中身をGoogleに伝える。リッチリザルトの対象になりうる
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        itemListElement: (collection.products?.nodes ?? [])
+          .slice(0, 24)
+          .map((p: any, i: number) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: `${origin}/products/${p.handle}`,
+            name: p.title,
+          })),
+      },
+    ],
   });
 };
 
@@ -52,6 +80,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   return defer({
     collection: collection.collection,
     brandId: brand.id,
+    brandName: brand.name,
+    origin: originOf(request),
     seoUrl: request.url,
     handle,
   });
