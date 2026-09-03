@@ -21,6 +21,10 @@ export default async function handleRequest(
     fontSrc: ["'self'", 'https://fonts.gstatic.com'],
     // LINE公式アカウントのQRコード画像（お問い合わせページ）を許可
     imgSrc: ["'self'", 'data:', 'https://cdn.shopify.com', 'https://qr-official.line.me'],
+    // 商品動画は cdn.shopify.com ではなくストアのプライマリドメイン
+    // (alolore.shop/cdn/shop/videos/...) から配信される。media-src を指定しないと
+    // default-src にフォールバックしてブラウザにブロックされ、動画が再生できない。
+    mediaSrc: ["'self'", 'https://cdn.shopify.com', 'https://alolore.shop'],
   });
 
   const body = await renderToReadableStream(
