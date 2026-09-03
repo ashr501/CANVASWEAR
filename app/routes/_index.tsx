@@ -614,8 +614,6 @@ function CanvaswearHome({
       <CanvaswearHero brand={brand} products={products} />
       <InfoBanner />
 
-      <CommitmentSection brand={brand} />
-
       {/* カテゴリを選んで商品を切り替えられるセクション。
           ?cat=<handle> で選択（SSR。クライアント状態を持たない） */}
       <section
@@ -735,11 +733,14 @@ function CanvaswearHero({brand, products}: {brand: PublicBrand; products: any}) 
                 </span>
               ))}
             </h1>
+            {/* 以前はここに短いheroBodyを置き、下のCommitmentSectionで同じ見出しと
+                詳しい説明を繰り返していた。見出しの重複をなくすため、説明文を
+                こちらに集約してCommitmentSectionは削除した。 */}
             <p
               className="text-sm leading-loose max-w-md mb-9"
               style={{fontFamily: 'var(--font-body)', color: 'var(--color-text-muted)'}}
             >
-              {brand.heroBody ?? brand.taglineJa}
+              {brand.concept?.body ?? brand.heroBody ?? brand.taglineJa}
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link to={`/collections/${brand.collections.all}`} className="btn-primary">
@@ -876,70 +877,6 @@ function MenuGrid({
         </div>
       ))}
     </div>
-  );
-}
-
-/** design.mdの Commitment Section（2カラム・こだわりの説明）。
- *  実写素材の代わりに、染料を重ねる昇華プリントのイメージを抽象マークで表現。 */
-function CommitmentSection({brand}: {brand: PublicBrand}) {
-  const {eyebrow, heading, body} = brand.concept;
-
-  return (
-    <section
-      className="section-pad"
-      style={{background: 'linear-gradient(180deg, var(--color-hero-bg) 0%, var(--color-bg) 100%)'}}
-    >
-      <div className="container-brand">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
-          <div
-            className="aspect-[4/3] flex items-center justify-center"
-            style={{borderRadius: '32px', backgroundColor: 'var(--color-surface)'}}
-          >
-            <SublimationMark />
-          </div>
-          <div>
-            <p
-              className="text-xs tracking-widest uppercase mb-4"
-              style={{color: 'var(--color-primary)'}}
-            >
-              {eyebrow}
-            </p>
-            <h2
-              className="mb-6"
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: 'clamp(1.75rem, 3.4vw, 2.75rem)',
-                lineHeight: 1.35,
-                color: 'var(--color-text)',
-              }}
-            >
-              {heading.map((line, i) => (
-                <span key={i} className="block">
-                  {line}
-                </span>
-              ))}
-            </h2>
-            <p
-              className="text-sm leading-loose"
-              style={{fontFamily: 'var(--font-body)', color: 'var(--color-text-muted)'}}
-            >
-              {body}
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function SublimationMark() {
-  return (
-    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" aria-hidden="true">
-      <circle cx="46" cy="46" r="34" fill="var(--color-primary)" opacity="0.85" />
-      <circle cx="74" cy="52" r="30" fill="var(--color-accent)" opacity="0.75" />
-      <circle cx="58" cy="78" r="26" fill="var(--color-secondary)" opacity="0.7" />
-    </svg>
   );
 }
 
