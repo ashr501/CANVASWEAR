@@ -449,3 +449,22 @@ export const CATEGORY_PRODUCTS_QUERY = `#graphql
   }
   ${PRODUCT_CARD_FRAGMENT}
 `;
+
+/** トップページで動画つき商品を先に見せるための検索。
+ *  コレクションから60件取って絞る方式だと、動画つきは全体の2割弱なので
+ *  先頭に1件も入らないことがある。「動画あり」タグで直接引く。 */
+export const VIDEO_TAGGED_PRODUCTS_QUERY = `#graphql
+  query VideoTaggedProducts(
+    $query: String!
+    $first: Int!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(first: $first, query: $query) {
+      nodes {
+        ...ProductCard
+      }
+    }
+  }
+  ${PRODUCT_CARD_FRAGMENT}
+`;

@@ -2,7 +2,11 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, useOutletContext, Link} from '@remix-run/react';
 import {Suspense} from 'react';
 import {getSeoMeta} from '@shopify/hydrogen';
-import {HOME_PRODUCTS_QUERY, CATEGORY_PRODUCTS_QUERY} from '~/lib/queries';
+import {
+  HOME_PRODUCTS_QUERY,
+  CATEGORY_PRODUCTS_QUERY,
+  VIDEO_TAGGED_PRODUCTS_QUERY,
+} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 import {getBrandConfig} from '~/lib/brand.server';
@@ -48,29 +52,47 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       ? requestedCat
       : brand.collections.all;
 
-  // 動画つき商品を先に見せたいので、8件だけ取らずに多めに取ってから並べ替える。
-  // 動画は全商品のごく一部なので、8件だけ取ると動画つきが1つも入らないことが多い。
-  const categoryProducts = storefront
-    .query(CATEGORY_PRODUCTS_QUERY, {
+  // 動画つき商品を先に見せる。全949件中172件しか動画がないため、コレクションから
+  // 60件取って絞る方式では先頭に1件も入らなかった。「動画あり」タグで直接引き、
+  // 足りない分だけコレクションの通常商品で埋める。
+  const HOME_TILE_COUNT = 8;
+  const categoryLabel = brand.nav.find((n) => n.handle === activeCat)?.label;
+  // カテゴリ選択中はそのカテゴリの動画つき商品に絞る（「すべて」なら絞らない）
+  const videoQuery =
+    activeCat === brand.collections.all
+      ? 'tag:動画あり'
+      : `tag:動画あり AND tag:'${categoryLabel}'`;
+
+  const categoryProducts = Promise.all([
+    storefront.query(VIDEO_TAGGED_PRODUCTS_QUERY, {
       variables: {
-        handle: activeCat,
-        first: 60,
+        query: videoQuery,
+        first: HOME_TILE_COUNT,
         country: storefront.i18n.country,
         language: storefront.i18n.language,
       },
       cache: storefront.CacheShort(),
-    })
-    .then((data: any) => {
-      const nodes = data?.collection?.products?.nodes ?? [];
-      const hasVideo = (p: any) =>
-        (p.media?.nodes ?? []).some((m: any) => m.__typename === 'Video');
-      // 動画つきを前に、それ以外は元の並び順のまま。同順位の入れ替えは起きない。
-      const sorted = [
-        ...nodes.filter(hasVideo),
-        ...nodes.filter((p: any) => !hasVideo(p)),
-      ];
-      return {collection: {products: {nodes: sorted.slice(0, 8)}}};
-    });
+    }),
+    storefront.query(CATEGORY_PRODUCTS_QUERY, {
+      variables: {
+        handle: activeCat,
+        first: HOME_TILE_COUNT * 2,
+        country: storefront.i18n.country,
+        language: storefront.i18n.language,
+      },
+      cache: storefront.CacheShort(),
+    }),
+  ]).then(([tagged, collection]: any[]) => {
+    const withVideo = tagged?.products?.nodes ?? [];
+    const rest = collection?.collection?.products?.nodes ?? [];
+    const seen = new Set(withVideo.map((p: any) => p.id));
+    const filler = rest.filter((p: any) => !seen.has(p.id));
+    return {
+      collection: {
+        products: {nodes: [...withVideo, ...filler].slice(0, HOME_TILE_COUNT)},
+      },
+    };
+  });
 
   const origin = originOf(request);
 
