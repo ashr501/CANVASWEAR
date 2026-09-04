@@ -43,6 +43,8 @@ export interface BrandCopy {
   heroSecondaryCta: string;
   /** 副CTAの遷移先。未指定なら全商品ページ（/products）。 */
   heroSecondaryHref?: string;
+  /** ヒーローに敷く横長のビジュアル。未指定なら商品画像を出す。 */
+  heroImage?: {url: string; alt: string};
   featuredEyebrow: string;
   featuredHeading: string;
   newEyebrow: string;
@@ -324,6 +326,10 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
       heroPrimaryCta: '商品を見る',
       heroSecondaryCta: '動画で見る',
       heroSecondaryHref: '/videos',
+      heroImage: {
+        url: 'https://cdn.shopify.com/s/files/1/0551/5549/1004/files/canvaswears-hero-lineup.jpg?v=1788498734',
+        alt: '同じ柄をプリントしたバケットハット・キャップ・トートバッグ・パーカー・ジャケット・エプロン・ドレス',
+      },
     },
     theme: {
       cssVars: {

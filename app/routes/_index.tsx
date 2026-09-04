@@ -732,10 +732,31 @@ function CategoryTabs({
 function CanvaswearHero({brand, products}: {brand: PublicBrand; products: any}) {
   const heading = brand.heroHeading ?? [brand.taglineJa];
 
+  const heroImage = brand.copy.heroImage;
+
   return (
-    <section className="relative overflow-hidden" style={{backgroundColor: 'var(--color-bg)'}}>
-      <div className="container-brand py-14 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+    <section
+      className="relative overflow-hidden"
+      style={{
+        // ラインナップ画像は白背景なので、セクションもそろえないと
+        // 画像の上端に色の境目が線となって出てしまう
+        backgroundColor: heroImage ? '#FFFFFF' : 'var(--color-bg)',
+      }}
+    >
+      <div
+        className={clsx(
+          'container-brand',
+          // 画像は下に全幅で敷くので、そのぶん下の余白を詰める
+          heroImage ? 'pt-14 pb-8 md:pt-20 md:pb-10' : 'py-14 md:py-24',
+        )}
+      >
+        <div
+          className={clsx(
+            heroImage
+              ? 'max-w-2xl'
+              : 'grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center',
+          )}
+        >
           <div>
             <span
               className="inline-block px-4 py-1.5 rounded-full text-xs tracking-[0.2em] uppercase mb-6"
@@ -788,6 +809,7 @@ function CanvaswearHero({brand, products}: {brand: PublicBrand; products: any}) 
             </div>
           </div>
 
+          {heroImage ? null : (
           <div className="relative aspect-[4/5] md:aspect-[4/5] max-h-[440px]">
             <Suspense fallback={<HeroImageSkeleton />}>
               <Await resolve={products}>
@@ -818,8 +840,23 @@ function CanvaswearHero({brand, products}: {brand: PublicBrand; products: any}) 
               </Await>
             </Suspense>
           </div>
+          )}
         </div>
       </div>
+
+      {/* 同じ柄が帽子からドレスまで展開できることを一目で見せる。
+          横長なので2カラムの右側ではなく、テキストの下に全幅で敷く。 */}
+      {heroImage && (
+        <img
+          src={heroImage.url}
+          alt={heroImage.alt}
+          width={1600}
+          height={967}
+          className="w-full h-auto block"
+          loading="eager"
+          fetchPriority="high"
+        />
+      )}
     </section>
   );
 }
