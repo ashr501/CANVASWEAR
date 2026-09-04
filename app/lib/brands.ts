@@ -41,6 +41,8 @@ export interface BrandCopy {
   heroEyebrow: string;
   heroPrimaryCta: string;
   heroSecondaryCta: string;
+  /** 副CTAの遷移先。未指定なら全商品ページ（/products）。 */
+  heroSecondaryHref?: string;
   featuredEyebrow: string;
   featuredHeading: string;
   newEyebrow: string;
@@ -319,8 +321,9 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
       featuredHeading: 'ピックアップ',
       allItemsEyebrow: 'ALL PRINTS',
       allItemsHeading: 'すべての柄',
-      heroPrimaryCta: '柄を見る',
-      heroSecondaryCta: 'データを入稿する',
+      heroPrimaryCta: '商品を見る',
+      heroSecondaryCta: '動画で見る',
+      heroSecondaryHref: '/videos',
     },
     theme: {
       cssVars: {

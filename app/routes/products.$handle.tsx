@@ -506,6 +506,15 @@ export default function ProductDetail() {
                     : 'ファイルを選ぶ（PNG / JPEG・20MBまで）'}
                 </label>
 
+                {/* 権利侵害データは製作を中止せざるを得ず、受注生産のため返金もできない。
+                    FAQまで読まない人が多いので、実際に入稿するこの場所にも出す。 */}
+                <p
+                  className="mt-2 text-xs leading-relaxed"
+                  style={{color: 'var(--color-primary)'}}
+                >
+                  キャラクター・ブランドロゴ・芸能人の写真など、著作権のあるデータはお受けできません。
+                </p>
+
                 {printFile && (
                   <div className="flex items-center gap-3 mt-3">
                     <img

@@ -271,7 +271,7 @@ function SplitHero({brand, products}: {brand: PublicBrand; products: any}) {
               >
                 {brand.copy.heroPrimaryCta}
               </Link>
-              <Link to="/products" className="btn-outline">
+              <Link to={brand.copy.heroSecondaryHref ?? '/products'} className="btn-outline">
                 {brand.copy.heroSecondaryCta}
               </Link>
             </div>
@@ -437,7 +437,7 @@ function HeroSection({
               >
                 {brand.copy.heroPrimaryCta}
               </Link>
-              <Link to="/products" className="btn-outline">
+              <Link to={brand.copy.heroSecondaryHref ?? '/products'} className="btn-outline">
                 {brand.copy.heroSecondaryCta}
               </Link>
             </div>
@@ -475,7 +475,7 @@ function HeroSection({
               >
                 {brand.copy.heroPrimaryCta}
               </Link>
-              <Link to="/products" className="btn-outline">
+              <Link to={brand.copy.heroSecondaryHref ?? '/products'} className="btn-outline">
                 {brand.copy.heroSecondaryCta}
               </Link>
             </div>
@@ -760,7 +760,7 @@ function CanvaswearHero({brand, products}: {brand: PublicBrand; products: any}) 
               <Link to={`/collections/${brand.collections.all}`} className="btn-primary">
                 {brand.copy.heroPrimaryCta}
               </Link>
-              <Link to="/products" className="btn-outline">
+              <Link to={brand.copy.heroSecondaryHref ?? '/products'} className="btn-outline">
                 {brand.copy.heroSecondaryCta}
               </Link>
             </div>
