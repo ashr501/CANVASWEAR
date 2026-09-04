@@ -2,7 +2,7 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, useOutletContext, Link} from '@remix-run/react';
 import {Suspense} from 'react';
 import {getSeoMeta} from '@shopify/hydrogen';
-import {HOME_PRODUCTS_QUERY, COLLECTION_QUERY} from '~/lib/queries';
+import {HOME_PRODUCTS_QUERY, CATEGORY_PRODUCTS_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 import {getBrandConfig} from '~/lib/brand.server';
@@ -48,15 +48,29 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       ? requestedCat
       : brand.collections.all;
 
-  const categoryProducts = storefront.query(COLLECTION_QUERY, {
-    variables: {
-      handle: activeCat,
-      first: 8,
-      country: storefront.i18n.country,
-      language: storefront.i18n.language,
-    },
-    cache: storefront.CacheShort(),
-  });
+  // 動画つき商品を先に見せたいので、8件だけ取らずに多めに取ってから並べ替える。
+  // 動画は全商品のごく一部なので、8件だけ取ると動画つきが1つも入らないことが多い。
+  const categoryProducts = storefront
+    .query(CATEGORY_PRODUCTS_QUERY, {
+      variables: {
+        handle: activeCat,
+        first: 60,
+        country: storefront.i18n.country,
+        language: storefront.i18n.language,
+      },
+      cache: storefront.CacheShort(),
+    })
+    .then((data: any) => {
+      const nodes = data?.collection?.products?.nodes ?? [];
+      const hasVideo = (p: any) =>
+        (p.media?.nodes ?? []).some((m: any) => m.__typename === 'Video');
+      // 動画つきを前に、それ以外は元の並び順のまま。同順位の入れ替えは起きない。
+      const sorted = [
+        ...nodes.filter(hasVideo),
+        ...nodes.filter((p: any) => !hasVideo(p)),
+      ];
+      return {collection: {products: {nodes: sorted.slice(0, 8)}}};
+    });
 
   const origin = originOf(request);
 

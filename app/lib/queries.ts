@@ -424,3 +424,28 @@ export const CART_QUERY = `#graphql
     }
   }
 `;
+
+/** トップページ用。動画を持つ商品を優先して並べたいので、カード表示に必要な情報に
+ *  加えて「動画があるか」だけを取る。sourcesまで取ると重いのでVideoのidだけ見る。 */
+export const CATEGORY_PRODUCTS_QUERY = `#graphql
+  query CategoryProducts(
+    $handle: String!
+    $first: Int!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: $first) {
+        nodes {
+          ...ProductCard
+          media(first: 30) {
+            nodes {
+              __typename
+            }
+          }
+        }
+      }
+    }
+  }
+  ${PRODUCT_CARD_FRAGMENT}
+`;
