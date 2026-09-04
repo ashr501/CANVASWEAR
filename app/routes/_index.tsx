@@ -31,6 +31,17 @@ export const meta = ({data}: any) =>
       : undefined,
   });
 
+/** 並びを毎回変えるためのシャッフル（Fisher-Yates）。
+ *  サーバー側で決めた並びをそのまま返すので、画面のちらつきは起きない。 */
+function shuffle<T>(items: T[]): T[] {
+  const a = [...items];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
   const {storefront} = context;
@@ -63,11 +74,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       ? 'tag:動画あり'
       : `tag:動画あり AND tag:'${categoryLabel}'`;
 
+  // アクセスのたびに違う商品を見せたいので、表示数より多めに取ってから毎回選び直す。
+  // 取得結果はキャッシュに載せたまま、選び直しだけをリクエストごとに行うので
+  // APIの呼び出し回数は増えない。
+  const POOL_SIZE = 50;
+
   const categoryProducts = Promise.all([
     storefront.query(VIDEO_TAGGED_PRODUCTS_QUERY, {
       variables: {
         query: videoQuery,
-        first: HOME_TILE_COUNT,
+        first: POOL_SIZE,
         country: storefront.i18n.country,
         language: storefront.i18n.language,
       },
@@ -76,17 +92,18 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     storefront.query(CATEGORY_PRODUCTS_QUERY, {
       variables: {
         handle: activeCat,
-        first: HOME_TILE_COUNT * 2,
+        first: POOL_SIZE,
         country: storefront.i18n.country,
         language: storefront.i18n.language,
       },
       cache: storefront.CacheShort(),
     }),
   ]).then(([tagged, collection]: any[]) => {
-    const withVideo = tagged?.products?.nodes ?? [];
+    const withVideo = shuffle(tagged?.products?.nodes ?? []);
     const rest = collection?.collection?.products?.nodes ?? [];
     const seen = new Set(withVideo.map((p: any) => p.id));
-    const filler = rest.filter((p: any) => !seen.has(p.id));
+    // 動画つきを先に見せ、8件に足りないぶんだけ通常商品で埋める
+    const filler = shuffle(rest.filter((p: any) => !seen.has(p.id)));
     return {
       collection: {
         products: {nodes: [...withVideo, ...filler].slice(0, HOME_TILE_COUNT)},
@@ -680,6 +697,14 @@ function CanvaswearHome({
               }}
             </Await>
           </Suspense>
+
+          {/* ここに出せるのは8件だけなので、続きへ進む導線を商品の真下にも置く。
+              見出し右のリンクはスマホでは出ないため、こちらが主な導線になる。 */}
+          <div className="mt-10 text-center">
+            <Link to={`/collections/${activeCat}`} className="btn-outline">
+              {isAll ? '全商品を見る' : `${activeLabel}をすべて見る`}
+            </Link>
+          </div>
         </div>
       </section>
 
