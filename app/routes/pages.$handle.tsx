@@ -123,6 +123,21 @@ const PAGES: Record<
               className="w-32 h-32"
               style={{border: '1px solid var(--color-border)', borderRadius: 'var(--radius)'}}
             />
+            {/* スマホで見ている人は自分の画面のQRを読み取れないので、
+                タップで友だち追加できるリンクも並べる。 */}
+            <a
+              href="https://page.line.me/073kjywk"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block mt-3 px-5 py-2 text-sm font-medium transition-opacity hover:opacity-80"
+              style={{
+                backgroundColor: '#06C755',
+                color: '#fff',
+                borderRadius: 'var(--radius)',
+              }}
+            >
+              LINEで友だち追加
+            </a>
           </div>
           <div>
             <p className="text-xs tracking-widest uppercase mb-1" style={{color: 'var(--color-primary)'}}>
