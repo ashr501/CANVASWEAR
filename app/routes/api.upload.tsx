@@ -1,5 +1,5 @@
 import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
-import {uploadPrintFile, UploadError} from '~/lib/r2.server';
+import {uploadPrintFile, UploadError} from '~/lib/shopify-files.server';
 
 /**
  * カスタムプリントの入稿ファイル受け口。

@@ -27,12 +27,10 @@ declare global {
     // Brand 4: CANVASWEAR (custom-print)
     BRAND4_STORE_DOMAIN: string;
     BRAND4_STOREFRONT_API_TOKEN: string;
-    // Cloudflare R2: カスタムプリントの入稿ファイル保管先
-    R2_ACCOUNT_ID: string;
-    R2_ACCESS_KEY_ID: string;
-    R2_SECRET_ACCESS_KEY: string;
-    R2_BUCKET: string;
-    R2_PUBLIC_BASE_URL: string;
+    // カスタムプリントの入稿ファイルをShopifyのファイルに保存するための
+    // Admin APIカスタムアプリ（client_credentials）
+    ALOLORE_ADMIN_CLIENT_ID: string;
+    ALOLORE_ADMIN_CLIENT_SECRET: string;
   }
 }
 
