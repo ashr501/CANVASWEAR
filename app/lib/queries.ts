@@ -468,3 +468,40 @@ export const VIDEO_TAGGED_PRODUCTS_QUERY = `#graphql
   }
   ${PRODUCT_CARD_FRAGMENT}
 `;
+
+/** お知らせ一覧（/news）。新商品の記事は非公開リポジトリの日次処理が作る。 */
+export const NEWS_LIST_QUERY = `#graphql
+  query NewsList($blog: String!, $country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    blog(handle: $blog) {
+      articles(first: 50, sortKey: PUBLISHED_AT, reverse: true) {
+        nodes {
+          handle
+          title
+          excerpt
+          publishedAt
+          image { url altText }
+        }
+      }
+    }
+  }
+`;
+
+export const NEWS_ARTICLE_QUERY = `#graphql
+  query NewsArticle(
+    $blog: String!
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    blog(handle: $blog) {
+      articleByHandle(handle: $handle) {
+        title
+        excerpt
+        publishedAt
+        contentHtml
+        image { url altText }
+      }
+    }
+  }
+`;

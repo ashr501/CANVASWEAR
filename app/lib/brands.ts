@@ -87,6 +87,8 @@ export interface BrandDefinition {
     /** 「全商品」ページとナビの起点になるコレクション */
     all: string;
   };
+  /** お知らせ（/news）に表示するShopifyブログのhandle。未指定ならお知らせページを出さない */
+  newsBlog?: string;
   /** ヘッダー/フッターに並べるカテゴリ */
   nav: BrandNavItem[];
   concept: BrandConcept;
@@ -295,6 +297,9 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
       newArrivals: 'custom-print',
       all: 'custom-print',
     },
+    // 同じストアにAlo Loreの "news" ブログがあるため、CANVASWEARS専用のブログを使う。
+    // 新商品の記事は canvaswears-catalog-log（非公開リポジトリ）が毎日自動で作る。
+    newsBlog: 'canvaswears-news',
     // Alolore（msgreenery）ストアの「カスタムプリント」コレクション配下、
     // 既存タグによるカテゴリー分けをそのままナビに反映
     nav: [
@@ -374,6 +379,7 @@ export type PublicBrand = Pick<
   | 'copy'
   | 'concept'
   | 'collections'
+  | 'newsBlog'
 > & {googleFonts: string};
 
 export const BRAND_IDS = Object.keys(BRANDS) as BrandId[];

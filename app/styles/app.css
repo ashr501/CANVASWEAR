@@ -375,3 +375,6 @@
   background: var(--color-border);
   border-radius: 2px;
 }
+
+/* お知らせ本文。記事の段落どうしに余白を取る（本文はShopify側のHTML） */
+.news-body p { margin-bottom: 1.5rem; }

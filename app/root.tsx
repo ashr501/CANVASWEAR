@@ -49,6 +49,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       copy: brand.copy,
       concept: brand.concept,
       collections: brand.collections,
+      newsBlog: brand.newsBlog,
       googleFonts: brand.theme.googleFonts,
     },
     cart,

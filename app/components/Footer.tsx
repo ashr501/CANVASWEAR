@@ -57,6 +57,7 @@ export default function Footer({brand}: FooterProps) {
                 })),
                 {label: brand.copy.navAllItems, href: '/products'},
                 {label: '動画でみる', href: '/videos'},
+                ...(brand.newsBlog ? [{label: 'お知らせ・新商品', href: '/news'}] : []),
               ].map(({label, href}) => (
                 <li key={href}>
                   <Link
