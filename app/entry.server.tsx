@@ -12,6 +12,10 @@ export default async function handleRequest(
   remixContext: EntryContext,
   context: AppLoadContext,
 ) {
+  // 入稿ファイル（R2）のプレビューを商品ページに表示するため、保管先の公開URLを画像の許可元に加える。
+  // 環境変数から読むので、r2.dev から独自ドメインに切り替えても追従する。
+  const uploadOrigin = originOrNull(context.env.R2_PUBLIC_BASE_URL);
+
   const {nonce, header} = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_STORE_DOMAIN,
@@ -20,7 +24,13 @@ export default async function handleRequest(
     styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
     fontSrc: ["'self'", 'https://fonts.gstatic.com'],
     // LINE公式アカウントのQRコード画像（お問い合わせページ）を許可
-    imgSrc: ["'self'", 'data:', 'https://cdn.shopify.com', 'https://qr-official.line.me'],
+    imgSrc: [
+      "'self'",
+      'data:',
+      'https://cdn.shopify.com',
+      'https://qr-official.line.me',
+      ...(uploadOrigin ? [uploadOrigin] : []),
+    ],
     // 商品動画は cdn.shopify.com ではなくストアのプライマリドメイン
     // (alolore.shop/cdn/shop/videos/...) から配信される。media-src を指定しないと
     // default-src にフォールバックしてブラウザにブロックされ、動画が再生できない。
@@ -53,4 +63,13 @@ export default async function handleRequest(
     headers: responseHeaders,
     status: responseStatusCode,
   });
+}
+
+function originOrNull(url: string | undefined): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url).origin;
+  } catch {
+    return null;
+  }
 }
