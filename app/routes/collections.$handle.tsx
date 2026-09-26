@@ -1,5 +1,6 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData, useOutletContext} from '@remix-run/react';
+import {Await, useLoaderData, useOutletContext} from '@remix-run/react';
+import {Suspense} from 'react';
 import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen';
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
@@ -9,6 +10,8 @@ import {getBrandConfig} from '~/lib/brand.server';
 import {getSortVariables} from '~/lib/sort';
 import {breadcrumbJsonLd, originOf, stripHtml, titleTemplate} from '~/lib/seo';
 import clsx from 'clsx';
+import {countCollection} from '~/lib/counts.server';
+import {formatCount} from '~/lib/format';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 export const meta = ({data}: any) => {
@@ -78,6 +81,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   if (!collection.collection) throw new Response('Not found', {status: 404});
 
   return defer({
+    // 総件数は数えるのに時間がかかるので、一覧を先に返して後から流し込む
+    count: countCollection(context.storefront, handle).catch(() => null),
     collection: collection.collection,
     brandId: brand.id,
     brandName: brand.name,
@@ -88,7 +93,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export default function CollectionPage() {
-  const {collection, brandId, handle} = useLoaderData<typeof loader>();
+  const {collection, brandId, handle, count} = useLoaderData<typeof loader>();
   const {brand} = useOutletContext<{brand: PublicBrand}>();
   const isAvantGarde = isBoldBrand(brandId);
 
@@ -119,6 +124,17 @@ export default function CollectionPage() {
           >
             {collection.title}
           </h1>
+          <Suspense fallback={null}>
+            <Await resolve={count}>
+              {(n: number | null) =>
+                n ? (
+                  <p className="mt-2 text-sm" style={{color: 'var(--color-text-muted)'}}>
+                    全{formatCount(n)}点
+                  </p>
+                ) : null
+              }
+            </Await>
+          </Suspense>
           {collection.description && (
             <p
               className="mt-4 text-sm leading-loose max-w-xl"

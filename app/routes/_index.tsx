@@ -9,6 +9,8 @@ import {
   NEWS_LIST_QUERY,
 } from '~/lib/queries';
 import {formatNewsDate} from '~/lib/news';
+import {formatCount} from '~/lib/format';
+import {countCollections} from '~/lib/counts.server';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 import {getBrandConfig} from '~/lib/brand.server';
@@ -128,6 +130,15 @@ export async function loader({request, context}: LoaderFunctionArgs) {
         .catch(() => [])
     : Promise.resolve([]);
 
+  // 商品数（全体とカテゴリごと）。数えるのに時間がかかるので待たずにページを返し、あとから流し込む。
+  const counts: Promise<Record<string, number>> =
+    brand.id === 'custom-print'
+      ? countCollections(storefront, [
+          brand.collections.all,
+          ...brand.nav.map((n) => n.handle),
+        ]).catch(() => ({}))
+      : Promise.resolve({});
+
   const origin = originOf(request);
 
   // brandをそのまま返すとStorefrontトークンまでブラウザに渡ってしまうので、
@@ -137,6 +148,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     categoryProducts,
     activeCat,
     news,
+    counts,
     brandId: brand.id,
     seoTitle: `${brand.nameJa}｜${brand.taglineJa}`,
     seoDescription:
@@ -155,7 +167,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 }
 
 export default function Index() {
-  const {products, categoryProducts, activeCat, news, brandId} =
+  const {products, categoryProducts, activeCat, news, counts, brandId} =
     useLoaderData<typeof loader>();
   const {brand} = useOutletContext<{brand: PublicBrand; onCartOpen: () => void}>();
 
@@ -167,6 +179,7 @@ export default function Index() {
         categoryProducts={categoryProducts}
         activeCat={activeCat}
         news={news}
+        counts={counts}
       />
     );
   }
@@ -673,12 +686,14 @@ function CanvaswearHome({
   categoryProducts,
   activeCat,
   news,
+  counts,
 }: {
   brand: PublicBrand;
   products: any;
   categoryProducts: any;
   activeCat: string;
   news: Promise<any[]>;
+  counts: Promise<Record<string, number>>;
 }) {
   const copy = brand.copy;
   const isAll = activeCat === brand.collections.all;
@@ -686,7 +701,7 @@ function CanvaswearHome({
 
   return (
     <div>
-      <CanvaswearHero brand={brand} products={products} />
+      <CanvaswearHero brand={brand} products={products} counts={counts} />
       <InfoBanner />
 
       {/* カテゴリを選んで商品を切り替えられるセクション。
@@ -708,7 +723,23 @@ function CanvaswearHome({
             viewAllLabel={copy.viewAll}
           />
 
-          <CategoryTabs nav={brand.nav} allHandle={brand.collections.all} activeCat={activeCat} />
+          {/* 件数は後から届くので、それまでは件数なしのタブを出しておく（タブ自体は待たせない） */}
+          <Suspense
+            fallback={
+              <CategoryTabs nav={brand.nav} allHandle={brand.collections.all} activeCat={activeCat} />
+            }
+          >
+            <Await resolve={counts}>
+              {(c: Record<string, number>) => (
+                <CategoryTabs
+                  nav={brand.nav}
+                  allHandle={brand.collections.all}
+                  activeCat={activeCat}
+                  counts={c}
+                />
+              )}
+            </Await>
+          </Suspense>
 
           <Suspense fallback={<ProductGridSkeleton />}>
             <Await resolve={categoryProducts}>
@@ -795,10 +826,12 @@ function CategoryTabs({
   nav,
   allHandle,
   activeCat,
+  counts,
 }: {
   nav: PublicBrand['nav'];
   allHandle: string;
   activeCat: string;
+  counts?: Record<string, number>;
 }) {
   const tabs = [{label: 'すべて', handle: allHandle}, ...nav];
 
@@ -821,6 +854,11 @@ function CategoryTabs({
             }}
           >
             {label}
+            {counts?.[handle] != null && (
+              <span className="ml-1.5" style={{opacity: 0.6}}>
+                {formatCount(counts[handle])}
+              </span>
+            )}
           </Link>
         );
       })}
@@ -830,7 +868,15 @@ function CategoryTabs({
 
 /** ヒーロー: 2カラム（左に和文コピー、右に実商品の角丸大判画像）。design.mdの
  *  「Hero: 2-column asymmetric grid + deeply rounded image」を再現。 */
-function CanvaswearHero({brand, products}: {brand: PublicBrand; products: any}) {
+function CanvaswearHero({
+  brand,
+  products,
+  counts,
+}: {
+  brand: PublicBrand;
+  products: any;
+  counts: Promise<Record<string, number>>;
+}) {
   const heading = brand.heroHeading ?? [brand.taglineJa];
 
   const heroImage = brand.copy.heroImage;
@@ -907,6 +953,44 @@ function CanvaswearHero({brand, products}: {brand: PublicBrand; products: any}) 
               <Link to={brand.copy.heroSecondaryHref ?? '/products'} className="btn-outline">
                 {brand.copy.heroSecondaryCta}
               </Link>
+            </div>
+            {/* 品ぞろえの多さを最初に伝える。件数が届くまでは何も出さない（高さは確保してレイアウトが跳ねないようにする） */}
+            <div className="mt-8 min-h-[3rem]">
+              <Suspense fallback={null}>
+                <Await resolve={counts}>
+                  {(c: Record<string, number>) => {
+                    const total = c[brand.collections.all];
+                    if (!total) return null;
+                    return (
+                      <dl className="flex flex-wrap gap-x-8 gap-y-3">
+                        {[
+                          [formatCount(total), 'アイテム'],
+                          [String(brand.nav.length), 'カテゴリ'],
+                          ['1', '点から製作'],
+                        ].map(([num, unit]) => (
+                          <div key={unit} className="flex items-baseline gap-1">
+                            <dt className="sr-only">{unit}</dt>
+                            <dd
+                              style={{
+                                fontFamily: 'var(--font-heading)',
+                                fontWeight: 700,
+                                fontSize: '1.75rem',
+                                lineHeight: 1,
+                                color: 'var(--color-primary)',
+                              }}
+                            >
+                              {num}
+                            </dd>
+                            <span className="text-xs" style={{color: 'var(--color-text-muted)'}}>
+                              {unit}
+                            </span>
+                          </div>
+                        ))}
+                      </dl>
+                    );
+                  }}
+                </Await>
+              </Suspense>
             </div>
           </div>
 
