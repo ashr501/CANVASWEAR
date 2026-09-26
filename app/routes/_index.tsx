@@ -6,7 +6,9 @@ import {
   HOME_PRODUCTS_QUERY,
   CATEGORY_PRODUCTS_QUERY,
   VIDEO_TAGGED_PRODUCTS_QUERY,
+  NEWS_LIST_QUERY,
 } from '~/lib/queries';
+import {formatNewsDate} from '~/lib/news';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 import {getBrandConfig} from '~/lib/brand.server';
@@ -111,6 +113,21 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     };
   });
 
+  // トップに出す最新のお知らせ。取得に失敗してもトップページ自体は表示したいので空で返す。
+  const news = brand.newsBlog
+    ? storefront
+        .query(NEWS_LIST_QUERY, {
+          variables: {
+            blog: brand.newsBlog,
+            country: storefront.i18n.country,
+            language: storefront.i18n.language,
+          },
+          cache: storefront.CacheShort(),
+        })
+        .then((data: any) => (data?.blog?.articles?.nodes ?? []).slice(0, 3))
+        .catch(() => [])
+    : Promise.resolve([]);
+
   const origin = originOf(request);
 
   // brandをそのまま返すとStorefrontトークンまでブラウザに渡ってしまうので、
@@ -119,6 +136,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     products,
     categoryProducts,
     activeCat,
+    news,
     brandId: brand.id,
     seoTitle: `${brand.nameJa}｜${brand.taglineJa}`,
     seoDescription:
@@ -137,7 +155,8 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 }
 
 export default function Index() {
-  const {products, categoryProducts, activeCat, brandId} = useLoaderData<typeof loader>();
+  const {products, categoryProducts, activeCat, news, brandId} =
+    useLoaderData<typeof loader>();
   const {brand} = useOutletContext<{brand: PublicBrand; onCartOpen: () => void}>();
 
   if (brandId === 'custom-print') {
@@ -147,6 +166,7 @@ export default function Index() {
         products={products}
         categoryProducts={categoryProducts}
         activeCat={activeCat}
+        news={news}
       />
     );
   }
@@ -652,11 +672,13 @@ function CanvaswearHome({
   products,
   categoryProducts,
   activeCat,
+  news,
 }: {
   brand: PublicBrand;
   products: any;
   categoryProducts: any;
   activeCat: string;
+  news: Promise<any[]>;
 }) {
   const copy = brand.copy;
   const isAll = activeCat === brand.collections.all;
@@ -708,8 +730,62 @@ function CanvaswearHome({
         </div>
       </section>
 
+      <Suspense fallback={null}>
+        <Await resolve={news}>
+          {(articles: any[]) => <NewsSection articles={articles} viewAllLabel={copy.viewAll} />}
+        </Await>
+      </Suspense>
+
       <FaqSection />
     </div>
+  );
+}
+
+/** トップの「お知らせ」欄。最新3件の日付とタイトルだけを並べ、詳細は /news へ送る。
+ *  記事がなければ欄ごと出さない。 */
+function NewsSection({articles, viewAllLabel}: {articles: any[]; viewAllLabel: string}) {
+  if (!articles?.length) return null;
+
+  return (
+    <section className="section-pad">
+      <div className="container-brand max-w-3xl mx-auto">
+        <SectionHeading
+          eyebrow="NEWS"
+          heading="お知らせ"
+          viewAllHref="/news"
+          viewAllLabel={viewAllLabel}
+        />
+        <ul style={{borderTop: '1px solid var(--color-border)'}}>
+          {articles.map((article) => (
+            <li key={article.handle} style={{borderBottom: '1px solid var(--color-border)'}}>
+              <Link
+                to={`/news/${article.handle}`}
+                className="flex flex-col md:flex-row md:items-center gap-1 md:gap-6 py-5 group"
+              >
+                <time
+                  dateTime={article.publishedAt}
+                  className="text-xs shrink-0 md:w-32"
+                  style={{color: 'var(--color-text-muted)'}}
+                >
+                  {formatNewsDate(article.publishedAt)}
+                </time>
+                <span
+                  className="text-sm md:text-base group-hover:opacity-70 transition-opacity"
+                  style={{color: 'var(--color-text)'}}
+                >
+                  {article.title}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-8 text-center md:hidden">
+          <Link to="/news" className="btn-outline">
+            お知らせをすべて見る
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 
