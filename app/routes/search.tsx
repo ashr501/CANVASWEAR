@@ -22,7 +22,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
   const url = new URL(request.url);
   const term = url.searchParams.get('q')?.trim() ?? '';
-  const paginationVariables = getPaginationVariables(request, {pageBy: 24});
+  const paginationVariables = getPaginationVariables(request, {pageBy: 48});
 
   if (!term) {
     return defer({term, products: Promise.resolve({nodes: [], pageInfo: {}}), brandId: brand.id});

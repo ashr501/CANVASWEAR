@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData} from '@remix-run/react';
+import {Link, useLoaderData} from '@remix-run/react';
 import {getSeoMeta} from '@shopify/hydrogen';
 
 // エクラ株式会社の会社情報・特定商取引法表記・お問い合わせ等の静的ページ。
@@ -8,8 +8,94 @@ import {getSeoMeta} from '@shopify/hydrogen';
 // 配送日数・キャンセル規定はCANVASWEARS（受注生産のPOD）の実態に合わせて記載。
 const PAGES: Record<
   string,
-  {title: string; body: () => JSX.Element}
+  {title: string; description?: string; body: () => JSX.Element}
 > = {
+  // サービス紹介（About us）。会社情報の表は company、こちらは「何のお店か」を伝える。
+  // 数値や規定は配送ページ・FAQ・特商法ページの記載と揃えること。
+  about: {
+    title: 'CANVASWEARSについて',
+    description:
+      'CANVASWEARSは、お好きな写真やイラストを服や小物に1点からプリントしてお届けする、昇華プリントのオーダーメイドショップです。',
+    body: () => (
+      <div className="space-y-12 text-sm leading-loose" style={{color: 'var(--color-text)'}}>
+        <p className="text-base leading-loose">
+          CANVASWEARS（キャンバスウェアーズ）は、お好きな写真やイラストを、服や小物に
+          <strong>1点から</strong>
+          プリントしてお届けするオーダーメイドのお店です。服を一枚のキャンバスに見立てて、世界にひとつのアイテムをつくっていただけます。
+        </p>
+
+        <AboutBlock heading="昇華プリントでつくっています">
+          <p>
+            インクを熱で気体にして、生地の繊維そのものに染み込ませる印刷方法です。表面にインクの膜をのせるプリントと違い、プリント部分がごわつかず、洗濯を重ねてもひび割れや色落ちが起きにくいのが特長です。写真もイラストも、全面フルカラーで再現できます。
+          </p>
+        </AboutBlock>
+
+        <AboutBlock heading="選べるアイテム">
+          <p>
+            レディース・メンズ・キッズの服から、バッグ、シューズ、水着、ルームウェア、キッチン用品、ペット用品、雑貨まで、1,000点以上のアイテムにプリントできます。在庫の柄を持たないので、1点だけのご注文も、チームやイベントでのまとめてのご注文も承ります。
+          </p>
+          <p className="mt-3">
+            <Link to="/products" className="underline">
+              すべての商品を見る
+            </Link>
+          </p>
+        </AboutBlock>
+
+        <AboutBlock heading="ご注文の流れ">
+          <ol className="space-y-3">
+            {[
+              ['アイテムを選ぶ', 'プリントしたい商品とサイズを選びます。'],
+              [
+                'デザインを入稿する',
+                '商品ページからPNG・JPEGの画像（20MBまで）をアップロードします。',
+              ],
+              [
+                'ご要望を伝えて注文する',
+                '入れる文字や配置、色味のご希望があれば、ご要望欄にご記入ください。',
+              ],
+              [
+                '製作してお届け',
+                'ご注文を受けてから一点ずつ製作します。デザイン確定後、およそ1ヶ月でお届けします。',
+              ],
+            ].map(([title, text], i) => (
+              <li key={title} className="flex gap-4">
+                <span
+                  className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+                  style={{backgroundColor: 'var(--color-primary)', color: '#fff'}}
+                >
+                  {i + 1}
+                </span>
+                <span>
+                  <strong className="block">{title}</strong>
+                  {text}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </AboutBlock>
+
+        <AboutBlock heading="ご自身のデザインでお楽しみください">
+          <p>
+            キャラクターやブランドロゴ、芸能人の写真など、他の方に権利があるデータはお受けできません。ご自身で撮った写真や描いたイラスト、権利者の許可を得たデータでお作りください。
+          </p>
+        </AboutBlock>
+
+        <AboutBlock heading="運営について">
+          <p>
+            CANVASWEARSは、東京・白金台のエクラ株式会社が運営しています。ブライズメイドドレスやフラダンス衣装など、特別な日のための衣装を企画・販売してきた経験を活かし、「自分だけの一着」をもっと気軽につくれるお店を目指しています。
+          </p>
+          <p className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
+            <Link to="/pages/company" className="underline">
+              会社概要
+            </Link>
+            <Link to="/pages/contact" className="underline">
+              お問い合わせ
+            </Link>
+          </p>
+        </AboutBlock>
+      </div>
+    ),
+  },
   specified: {
     title: '特定商取引法に基づく表記',
     body: () => (
@@ -193,7 +279,7 @@ const PAGES: Record<
 
 export const meta = ({data}: any) => {
   const page = data?.handle ? PAGES[data.handle] : undefined;
-  return getSeoMeta({title: page?.title ?? 'ページ'});
+  return getSeoMeta({title: page?.title ?? 'ページ', description: page?.description});
 };
 
 export async function loader({params}: LoaderFunctionArgs) {
@@ -218,5 +304,25 @@ export default function StaticPage() {
         {page.body()}
       </div>
     </div>
+  );
+}
+
+/** 「CANVASWEARSについて」の見出しつき段落 */
+function AboutBlock({heading, children}: {heading: string; children: React.ReactNode}) {
+  return (
+    <section>
+      <h2
+        className="mb-3"
+        style={{
+          fontFamily: 'var(--font-heading)',
+          fontWeight: 700,
+          fontSize: '1.125rem',
+          color: 'var(--color-text)',
+        }}
+      >
+        {heading}
+      </h2>
+      {children}
+    </section>
   );
 }

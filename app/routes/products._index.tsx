@@ -23,7 +23,7 @@ export const meta = ({data}: any) =>
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
-  const paginationVariables = getPaginationVariables(request, {pageBy: 24});
+  const paginationVariables = getPaginationVariables(request, {pageBy: 48});
   const sortVariables = getSortVariables(new URL(request.url).searchParams.get('sort'));
 
   // 1つのShopifyストアを複数サイトで共有しているので、そのブランドの商品だけを

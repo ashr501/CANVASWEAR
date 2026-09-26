@@ -59,7 +59,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   if (!handle) throw new Response('Not found', {status: 404});
 
   const brand = getBrandConfig(context.env, request);
-  const paginationVariables = getPaginationVariables(request, {pageBy: 24});
+  const paginationVariables = getPaginationVariables(request, {pageBy: 48});
   const sortVariables = getSortVariables(new URL(request.url).searchParams.get('sort'));
 
   const collection = await context.storefront.query(COLLECTION_QUERY, {
