@@ -89,6 +89,12 @@ export interface BrandDefinition {
   };
   /** お知らせ（/news）に表示するShopifyブログのhandle。未指定ならお知らせページを出さない */
   newsBlog?: string;
+  /** お急ぎ仕上げ（特急製作）の追加料金。商品タグ「お急ぎ:大」「お急ぎ:小」で区分を決め、
+   *  対応するバリアントを本体と一緒にカートへ入れる。未指定なら選択肢を出さない */
+  expressFinishing?: {
+    small: {variantId: string; price: number};
+    large: {variantId: string; price: number};
+  };
   /** ヘッダー/フッターに並べるカテゴリ */
   nav: BrandNavItem[];
   concept: BrandConcept;
@@ -300,6 +306,11 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     // 同じストアにAlo Loreの "news" ブログがあるため、CANVASWEARS専用のブログを使う。
     // 新商品の記事は canvaswears-catalog-log（非公開リポジトリ）が毎日自動で作る。
     newsBlog: 'canvaswears-news',
+    // Shopify商品「お急ぎ仕上げ」(handle: express-finishing)。1点につき1つ追加する
+    expressFinishing: {
+      small: {variantId: 'gid://shopify/ProductVariant/67557588369708', price: 3000},
+      large: {variantId: 'gid://shopify/ProductVariant/67557588402476', price: 5000},
+    },
     // Alolore（msgreenery）ストアの「カスタムプリント」コレクション配下、
     // 既存タグによるカテゴリー分けをそのままナビに反映
     nav: [
@@ -380,6 +391,7 @@ export type PublicBrand = Pick<
   | 'concept'
   | 'collections'
   | 'newsBlog'
+  | 'expressFinishing'
 > & {googleFonts: string};
 
 export const BRAND_IDS = Object.keys(BRANDS) as BrandId[];

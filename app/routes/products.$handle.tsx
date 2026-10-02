@@ -18,7 +18,7 @@ import {PRODUCT_QUERY, RELATED_PRODUCTS_QUERY} from '~/lib/queries';
 import {getBrandConfig} from '~/lib/brand.server';
 import {stripHtml, titleTemplate, breadcrumbJsonLd, originOf} from '~/lib/seo';
 import clsx from 'clsx';
-import {isBoldBrand} from '~/lib/brands';
+import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 
@@ -182,7 +182,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function ProductDetail() {
   const {product, brandId, relatedProducts} = useLoaderData<typeof loader>();
-  const {onCartOpen} = useOutletContext<{onCartOpen: () => void}>();
+  const {onCartOpen, brand} = useOutletContext<{onCartOpen: () => void; brand: PublicBrand}>();
   const isAvantGarde = isBoldBrand(brandId);
   const [selectedImage, setSelectedImage] = useState(0);
   const [printNote, setPrintNote] = useState('');
@@ -191,6 +191,7 @@ export default function ProductDetail() {
   );
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [express, setExpress] = useState(false);
 
   const selectedVariant = product.selectedVariant ?? product.variants.nodes[0];
   const isAvailable = selectedVariant?.availableForSale;
@@ -221,7 +222,7 @@ export default function ProductDetail() {
     {
       icon: TRUST_ICONS.delivery,
       label: '納期',
-      text: '受注生産のため、ご注文から約1ヶ月でお届けします。',
+      text: '受注生産のため、ご注文から約1ヶ月でお届けします。お急ぎ仕上げ（1点ごとに追加料金）なら約2週間です。',
     },
     ...(materialTag
       ? [
@@ -244,6 +245,14 @@ export default function ProductDetail() {
     },
   ];
 
+  // お急ぎ仕上げ：商品タグ「お急ぎ:大」なら大、それ以外は小の料金。1点につき1つカートに入れる。
+  const expressTier = brand?.expressFinishing
+    ? product.tags.includes('お急ぎ:大')
+      ? {label: '大', ...brand.expressFinishing.large}
+      : {label: '小', ...brand.expressFinishing.small}
+    : null;
+  const expressOn = Boolean(isCustomPrint && expressTier && express);
+
   const attributes = isCustomPrint
     ? [
         ...(printFile
@@ -253,6 +262,9 @@ export default function ProductDetail() {
             ]
           : []),
         ...(printNote.trim() ? [{key: 'プリント内容', value: printNote.trim()}] : []),
+        ...(expressOn
+          ? [{key: 'お急ぎ仕上げ', value: `あり（+¥${expressTier!.price.toLocaleString('ja-JP')}）`}]
+          : []),
       ]
     : [];
 
@@ -576,6 +588,38 @@ export default function ProductDetail() {
               </div>
             )}
 
+            {/* お急ぎ仕上げ（任意） */}
+            {isCustomPrint && expressTier && (
+              <div className="mb-6">
+                <label
+                  className="flex items-start gap-3 p-4 cursor-pointer"
+                  style={{
+                    border: `1px solid ${express ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                    borderRadius: 'var(--radius)',
+                    backgroundColor: 'var(--color-surface)',
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={express}
+                    onChange={(e) => setExpress(e.target.checked)}
+                    className="mt-1 shrink-0"
+                    style={{accentColor: 'var(--color-primary)'}}
+                  />
+                  <span className="text-sm leading-relaxed" style={{color: 'var(--color-text)'}}>
+                    <strong>お急ぎ仕上げを追加する</strong>
+                    <span className="ml-2" style={{color: 'var(--color-primary)', fontWeight: 700}}>
+                      +¥{expressTier.price.toLocaleString('ja-JP')}／1点
+                    </span>
+                    <span className="block text-xs mt-1" style={{color: 'var(--color-text-muted)'}}>
+                      データ確認後、約2週間でお届けします（通常は約1ヶ月）。
+                      料金は<strong>1点ごと</strong>にかかります。製作工場から海外配送（FedEx）で直接お届けし、関税・輸入消費税も料金に含まれます。
+                    </span>
+                  </span>
+                </label>
+              </div>
+            )}
+
             {/* カートボタン */}
             <div className="space-y-3 mb-8">
               {isCustomPrint && <StepBadge n={4} label="カートに追加" />}
@@ -590,6 +634,25 @@ export default function ProductDetail() {
                         quantity: 1,
                         attributes,
                       },
+                      // お急ぎ仕上げは本体1点につき1つ。どの商品の分かを明細に残す
+                      ...(expressOn
+                        ? [
+                            {
+                              merchandiseId: expressTier!.variantId,
+                              quantity: 1,
+                              attributes: [
+                                {key: '対象商品', value: product.title},
+                                {
+                                  key: 'サイズ・カラー',
+                                  value:
+                                    (selectedVariant.selectedOptions ?? [])
+                                      .map((o: any) => o.value)
+                                      .join(' / ') || '-',
+                                },
+                              ],
+                            },
+                          ]
+                        : []),
                     ],
                   }}
                 >

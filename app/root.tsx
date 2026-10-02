@@ -50,6 +50,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       concept: brand.concept,
       collections: brand.collections,
       newsBlog: brand.newsBlog,
+      expressFinishing: brand.expressFinishing,
       googleFonts: brand.theme.googleFonts,
     },
     cart,
