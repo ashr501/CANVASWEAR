@@ -613,7 +613,8 @@ export default function ProductDetail() {
                     </span>
                     <span className="block text-xs mt-1" style={{color: 'var(--color-text-muted)'}}>
                       データ確認後、約2週間でお届けします（通常は約1ヶ月）。
-                      料金は<strong>1点ごと</strong>にかかります。製作工場から海外配送（FedEx）で直接お届けし、関税・輸入消費税も料金に含まれます。
+                      料金は<strong>1点ごと</strong>にかかります。製作工場から海外配送（FedExまたはDHL）で直接お届けし、関税・輸入消費税も料金に含まれます。
+                      まとめてお急ぎ仕上げでご注文の場合は割引もございますので、お問い合わせください。
                     </span>
                   </span>
                 </label>
