@@ -118,7 +118,7 @@ export const PRODUCT_QUERY = `#graphql
           currencyCode
         }
       }
-      images(first: 10) {
+      images(first: 50) {
         nodes {
           url
           altText
