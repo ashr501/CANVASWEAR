@@ -532,7 +532,7 @@ export default function ProductDetail() {
                     className="underline"
                     style={{color: 'var(--color-text-muted)'}}
                   >
-                    きれいに仕上げるための画像の大きさ（画素数）の目安
+                    スマホの写真で大丈夫？ 使える画像かかんたんチェック
                   </Link>
                 </p>
 
