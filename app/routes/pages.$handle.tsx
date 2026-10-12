@@ -1,6 +1,7 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Link, useLoaderData} from '@remix-run/react';
 import {getSeoMeta} from '@shopify/hydrogen';
+import {SHOPIFY_PAGE_QUERY} from '~/lib/queries';
 
 // エクラ株式会社の会社情報・特定商取引法表記・お問い合わせ等の静的ページ。
 // 事業者情報（会社名・所在地・電話番号等）は法人共通のため、
@@ -286,18 +287,52 @@ const PAGES: Record<
 };
 
 export const meta = ({data}: any) => {
+  if (data?.shopifyPage) {
+    const {title, seo} = data.shopifyPage;
+    return getSeoMeta({title: seo?.title || title, description: seo?.description || undefined});
+  }
   const page = data?.handle ? PAGES[data.handle] : undefined;
   return getSeoMeta({title: page?.title ?? 'ページ', description: page?.description});
 };
 
-export async function loader({params}: LoaderFunctionArgs) {
+export async function loader({params, context}: LoaderFunctionArgs) {
   const {handle} = params;
-  if (!handle || !PAGES[handle]) throw new Response('Not found', {status: 404});
-  return {handle};
+  if (!handle) throw new Response('Not found', {status: 404});
+  if (PAGES[handle]) return {handle, shopifyPage: null};
+
+  // サイト内に定義のないページは、Shopifyのページ（Alo Loreと共通）を表示する
+  const data: any = await context.storefront.query(SHOPIFY_PAGE_QUERY, {
+    variables: {
+      handle,
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
+    },
+    cache: context.storefront.CacheShort(),
+  });
+  if (!data?.page) throw new Response('Not found', {status: 404});
+  return {handle, shopifyPage: data.page as {title: string; body: string; seo: any}};
 }
 
 export default function StaticPage() {
-  const {handle} = useLoaderData<typeof loader>();
+  const {handle, shopifyPage} = useLoaderData<typeof loader>();
+
+  if (shopifyPage) {
+    return (
+      <div className="section-pad">
+        <div className="container-brand max-w-2xl mx-auto">
+          <h1
+            className="text-display-md mb-10"
+            style={{fontFamily: 'var(--font-heading)', color: 'var(--color-text)'}}
+          >
+            {shopifyPage.title}
+          </h1>
+          {/* 本文はShopifyのページ（管理画面「オンラインストア → ページ」で編集できる） */}
+          <div dangerouslySetInnerHTML={{__html: shopifyPage.body}} />
+        </div>
+      </div>
+    );
+  }
+
   const page = PAGES[handle];
 
   return (

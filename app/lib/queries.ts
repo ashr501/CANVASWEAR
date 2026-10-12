@@ -505,3 +505,16 @@ export const NEWS_ARTICLE_QUERY = `#graphql
     }
   }
 `;
+
+/** Shopifyの「ページ」。サイト内に定義のない /pages/:handle は、ストアのページを表示する
+ *  （例：入稿データの画素数ガイド。Alo Loreと同じ内容を1か所で管理するため） */
+export const SHOPIFY_PAGE_QUERY = `#graphql
+  query ShopifyPage($handle: String!, $country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    page(handle: $handle) {
+      title
+      body
+      seo { title description }
+    }
+  }
+`;

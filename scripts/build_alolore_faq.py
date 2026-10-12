@@ -15,7 +15,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 src = (ROOT / "app/components/FaqSection.tsx").read_text(encoding="utf-8")
 
 block = src[src.index("export const CANVASWEAR_FAQ"):src.index("];")]
-faq = re.findall(r"q: '([^']+)',\s*a: '([^']+)',", block)
+faq = re.findall(r"q: '([^']+)',\s*a: '([^']+)',(?:\s*link: \{href: '([^']+)', label: '([^']+)'\},)?", block)
 if len(faq) < 10:
     sys.exit(f"FAQの読み取りに失敗しました（{len(faq)}件）")
 
@@ -24,14 +24,15 @@ ALO_LORE_ANSWERS = {
         "PNG・JPEGに対応しています（20MBまで）。デザインデータはご注文後にご連絡ください。"
         "入れたい文字や配置のご希望は、商品ページの「ご要望・コメント」欄にお書きください。",
 }
-faq = [(q, ALO_LORE_ANSWERS.get(q, a).replace("ご要望欄", "「ご要望・コメント」欄")) for q, a in faq]
+faq = [(q, ALO_LORE_ANSWERS.get(q, a).replace("ご要望欄", "「ご要望・コメント」欄"), href, label)
+       for q, a, href, label in faq]
 
 items = "\n".join(
     f"""      <details class="alo-cp-faq__item">
         <summary><span>{html.escape(q)}</span><span class="alo-cp-faq__icon" aria-hidden="true">＋</span></summary>
-        <p>{html.escape(a)}</p>
+        <p>{html.escape(a)}{f' <a href="{html.escape(href)}" class="alo-cp-faq__link">{html.escape(label)}</a>' if href else ''}</p>
       </details>"""
-    for q, a in faq
+    for q, a, href, label in faq
 )
 
 liquid = f"""{{% comment %}}
@@ -67,6 +68,7 @@ liquid = f"""{{% comment %}}
   .alo-cp-faq__item summary::-webkit-details-marker {{ display: none; }}
   .alo-cp-faq__item[open] .alo-cp-faq__icon {{ transform: rotate(45deg); }}
   .alo-cp-faq__icon {{ flex-shrink: 0; transition: transform .2s; color: #c0392b; }}
+  .alo-cp-faq__link {{ color: #c0392b; text-decoration: underline; }}
   .alo-cp-faq__item p {{ margin: 0; padding: 0 2rem 1.6rem; font-size: 1.4rem; line-height: 1.9; opacity: .8; }}
 </style>
 {{%- endif -%}}

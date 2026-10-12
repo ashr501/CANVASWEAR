@@ -526,6 +526,15 @@ export default function ProductDetail() {
                 >
                   キャラクター・ブランドロゴ・芸能人の写真など、著作権のあるデータはお受けできません。
                 </p>
+                <p className="mt-1 text-xs">
+                  <Link
+                    to="/pages/print-data-guide"
+                    className="underline"
+                    style={{color: 'var(--color-text-muted)'}}
+                  >
+                    きれいに仕上げるための画像の大きさ（画素数）の目安
+                  </Link>
+                </p>
 
                 {printFile && (
                   <div className="flex items-center gap-3 mt-3">

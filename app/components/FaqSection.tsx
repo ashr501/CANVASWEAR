@@ -1,4 +1,5 @@
-export const CANVASWEAR_FAQ = [
+import {Link} from '@remix-run/react';
+export const CANVASWEAR_FAQ: Array<{q: string; a: string; link?: {href: string; label: string}}> = [
   // 入稿・データ
   {
     q: 'どんなデータを送ればいいですか？',
@@ -7,10 +8,12 @@ export const CANVASWEAR_FAQ = [
   {
     q: 'プリント用の画像は、どのくらいのサイズで用意すればよいですか？',
     a: '必要な画像サイズは、商品とプリントする範囲によって変わります。できるだけ縮小や圧縮をしていない、元の高画質データをご用意ください。ドレス全面に大きく配置する柄は、小さなワンポイントより多くの画素が必要です。',
+    link: {href: '/pages/print-data-guide', label: '入稿データの画素数ガイドを見る'},
   },
   {
     q: '「300dpi」の画像なら大丈夫ですか？',
     a: 'DPIの数字だけでは判断できません。大切なのは、画像の縦横の画素数（px）と、実際に印刷する大きさです。小さな画像を大きく引き伸ばすとぼやけるため、DPIを300に変更するだけでは画質は良くなりません。',
+    link: {href: '/pages/print-data-guide', label: '入稿データの画素数ガイドを見る'},
   },
   {
     q: 'デザイン用のテンプレートはありますか？',
@@ -19,6 +22,7 @@ export const CANVASWEAR_FAQ = [
   {
     q: '同じ柄を繰り返して使う場合も、大きな画像が必要ですか？',
     a: '繰り返し柄は、ひとつの柄を何cmの大きさで印刷するかによって必要な画素数が変わります。継ぎ目なくつながるデータかどうかも確認が必要です。',
+    link: {href: '/pages/print-data-guide', label: '入稿データの画素数ガイドを見る'},
   },
   {
     q: '写真でもイラストでも大丈夫ですか？',
@@ -137,7 +141,7 @@ export default function FaqSection({compact = false}: {compact?: boolean}) {
         <CopyrightNotice />
 
         <div className="space-y-3">
-          {CANVASWEAR_FAQ.map(({q, a}) => (
+          {CANVASWEAR_FAQ.map(({q, a, link}) => (
             <details
               key={q}
               className="group"
@@ -165,6 +169,14 @@ export default function FaqSection({compact = false}: {compact?: boolean}) {
                 style={{color: 'var(--color-text-muted)', fontFamily: 'var(--font-body)'}}
               >
                 {a}
+                {link && (
+                  <>
+                    {' '}
+                    <Link to={link.href} className="underline" style={{color: 'var(--color-primary)'}}>
+                      {link.label}
+                    </Link>
+                  </>
+                )}
               </p>
             </details>
           ))}
