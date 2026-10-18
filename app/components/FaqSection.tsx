@@ -1,4 +1,4 @@
-import {Link} from '@remix-run/react';
+import {Link} from 'react-router';
 export const CANVASWEAR_FAQ: Array<{q: string; a: string; link?: {href: string; label: string}}> = [
   // 入稿・データ
   {

@@ -1,7 +1,7 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, useOutletContext, Link} from '@remix-run/react';
+import {type LoaderFunctionArgs} from 'react-router';
+import {Await, useLoaderData, useOutletContext, Link} from 'react-router';
 import {Suspense} from 'react';
-import {getSeoMeta} from '@shopify/hydrogen';
+import {getSeoMeta} from '~/lib/shopify-ui';
 import {
   HOME_PRODUCTS_QUERY,
   CATEGORY_PRODUCTS_QUERY,
@@ -143,7 +143,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   // brandをそのまま返すとStorefrontトークンまでブラウザに渡ってしまうので、
   // 表示用のブランド情報はroot.tsxのoutlet contextから受け取る
-  return defer({
+  return ({
     products,
     categoryProducts,
     activeCat,

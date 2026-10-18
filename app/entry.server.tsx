@@ -1,45 +1,28 @@
-import type {AppLoadContext, EntryContext} from '@shopify/remix-oxygen';
-import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
-import {createContentSecurityPolicy} from '@shopify/hydrogen';
+import {ServerRouter, type EntryContext, type RouterContextProvider} from 'react-router';
+import {getBrandConfig} from '~/lib/brand.server';
+import {createContentSecurityPolicy} from '~/lib/csp';
 import {NonceContext} from '~/lib/nonce-context';
 
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
-  context: AppLoadContext,
+  reactRouterContext: EntryContext,
+  context: RouterContextProvider,
 ) {
-  // 入稿ファイル（R2）のプレビューを商品ページに表示するため、保管先の公開URLを画像の許可元に加える。
-  // 環境変数から読むので、r2.dev から独自ドメインに切り替えても追従する。
-  const uploadOrigin = originOrNull(context.env.R2_PUBLIC_BASE_URL);
-
+  const env = context.env;
   const {nonce, header} = createContentSecurityPolicy({
-    shop: {
-      checkoutDomain: context.env.PUBLIC_STORE_DOMAIN,
-      storeDomain: context.env.PUBLIC_STORE_DOMAIN,
-    },
-    styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-    fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-    // LINE公式アカウントのQRコード画像（お問い合わせページ）を許可
-    imgSrc: [
-      "'self'",
-      'data:',
-      'https://cdn.shopify.com',
-      'https://qr-official.line.me',
-      ...(uploadOrigin ? [uploadOrigin] : []),
-    ],
-    // 商品動画は cdn.shopify.com ではなくストアのプライマリドメイン
-    // (alolore.shop/cdn/shop/videos/...) から配信される。media-src を指定しないと
-    // default-src にフォールバックしてブラウザにブロックされ、動画が再生できない。
-    mediaSrc: ["'self'", 'https://cdn.shopify.com', 'https://alolore.shop'],
+    storeDomain: getBrandConfig(env, request).storeDomain,
+    // 入稿ファイル（R2）の保管先。r2.dev から独自ドメインに切り替えても追従する
+    uploadOrigin: originOrNull(env.R2_PUBLIC_BASE_URL),
+    isDev: process.env.NODE_ENV !== 'production',
   });
 
   const body = await renderToReadableStream(
     <NonceContext.Provider value={nonce}>
-      <RemixServer context={remixContext} url={request.url} nonce={nonce} />
+      <ServerRouter context={reactRouterContext} url={request.url} nonce={nonce} />
     </NonceContext.Provider>,
     {
       nonce,

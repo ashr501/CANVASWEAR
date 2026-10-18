@@ -1,18 +1,17 @@
-import {Link} from '@remix-run/react';
-import {Suspense} from 'react';
-import {Await} from '@remix-run/react';
+import {Link} from 'react-router';
+import {useCart} from '~/lib/cart';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 import SearchBar from './SearchBar';
 
 interface HeaderProps {
   brand: PublicBrand;
-  cart: any;
   onCartOpen: () => void;
 }
 
-export default function Header({brand, cart, onCartOpen}: HeaderProps) {
+export default function Header({brand, onCartOpen}: HeaderProps) {
   const isAvantGarde = isBoldBrand(brand.id);
+  const cartCount = useCart((state) => state.data.totalQuantity);
 
   // ブランド固有のカテゴリ + 全商品。ブランドを追加すればナビも自動で入れ替わる
   const links = [
@@ -61,19 +60,7 @@ export default function Header({brand, cart, onCartOpen}: HeaderProps) {
 
         {/* カートアイコン右 */}
         <div className="flex items-center gap-4">
-          <Suspense
-            fallback={<CartIcon count={0} onClick={onCartOpen} isAvantGarde={isAvantGarde} />}
-          >
-            <Await resolve={cart}>
-              {(resolvedCart: any) => (
-                <CartIcon
-                  count={resolvedCart?.totalQuantity ?? 0}
-                  onClick={onCartOpen}
-                  isAvantGarde={isAvantGarde}
-                />
-              )}
-            </Await>
-          </Suspense>
+          <CartIcon count={cartCount ?? 0} onClick={onCartOpen} isAvantGarde={isAvantGarde} />
         </div>
       </div>
 

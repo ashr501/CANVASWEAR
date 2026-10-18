@@ -1,6 +1,6 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData} from '@remix-run/react';
-import {getSeoMeta} from '@shopify/hydrogen';
+import {type LoaderFunctionArgs} from 'react-router';
+import {useLoaderData} from 'react-router';
+import {getSeoMeta} from '~/lib/shopify-ui';
 
 // Storefront APIの shop.<policy> は個別フィールドなので、handleごとにクエリを出し分ける
 const HANDLE_TO_QUERY: Record<string, string> = {
@@ -31,7 +31,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const data = await context.storefront.query(query);
   if (!data.shop.policy) throw new Response('Not found', {status: 404});
 
-  return defer({policy: data.shop.policy, seoUrl: request.url});
+  return ({policy: data.shop.policy, seoUrl: request.url});
 }
 
 export default function PolicyPage() {

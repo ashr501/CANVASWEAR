@@ -1,4 +1,4 @@
-import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import type {LoaderFunctionArgs} from 'react-router';
 import {getBrandConfig} from '~/lib/brand.server';
 
 const MAX_PAGES = 6; // 250件 x 6 = 1500件までカバー

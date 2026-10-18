@@ -1,12 +1,24 @@
-/// <reference types="@shopify/remix-oxygen" />
+/// <reference types="vite/client" />
+/// <reference types="react-router" />
 /// <reference types="@shopify/oxygen-workers-types" />
 
-import type {HydrogenCart, HydrogenSessionData, Storefront} from '@shopify/hydrogen';
-import type {HydrogenSession} from '~/lib/session.server';
+import type {CacheInstance} from '@shopify/hydrogen';
+import type {LegacyStorefront} from '~/lib/storefront';
+
+type HydrogenRouterContext = {
+  cache: CacheInstance;
+  env: Env;
+  waitUntil: ExecutionContext['waitUntil'];
+  /** 旧Hydrogenの context.storefront と同じ書き方で使える問い合わせ口（app/lib/storefront.ts） */
+  storefront: LegacyStorefront;
+};
+
+declare module 'react-router' {
+  interface AppLoadContext extends HydrogenRouterContext {}
+  interface RouterContextProvider extends HydrogenRouterContext {}
+}
 
 declare global {
-  const __remix_build: string;
-
   interface Env {
     SESSION_SECRET: string;
     PUBLIC_STOREFRONT_API_TOKEN: string;
@@ -15,16 +27,12 @@ declare global {
     PUBLIC_STOREFRONT_ID: string;
     /** app/lib/brands.ts の BrandId。どのサイトとして動かすかを決める */
     BRAND_ID: string;
-    // Brand 1: HAORI+ (elegant-plus)
     BRAND1_STORE_DOMAIN: string;
     BRAND1_STOREFRONT_API_TOKEN: string;
-    // Brand 2: NOCT. (avant-garde)
     BRAND2_STORE_DOMAIN: string;
     BRAND2_STOREFRONT_API_TOKEN: string;
-    // Brand 3: BRILLAR (bridal)
     BRAND3_STORE_DOMAIN: string;
     BRAND3_STOREFRONT_API_TOKEN: string;
-    // Brand 4: CANVASWEAR (custom-print)
     BRAND4_STORE_DOMAIN: string;
     BRAND4_STOREFRONT_API_TOKEN: string;
     // Cloudflare R2: カスタムプリントの入稿ファイル保管先
@@ -34,21 +42,4 @@ declare global {
     R2_BUCKET: string;
     R2_PUBLIC_BASE_URL: string;
   }
-}
-
-declare module '*.css?url' {
-  const url: string;
-  export default url;
-}
-
-declare module '@shopify/remix-oxygen' {
-  interface AppLoadContext {
-    env: Env;
-    cart: HydrogenCart;
-    storefront: Storefront;
-    session: HydrogenSession;
-    waitUntil: ExecutionContext['waitUntil'];
-  }
-
-  interface SessionData extends HydrogenSessionData {}
 }

@@ -1,17 +1,28 @@
+import {handleShopifyRedirects, handleShopifyRoutes} from '@shopify/hydrogen';
+import {ShopifyScripts} from '@shopify/hydrogen/react';
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
   useLoaderData,
+  useNavigate,
   useRouteError,
   useRouteLoaderData,
-  isRouteErrorResponse,
-} from '@remix-run/react';
-import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {defer} from '@shopify/remix-oxygen';
+  type LoaderFunctionArgs,
+  type MiddlewareFunction,
+} from 'react-router';
+import {CartAnalyticsTracker, PageViewedTracker} from '~/components/AnalyticsTrackers';
 import {getBrandConfig} from '~/lib/brand.server';
+import {CartProvider} from '~/lib/cart';
+import {cartHandlers} from '~/lib/cart-handlers';
+import {envContext} from '~/lib/env';
+import {routeTemplates} from '~/lib/route-templates';
+import {createEphemeralSessionManager} from '~/lib/session';
+import {createRequestStorefrontClient} from '~/lib/storefront.server';
+import {I18N, storefrontClientContext, storefrontRequestContext} from '~/lib/storefront';
 import appStyles from '~/styles/app.css?url';
 import Layout from '~/components/Layout';
 import {useState} from 'react';
@@ -29,12 +40,76 @@ export function links() {
   ];
 }
 
+/**
+ * すべてのリクエストの入口。Shopifyのストア接続を作り、
+ * Shopifyが受け持つURL（/api/cart・チェックアウト・Shopifyのスクリプト用の中継など）は
+ * ここで返す。それ以外は各ページの処理に進む。
+ */
+export const middleware: MiddlewareFunction<Response>[] = [
+  async ({context, request}, next) => {
+    const env = context.get(envContext);
+    const storefrontClient = createRequestStorefrontClient(
+      request,
+      env,
+      context.cache,
+      context.waitUntil,
+    );
+    const requestContext = storefrontClient.requestContext;
+    const sessionManager = createEphemeralSessionManager(request);
+
+    const shopifyRoute = handleShopifyRoutes({
+      request,
+      requestContext,
+      sessionManager,
+      storefrontClient,
+      routeTemplates,
+      handlers: [cartHandlers],
+    });
+    if (shopifyRoute) return shopifyRoute;
+
+    context.set(storefrontClientContext, storefrontClient);
+    context.set(storefrontRequestContext, requestContext);
+
+    const response = await next();
+    const sessionHeaders = new Headers((await sessionManager.commit?.()) ?? undefined);
+    for (const [name, value] of sessionHeaders) response.headers.append(name, value);
+    if (response.status === 404) {
+      const redirect = await handleShopifyRedirects({request, storefrontClient, routeTemplates});
+      if (redirect) return redirect;
+    }
+    requestContext.applyResponseHeaders(response.headers);
+    return response;
+  },
+];
+
+const SHOP_QUERY = `#graphql
+  query RootShop {
+    shop {
+      id
+      paymentSettings {
+        currencyCode
+      }
+    }
+  }
+`;
+
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
-  const cart = context.cart.get();
+  const storefrontClient = context.get(storefrontClientContext);
+  const [cartResult, shopData] = await Promise.all([
+    cartHandlers.get({storefrontClient, request}),
+    context.storefront.query(SHOP_QUERY, {cache: context.storefront.CacheLong()}),
+  ]);
+  const storefrontId = context.env.PUBLIC_STOREFRONT_ID ?? '';
 
   // storeDomain / storefrontApiToken はブラウザに渡さない
-  return defer({
+  return {
+    cartData: cartResult.data,
+    shopify: {
+      shop: {shopId: shopData.shop.id as string, storefrontId, myshopifyDomain: brand.storeDomain},
+      currency: (shopData.shop.paymentSettings?.currencyCode as string) ?? 'JPY',
+      channel: storefrontId ? ('hydrogen' as const) : ('headless' as const),
+    },
     brand: {
       id: brand.id,
       name: brand.name,
@@ -53,14 +128,14 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       expressFinishing: brand.expressFinishing,
       googleFonts: brand.theme.googleFonts,
     },
-    cart,
-  });
+  };
 }
 
 export default function App() {
-  const {brand, cart} = useLoaderData<typeof loader>();
+  const {brand, cartData, shopify} = useLoaderData<typeof loader>();
   const [cartOpen, setCartOpen] = useState(false);
   const nonce = useNonce();
+  const navigate = useNavigate();
 
   return (
     <html lang="ja" data-brand={brand.id} data-ui={brand.uiMode}>
@@ -68,19 +143,35 @@ export default function App() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="stylesheet" href={brand.googleFonts} />
+        <ShopifyScripts
+          nonce={nonce}
+          i18n={{...I18N, currency: shopify.currency}}
+          shop={shopify.shop}
+          analytics={{channel: shopify.channel}}
+          shopifyAnalytics={shopify.shop.storefrontId !== ''}
+          consent={{mode: 'default-banner'}}
+          inbox
+          navigate={navigate}
+          routes={routeTemplates}
+        />
         <Meta />
         <Links />
       </head>
       <body>
-        <Layout
-          brand={brand}
-          cart={cart}
-          cartOpen={cartOpen}
-          onCartOpen={() => setCartOpen(true)}
-          onCartClose={() => setCartOpen(false)}
-        >
-          <Outlet context={{brand, onCartOpen: () => setCartOpen(true)}} />
-        </Layout>
+        <CartProvider initialData={cartData}>
+          <PageViewedTracker />
+          <CartAnalyticsTracker />
+          <Layout
+            brand={brand}
+            cartOpen={cartOpen}
+            onCartOpen={() => setCartOpen(true)}
+            onCartClose={() => setCartOpen(false)}
+          >
+            <Outlet context={{brand, onCartOpen: () => setCartOpen(true)}} />
+          </Layout>
+          {/* Shopify Inbox（AIチャット・スタッフへの引き継ぎ）。右下にボタンが出る */}
+          <shopify-chat suppressHydrationWarning />
+        </CartProvider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>

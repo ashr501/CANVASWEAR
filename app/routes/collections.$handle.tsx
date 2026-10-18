@@ -1,7 +1,7 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, useOutletContext} from '@remix-run/react';
+import {type LoaderFunctionArgs} from 'react-router';
+import {Await, useLoaderData, useOutletContext} from 'react-router';
 import {Suspense} from 'react';
-import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen';
+import {Pagination, getPaginationVariables, getSeoMeta} from '~/lib/shopify-ui';
 import {COLLECTION_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import CategoryFilterChips from '~/components/CategoryFilterChips';
@@ -80,7 +80,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   if (!collection.collection) throw new Response('Not found', {status: 404});
 
-  return defer({
+  return ({
     // 総件数は数えるのに時間がかかるので、一覧を先に返して後から流し込む
     count: countCollection(context.storefront, handle).catch(() => null),
     collection: collection.collection,

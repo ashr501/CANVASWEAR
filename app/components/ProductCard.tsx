@@ -1,5 +1,5 @@
-import {Link} from '@remix-run/react';
-import {Image, Money} from '@shopify/hydrogen';
+import {Link} from 'react-router';
+import {Image, Money} from '~/lib/shopify-ui';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import clsx from 'clsx';
 import {useState} from 'react';

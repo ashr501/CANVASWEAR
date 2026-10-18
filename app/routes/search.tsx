@@ -1,7 +1,7 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, useOutletContext} from '@remix-run/react';
+import {type LoaderFunctionArgs} from 'react-router';
+import {Await, useLoaderData, useOutletContext} from 'react-router';
 import {Suspense} from 'react';
-import {Pagination, getPaginationVariables, getSeoMeta} from '@shopify/hydrogen';
+import {Pagination, getPaginationVariables, getSeoMeta} from '~/lib/shopify-ui';
 import {SEARCH_PRODUCTS_QUERY} from '~/lib/queries';
 import ProductCard from '~/components/ProductCard';
 import CategoryFilterChips from '~/components/CategoryFilterChips';
@@ -25,7 +25,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {pageBy: 48});
 
   if (!term) {
-    return defer({term, products: Promise.resolve({nodes: [], pageInfo: {}}), brandId: brand.id});
+    return ({term, products: Promise.resolve({nodes: [], pageInfo: {}}), brandId: brand.id});
   }
 
   // このストアは他ブランドと共有されているため、custom-printブランドでは
@@ -52,7 +52,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
 
-  return defer({term, products, brandId: brand.id});
+  return ({term, products, brandId: brand.id});
 }
 
 export default function SearchPage() {

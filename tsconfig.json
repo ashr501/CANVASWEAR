@@ -1,20 +1,24 @@
 {
   "include": [
-    "remix.env.d.ts",
+    "env.d.ts",
     "app/**/*.ts",
     "app/**/*.tsx",
     "server.ts",
-    "api/**/*.ts",
     "vite.config.ts",
-    "vite.config.vercel.ts",
-    "tailwind.config.ts"
+    "react-router.config.ts",
+    "tailwind.config.ts",
+    ".react-router/types/**/*"
   ],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "module": "ESNext",
+    "module": "ES2022",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "target": "ES2022",
@@ -22,10 +26,26 @@
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": [
+        "./app/*"
+      ]
     },
-    "noEmit": true
+    "noEmit": true,
+    "plugins": [
+      {
+        "name": "@shopify/hydrogen/ts-plugin"
+      }
+    ],
+    "types": [
+      "@shopify/oxygen-workers-types",
+      "node",
+      "react-router",
+      "vite/client"
+    ],
+    "rootDirs": [
+      ".",
+      "./.react-router/types"
+    ]
   }
 }

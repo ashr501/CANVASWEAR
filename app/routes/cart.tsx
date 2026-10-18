@@ -1,69 +1,25 @@
-import {
-  json,
-  defer,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, Link} from '@remix-run/react';
-import {Suspense} from 'react';
-import {Image, Money, CartForm, type CartQueryDataReturn} from '@shopify/hydrogen';
+import {type LoaderFunctionArgs, useLoaderData, Link} from 'react-router';
+import {Image, Money} from '~/lib/shopify-ui';
 import {getBrandConfig} from '~/lib/brand.server';
 import clsx from 'clsx';
 import {isBoldBrand} from '~/lib/brands';
+import {useCart} from '~/lib/cart';
+import {CartLineControls} from '~/components/CartLineControls';
 
 export const meta = () => [{title: 'カート'}];
 
-/**
- * サイト全体のカート操作をここで受ける。
- * 商品ページやカートドロワーの <CartForm route="/cart"> がこのactionに送信する。
- */
-export async function action({request, context}: ActionFunctionArgs) {
-  const {cart} = context;
-  const formData = await request.formData();
-  const {action: cartAction, inputs} = CartForm.getFormInput(formData);
-
-  if (!cartAction) {
-    throw new Error('カート操作が指定されていません');
-  }
-
-  let result: CartQueryDataReturn;
-
-  switch (cartAction) {
-    case CartForm.ACTIONS.LinesAdd:
-      result = await cart.addLines(inputs.lines);
-      break;
-    case CartForm.ACTIONS.LinesUpdate:
-      result = await cart.updateLines(inputs.lines);
-      break;
-    case CartForm.ACTIONS.LinesRemove:
-      result = await cart.removeLines(inputs.lineIds);
-      break;
-    case CartForm.ACTIONS.DiscountCodesUpdate: {
-      const formDiscountCode = inputs.discountCode;
-      const discountCodes = (formDiscountCode ? [formDiscountCode] : []) as string[];
-      discountCodes.push(...inputs.discountCodes);
-      result = await cart.updateDiscountCodes(discountCodes);
-      break;
-    }
-    default:
-      throw new Error(`未対応のカート操作です: ${cartAction}`);
-  }
-
-  // 新規カートのIDをCookieに書き戻す（これを忘れると毎回空のカートになる）
-  const headers = result?.cart?.id ? cart.setCartId(result.cart.id) : new Headers();
-
-  return json(result, {status: 200, headers});
-}
-
+// カートの中身はルートで読み込んだもの（CartProvider）を使う。追加・変更は /api/cart が受ける
 export async function loader({request, context}: LoaderFunctionArgs) {
   const brand = getBrandConfig(context.env, request);
-  const cart = context.cart.get();
-  return defer({cart, brandId: brand.id});
+  return {brandId: brand.id};
 }
 
 export default function CartPage() {
-  const {cart, brandId} = useLoaderData<typeof loader>();
+  const {brandId} = useLoaderData<typeof loader>();
   const isAvantGarde = isBoldBrand(brandId);
+  const resolvedCart = useCart((state) => state.data);
+  const loading = useCart((state) => state.loading);
+  const totalsPending = useCart((state) => state.pending.cost === true || state.revalidating === true);
 
   return (
     <div className="section-pad">
@@ -80,16 +36,12 @@ export default function CartPage() {
           </h1>
         </div>
 
-        <Suspense
-          fallback={
-            <div className="text-sm" style={{color: 'var(--color-text-muted)'}}>
-              読み込み中...
-            </div>
-          }
-        >
-          <Await resolve={cart}>
-            {(resolvedCart: any) => {
-              if (!resolvedCart || resolvedCart.totalQuantity === 0) {
+        {loading ? (
+          <div className="text-sm" style={{color: 'var(--color-text-muted)'}}>
+            読み込み中...
+          </div>
+        ) : (() => {
+              if (!resolvedCart || resolvedCart.totalQuantity === 0 || resolvedCart.lines.nodes.length === 0) {
                 return (
                   <div className="text-center py-24">
                     <p
@@ -110,13 +62,13 @@ export default function CartPage() {
                   {/* アイテムリスト */}
                   <div className="md:col-span-2">
                     <ul style={{borderTop: '1px solid var(--color-border)'}}>
-                      {resolvedCart.lines.edges.map(({node: line}: any) => (
+                      {resolvedCart.lines.nodes.map((line: any) => (
                         <li
                           key={line.id}
                           className="flex gap-5 py-6"
                           style={{borderBottom: '1px solid var(--color-border)'}}
                         >
-                          {line.merchandise.image && (
+                          {line.merchandise?.image && (
                             <div
                               className="w-24 h-32 flex-shrink-0 overflow-hidden"
                               style={{borderRadius: 'var(--radius)'}}
@@ -133,19 +85,19 @@ export default function CartPage() {
                           )}
                           <div className="flex-1">
                             <p className="text-sm" style={{color: 'var(--color-text)'}}>
-                              {line.merchandise.product.title}
+                              {line.merchandise?.product?.title ?? line.merchandise?.title}
                             </p>
                             <p className="text-xs mt-1" style={{color: 'var(--color-text-muted)'}}>
-                              {line.merchandise.selectedOptions
+                              {(line.merchandise?.selectedOptions ?? [])
                                 .filter((o: any) => o.value !== 'Default Title')
                                 .map((o: any) => o.value)
                                 .join(' / ')}
                             </p>
 
                             {/* カスタムプリント等の指定内容（line item properties） */}
-                            {line.attributes?.length > 0 && (
+                            {line.attributes?.some((a: any) => !a.key.startsWith('_')) && (
                               <ul className="mt-2 space-y-0.5">
-                                {line.attributes.map((attr: any) => (
+                                {line.attributes.filter((a: any) => !a.key.startsWith('_')).map((attr: any) => (
                                   <li
                                     key={attr.key}
                                     className="text-xs"
@@ -158,27 +110,13 @@ export default function CartPage() {
                             )}
 
                             <div className="flex items-center justify-between mt-4">
-                              <CartLineQuantity line={line} />
+                              <CartLineControls line={line} />
                               <Money
                                 data={line.cost.totalAmount}
                                 className="text-sm"
                                 style={{color: 'var(--color-text)'} as any}
                               />
                             </div>
-
-                            <CartForm
-                              route="/cart"
-                              action={CartForm.ACTIONS.LinesRemove}
-                              inputs={{lineIds: [line.id]}}
-                            >
-                              <button
-                                type="submit"
-                                className="text-xs mt-3 underline transition-opacity hover:opacity-60"
-                                style={{color: 'var(--color-text-muted)'}}
-                              >
-                                削除
-                              </button>
-                            </CartForm>
                           </div>
                         </li>
                       ))}
@@ -209,6 +147,7 @@ export default function CartPage() {
                           <span style={{color: 'var(--color-text-muted)'}}>小計</span>
                           <Money
                             data={resolvedCart.cost.subtotalAmount}
+                            className={totalsPending ? 'opacity-40' : undefined}
                             style={{color: 'var(--color-text)'} as any}
                           />
                         </div>
@@ -223,7 +162,7 @@ export default function CartPage() {
                         </div>
                       </div>
                       <a
-                        href={resolvedCart.checkoutUrl}
+                        href={resolvedCart.checkoutUrl ?? '/checkout'}
                         className="btn-primary w-full text-center block"
                       >
                         {isAvantGarde ? 'PROCEED TO CHECKOUT' : 'チェックアウトへ進む'}
@@ -238,52 +177,8 @@ export default function CartPage() {
                   </div>
                 </div>
               );
-            }}
-          </Await>
-        </Suspense>
+        })()}
       </div>
-    </div>
-  );
-}
-
-function CartLineQuantity({line}: {line: any}) {
-  const {id, quantity} = line;
-
-  return (
-    <div className="flex items-center gap-3">
-      <CartForm
-        route="/cart"
-        action={CartForm.ACTIONS.LinesUpdate}
-        inputs={{lines: [{id, quantity: Math.max(0, quantity - 1)}]}}
-      >
-        <button
-          type="submit"
-          className="w-7 h-7 flex items-center justify-center text-sm transition-opacity hover:opacity-60"
-          style={{border: '1px solid var(--color-border)', color: 'var(--color-text)'}}
-          aria-label="数量を減らす"
-        >
-          −
-        </button>
-      </CartForm>
-
-      <span className="text-xs w-4 text-center" style={{color: 'var(--color-text)'}}>
-        {quantity}
-      </span>
-
-      <CartForm
-        route="/cart"
-        action={CartForm.ACTIONS.LinesUpdate}
-        inputs={{lines: [{id, quantity: quantity + 1}]}}
-      >
-        <button
-          type="submit"
-          className="w-7 h-7 flex items-center justify-center text-sm transition-opacity hover:opacity-60"
-          style={{border: '1px solid var(--color-border)', color: 'var(--color-text)'}}
-          aria-label="数量を増やす"
-        >
-          +
-        </button>
-      </CartForm>
     </div>
   );
 }

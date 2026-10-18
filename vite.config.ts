@@ -1,29 +1,36 @@
-import {defineConfig} from 'vite';
-import {hydrogen} from '@shopify/hydrogen/vite';
+import {reactRouter} from '@react-router/dev/vite';
 import {oxygen} from '@shopify/mini-oxygen/vite';
-import {vitePlugin as remix} from '@remix-run/dev';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import {defineConfig} from 'vite';
+
+const oxygenPlugins = oxygen();
+const oxygenPlugin = oxygenPlugins.find((plugin) => plugin.name === 'oxygen:main');
+if (!oxygenPlugin?.api) {
+  throw new Error('MiniOxygen plugin API is unavailable.');
+}
+// Hydrogen 2026.10 から推定される互換日付をMiniOxygenがまだ扱えないため、テンプレートと同じ日付に固定する
+oxygenPlugin.api.registerPluginOptions({compatibilityDate: '2026-04-01'});
 
 export default defineConfig({
-  plugins: [
-    hydrogen(),
-    oxygen(),
-    remix({
-      presets: [hydrogen.preset()],
-      future: {
-        v3_fetcherPersist: true,
-        v3_relativeSplatPath: true,
-        v3_throwAbortReason: true,
-      },
-    }),
-    tsconfigPaths(),
-  ],
+  plugins: [...oxygenPlugins, reactRouter()],
+  resolve: {
+    tsconfigPaths: true,
+  },
   build: {
+    // 厳しいCSPのもとでbase64インライン化を避ける
     assetsInlineLimit: 0,
   },
   ssr: {
     optimizeDeps: {
-      include: [],
+      include: [
+        'react',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
+        'react-dom',
+        'react-dom/server',
+        'react-router > set-cookie-parser',
+        'react-router > cookie',
+        'react-router',
+      ],
     },
   },
 });

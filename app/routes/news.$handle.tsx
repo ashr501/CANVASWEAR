@@ -1,6 +1,6 @@
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Link, useLoaderData} from '@remix-run/react';
-import {getSeoMeta} from '@shopify/hydrogen';
+import {type LoaderFunctionArgs} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
+import {getSeoMeta} from '~/lib/shopify-ui';
 import {NEWS_ARTICLE_QUERY} from '~/lib/queries';
 import {getBrandConfig} from '~/lib/brand.server';
 import {titleTemplate} from '~/lib/seo';

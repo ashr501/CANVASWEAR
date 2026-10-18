@@ -1,4 +1,4 @@
-import type {Storefront} from '@shopify/hydrogen';
+import type {LegacyStorefront as Storefront} from '~/lib/storefront';
 
 /**
  * コレクションの商品数を数える。

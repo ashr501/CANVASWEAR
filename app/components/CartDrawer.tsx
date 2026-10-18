@@ -1,19 +1,22 @@
-import {Link} from '@remix-run/react';
-import {Image, Money} from '@shopify/hydrogen';
-import {Await} from '@remix-run/react';
-import {Suspense} from 'react';
+import {Link} from 'react-router';
+import {Image, Money} from '~/lib/shopify-ui';
 import clsx from 'clsx';
 import {isBoldBrand} from '~/lib/brands';
+import {useCart} from '~/lib/cart';
+import {CartLineControls} from './CartLineControls';
 
 interface CartDrawerProps {
-  cart: any;
   isOpen: boolean;
   onClose: () => void;
   brand: {id: string; name: string};
 }
 
-export default function CartDrawer({cart, isOpen, onClose, brand}: CartDrawerProps) {
+export default function CartDrawer({isOpen, onClose, brand}: CartDrawerProps) {
   const isAvantGarde = isBoldBrand(brand.id);
+  const cart = useCart((state) => state.data);
+  const loading = useCart((state) => state.loading);
+  const totalsPending = useCart((state) => state.pending.cost === true || state.revalidating === true);
+  const isEmpty = !cart || cart.totalQuantity === 0 || cart.lines.nodes.length === 0;
 
   return (
     <>
@@ -63,24 +66,17 @@ export default function CartDrawer({cart, isOpen, onClose, brand}: CartDrawerPro
 
           {/* カート内容 */}
           <div className="flex-1 overflow-y-auto">
-            <Suspense fallback={<CartLoading />}>
-              <Await resolve={cart}>
-                {(resolvedCart: any) => {
-                  if (!resolvedCart || resolvedCart.totalQuantity === 0) {
-                    return <CartEmpty isAvantGarde={isAvantGarde} onClose={onClose} />;
-                  }
-                  return <CartLines lines={resolvedCart.lines} isAvantGarde={isAvantGarde} />;
-                }}
-              </Await>
-            </Suspense>
+            {loading ? (
+              <CartLoading />
+            ) : isEmpty ? (
+              <CartEmpty isAvantGarde={isAvantGarde} onClose={onClose} />
+            ) : (
+              <CartLines lines={cart.lines.nodes} isAvantGarde={isAvantGarde} />
+            )}
           </div>
 
           {/* フッター */}
-          <Suspense fallback={null}>
-            <Await resolve={cart}>
-              {(resolvedCart: any) => {
-                if (!resolvedCart || resolvedCart.totalQuantity === 0) return null;
-                return (
+          {!loading && !isEmpty && (
                   <div
                     className="px-6 py-6 space-y-4"
                     style={{borderTop: '1px solid var(--color-border)'}}
@@ -90,14 +86,14 @@ export default function CartDrawer({cart, isOpen, onClose, brand}: CartDrawerPro
                         小計
                       </span>
                       <span className="font-medium" style={{color: 'var(--color-text)'}}>
-                        <Money as="span" data={resolvedCart.cost.subtotalAmount} />
+                        <Money as="span" data={cart.cost.subtotalAmount} className={totalsPending ? 'opacity-40' : undefined} />
                       </span>
                     </div>
                     <p className="text-xs" style={{color: 'var(--color-text-muted)'}}>
                       送料・税金はチェックアウト時に計算されます
                     </p>
                     <a
-                      href={resolvedCart.checkoutUrl}
+                      href={cart.checkoutUrl ?? '/checkout'}
                       className="btn-primary w-full text-center block"
                     >
                       {isAvantGarde ? 'CHECKOUT' : 'チェックアウトへ'}
@@ -110,26 +106,23 @@ export default function CartDrawer({cart, isOpen, onClose, brand}: CartDrawerPro
                       {isAvantGarde ? 'VIEW CART' : 'カートを見る'}
                     </Link>
                   </div>
-                );
-              }}
-            </Await>
-          </Suspense>
+          )}
         </div>
       </aside>
     </>
   );
 }
 
-function CartLines({lines, isAvantGarde}: {lines: any; isAvantGarde: boolean}) {
+function CartLines({lines, isAvantGarde}: {lines: any[]; isAvantGarde: boolean}) {
   return (
     <ul style={{borderBottom: '1px solid var(--color-border)'}}>
-      {lines.edges.map(({node: line}: any) => (
+      {lines.map((line: any) => (
         <li
           key={line.id}
           className="flex gap-4 px-6 py-5"
           style={{borderBottom: '1px solid var(--color-border)'}}
         >
-          {line.merchandise.image && (
+          {line.merchandise?.image && (
             <div
               className="w-20 h-24 flex-shrink-0 overflow-hidden"
               style={{borderRadius: 'var(--radius)'}}
@@ -146,18 +139,16 @@ function CartLines({lines, isAvantGarde}: {lines: any; isAvantGarde: boolean}) {
           )}
           <div className="flex-1 min-w-0">
             <p className="text-sm truncate" style={{color: 'var(--color-text)'}}>
-              {line.merchandise.product.title}
+              {line.merchandise?.product?.title ?? line.merchandise?.title}
             </p>
             <p className="text-xs mt-0.5" style={{color: 'var(--color-text-muted)'}}>
-              {line.merchandise.selectedOptions
+              {(line.merchandise?.selectedOptions ?? [])
                 .filter((o: any) => o.value !== 'Default Title')
                 .map((o: any) => o.value)
                 .join(' / ')}
             </p>
             <div className="flex items-center justify-between mt-2">
-              <p className="text-xs" style={{color: 'var(--color-text-muted)'}}>
-                ×{line.quantity}
-              </p>
+              <CartLineControls line={line} showRemove={false} />
               <Money
                 data={line.cost.totalAmount}
                 className="text-sm"

@@ -1,15 +1,10 @@
-import {createRequestHandler} from '@shopify/remix-oxygen';
-import {storefrontRedirect} from '@shopify/hydrogen';
-import {AppLoadContext} from '@remix-run/server-runtime';
-import {createStorefrontClient, createCartHandler, cartGetIdDefault, cartSetIdDefault} from '@shopify/hydrogen';
-import {HydrogenSession} from '~/lib/session.server';
+import {createRequestHandler, RouterContextProvider} from 'react-router';
+// @ts-ignore -- React Routerがビルド時に生成する仮想モジュール
+import * as serverBuild from 'virtual:react-router/server-build';
 import {getBrandConfig} from '~/lib/brand.server';
 import {isBrandId} from '~/lib/brands';
-// Remix/Viteがビルド時に生成する仮想モジュール。
-// これを取り込まないと remixBuild が未定義のまま参照され、
-// 全リクエストが ReferenceError で落ちる。
-// @ts-ignore -- 仮想モジュールのため型定義はない
-import * as remixBuild from 'virtual:remix/server-build';
+import {envContext} from '~/lib/env';
+import {createLegacyStorefront} from '~/lib/storefront.server';
 
 export default {
   async fetch(
@@ -18,75 +13,45 @@ export default {
     executionContext: ExecutionContext,
   ): Promise<Response> {
     try {
-      // どのサイトとして応答するかを先に決める。
-      // ブランドごとに別のShopifyストアを指せるよう、接続情報もここから取る
-      // （将来ブランドを独立したストアに移すときは環境変数を変えるだけでよい）。
-      const brand = getBrandConfig(env, request);
+      const method = request.method;
+      if ((method === 'GET' || method === 'HEAD') && request.body) {
+        return new Response(`${method} requests cannot have a body`, {status: 400});
+      }
 
-      // 必須の環境変数が欠けていると原因不明の500になるため、
-      // 何を設定すればよいかを画面に出す。
-      // Oxygenは PUBLIC_STOREFRONT_* を自動注入するが SESSION_SECRET は注入しない。
+      // どのサイトとして応答するかを先に決める。
+      // 必須の環境変数が欠けていると原因不明の500になるため、何を設定すればよいかを画面に出す。
+      // Oxygenは PUBLIC_STOREFRONT_* / PRIVATE_STOREFRONT_API_TOKEN を自動注入するが SESSION_SECRET は注入しない。
+      const brand = getBrandConfig(env, request);
       const missing: string[] = [];
       if (!env.SESSION_SECRET) missing.push('SESSION_SECRET');
       if (!brand.storeDomain) missing.push('PUBLIC_STORE_DOMAIN');
-      if (!brand.storefrontApiToken) missing.push('PUBLIC_STOREFRONT_API_TOKEN');
+      if (!env.PRIVATE_STOREFRONT_API_TOKEN && !brand.storefrontApiToken) {
+        missing.push('PRIVATE_STOREFRONT_API_TOKEN');
+      }
       if (missing.length > 0) {
         return setupPage(missing, brand.name);
       }
 
-      const waitUntil = executionContext.waitUntil.bind(executionContext);
-      const [cache, session] = await Promise.all([
-        caches.open('hydrogen'),
-        HydrogenSession.init(request, [env.SESSION_SECRET]),
-      ]);
+      const routerContext = new RouterContextProvider();
+      routerContext.cache = await caches.open('hydrogen-v1');
+      routerContext.set(envContext, env);
+      routerContext.env = env;
+      routerContext.waitUntil = executionContext.waitUntil.bind(executionContext);
+      // ストア接続はルートのミドルウェアで作られる。ローダーからは旧来どおり context.storefront で使う
+      routerContext.storefront = createLegacyStorefront(routerContext);
 
-      const {storefront} = createStorefrontClient({
-        cache,
-        waitUntil,
-        i18n: getLocaleFromRequest(request),
-        publicStorefrontToken: brand.storefrontApiToken,
-        privateStorefrontToken: env.PRIVATE_STOREFRONT_API_TOKEN,
-        storeDomain: brand.storeDomain,
-        storefrontId: env.PUBLIC_STOREFRONT_ID,
-        storefrontHeaders: getStorefrontHeaders(request),
-      });
-
-      const cart = createCartHandler({
-        storefront,
-        getCartId: cartGetIdDefault(request.headers),
-        setCartId: cartSetIdDefault(),
-      });
-
-      const handleRequest = createRequestHandler({
-        build: remixBuild,
-        mode: process.env.NODE_ENV,
-        getLoadContext(): AppLoadContext {
-          return {
-            session,
-            storefront,
-            cart,
-            env,
-            waitUntil,
-          };
-        },
-      });
-
-      let response = await handleRequest(request);
-
-      if (response.status === 404) {
-        response = await storefrontRedirect({request, response, storefront});
-      }
-
+      const handleRequest = createRequestHandler(serverBuild, process.env.NODE_ENV);
+      const response = await handleRequest(request, routerContext as never);
       return withBrandPreviewCookie(request, response);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
       // 原因の切り分けができるよう、エラー内容を画面にも出す
       const detail = error instanceof Error ? error.message : String(error);
-      return new Response(
-        errorPage(detail),
-        {status: 500, headers: {'content-type': 'text/html; charset=utf-8'}},
-      );
+      return new Response(errorPage(detail), {
+        status: 500,
+        headers: {'content-type': 'text/html; charset=utf-8'},
+      });
     }
   },
 };
@@ -171,20 +136,5 @@ function withBrandPreviewCookie(request: Request, response: Response): Response 
     statusText: response.statusText,
     headers,
   });
-}
-
-function getLocaleFromRequest(request: Request) {
-  return {language: 'JA', country: 'JP'} as const;
-}
-
-function getStorefrontHeaders(request: Request) {
-  const headers = request.headers;
-  return {
-    requestGroupId: headers.get('request-id'),
-    buyerIp: headers.get('oxygen-buyer-ip'),
-    buyerIpSig: headers.get('oxygen-buyer-ip-sig'),
-    cookie: headers.get('cookie') ?? '',
-    purpose: headers.get('purpose'),
-  };
 }
 

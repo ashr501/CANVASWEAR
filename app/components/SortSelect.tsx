@@ -1,4 +1,4 @@
-import {useNavigate, useSearchParams} from '@remix-run/react';
+import {useNavigate, useSearchParams} from 'react-router';
 import {SORT_OPTIONS} from '~/lib/sort';
 
 export default function SortSelect() {

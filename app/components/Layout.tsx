@@ -6,7 +6,6 @@ import type {PublicBrand} from '~/lib/brands';
 
 interface LayoutProps {
   brand: PublicBrand;
-  cart: any;
   cartOpen: boolean;
   onCartOpen: () => void;
   onCartClose: () => void;
@@ -15,7 +14,6 @@ interface LayoutProps {
 
 export default function Layout({
   brand,
-  cart,
   cartOpen,
   onCartOpen,
   onCartClose,
@@ -23,7 +21,7 @@ export default function Layout({
 }: LayoutProps) {
   return (
     <>
-      <Header brand={brand} onCartOpen={onCartOpen} cart={cart} />
+      <Header brand={brand} onCartOpen={onCartOpen} />
       <main
         style={{paddingTop: 'calc(var(--header-height) + var(--nav-height))'}}
         className="min-h-screen"
@@ -32,7 +30,7 @@ export default function Layout({
       </main>
       <Footer brand={brand} />
       <CartDrawer
-        cart={cart}
+       
         isOpen={cartOpen}
         onClose={onCartClose}
         brand={brand}

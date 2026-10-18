@@ -1,6 +1,7 @@
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Link, useLoaderData} from '@remix-run/react';
-import {getSeoMeta} from '@shopify/hydrogen';
+import type React from 'react';
+import {type LoaderFunctionArgs} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
+import {getSeoMeta} from '~/lib/shopify-ui';
 import {SHOPIFY_PAGE_QUERY} from '~/lib/queries';
 
 // エクラ株式会社の会社情報・特定商取引法表記・お問い合わせ等の静的ページ。
@@ -9,7 +10,7 @@ import {SHOPIFY_PAGE_QUERY} from '~/lib/queries';
 // 配送日数・キャンセル規定はCANVASWEARS（受注生産のPOD）の実態に合わせて記載。
 const PAGES: Record<
   string,
-  {title: string; description?: string; body: () => JSX.Element}
+  {title: string; description?: string; body: () => React.JSX.Element}
 > = {
   // サービス紹介（About us）。会社情報の表は company、こちらは「何のお店か」を伝える。
   // 数値や規定は配送ページ・FAQ・特商法ページの記載と揃えること。

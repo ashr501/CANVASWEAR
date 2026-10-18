@@ -1,19 +1,15 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import type React from 'react';
+import {type LoaderFunctionArgs} from 'react-router';
 import {
   Await,
   useLoaderData,
   useOutletContext,
   Link,
-} from '@remix-run/react';
+} from 'react-router';
 import {Suspense, useState} from 'react';
-import {
-  Image,
-  Money,
-  VariantSelector,
-  getSelectedProductOptions,
-  getSeoMeta,
-  CartForm,
-} from '@shopify/hydrogen';
+import {getSelectedProductOptions} from '@shopify/hydrogen';
+import {Image, Money, VariantSelector, getSeoMeta} from '~/lib/shopify-ui';
+import {addLinesToCart, useCart, useCartActions} from '~/lib/cart';
 import {PRODUCT_QUERY, RELATED_PRODUCTS_QUERY} from '~/lib/queries';
 import {getBrandConfig} from '~/lib/brand.server';
 import {stripHtml, titleTemplate, breadcrumbJsonLd, originOf} from '~/lib/seo';
@@ -69,7 +65,7 @@ export const meta = ({data}: any) => {
   });
 };
 
-const TRUST_ICONS: Record<'delivery' | 'material' | 'care' | 'print', JSX.Element> = {
+const TRUST_ICONS: Record<'delivery' | 'material' | 'care' | 'print', React.JSX.Element> = {
   delivery: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
       <rect x="1" y="7" width="13" height="10" rx="1" />
@@ -120,7 +116,9 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   if (!handle) throw new Response('Not found', {status: 404});
 
   const brand = getBrandConfig(context.env, request);
-  const selectedOptions = getSelectedProductOptions(request);
+  const selectedOptions = getSelectedProductOptions({
+    searchParams: new URL(request.url).searchParams,
+  });
 
   const product = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
@@ -170,7 +168,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
         )
     : Promise.resolve([]);
 
-  return defer({
+  return ({
     product: product.product,
     brandId: brand.id,
     relatedProducts,
@@ -192,6 +190,10 @@ export default function ProductDetail() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [express, setExpress] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [cartError, setCartError] = useState<string | null>(null);
+  const cartId = useCart((state) => state.data.id);
+  const {refresh: refreshCart} = useCartActions();
 
   const selectedVariant = product.selectedVariant ?? product.variants.nodes[0];
   const isAvailable = selectedVariant?.availableForSale;
@@ -290,6 +292,45 @@ export default function ProductDetail() {
       setPrintFile(null);
     } finally {
       setUploading(false);
+    }
+  }
+
+  async function handleAddToCart() {
+    if (!selectedVariant?.id) return;
+    setAdding(true);
+    setCartError(null);
+    try {
+      await addLinesToCart([
+        {merchandiseId: selectedVariant.id, quantity: 1, attributes},
+        // お急ぎ仕上げは本体1点につき1つ。どの商品の分かを明細に残す
+        ...(expressOn
+          ? [
+              {
+                merchandiseId: expressTier!.variantId,
+                quantity: 1,
+                attributes: [
+                  {key: '対象商品', value: product.title},
+                  {
+                    key: 'サイズ・カラー',
+                    value:
+                      (selectedVariant.selectedOptions ?? [])
+                        .map((o: any) => o.value)
+                        .join(' / ') || '-',
+                  },
+                ],
+              },
+            ]
+          : []),
+      ]);
+      // カートが無い状態からの最初の追加では、新しく作られたカートを読み込み直して表示に反映する
+      if (!cartId) refreshCart();
+      onCartOpen();
+    } catch (error) {
+      setCartError(
+        error instanceof Error ? error.message : 'カートに追加できませんでした。もう一度お試しください。',
+      );
+    } finally {
+      setAdding(false);
     }
   }
 
@@ -449,6 +490,7 @@ export default function ProductDetail() {
               handle={product.handle}
               options={product.options.filter((o: any) => o.values.length > 1)}
               variants={product.variants.nodes}
+              selectedVariant={selectedVariant}
             >
               {({option}) => (
                 <div className="mb-6">
@@ -634,61 +676,30 @@ export default function ProductDetail() {
             <div className="space-y-3 mb-8">
               {isCustomPrint && <StepBadge n={4} label="カートに追加" />}
               {isAvailable && selectedVariant?.id ? (
-                <CartForm
-                  route="/cart"
-                  action={CartForm.ACTIONS.LinesAdd}
-                  inputs={{
-                    lines: [
-                      {
-                        merchandiseId: selectedVariant.id,
-                        quantity: 1,
-                        attributes,
-                      },
-                      // お急ぎ仕上げは本体1点につき1つ。どの商品の分かを明細に残す
-                      ...(expressOn
-                        ? [
-                            {
-                              merchandiseId: expressTier!.variantId,
-                              quantity: 1,
-                              attributes: [
-                                {key: '対象商品', value: product.title},
-                                {
-                                  key: 'サイズ・カラー',
-                                  value:
-                                    (selectedVariant.selectedOptions ?? [])
-                                      .map((o: any) => o.value)
-                                      .join(' / ') || '-',
-                                },
-                              ],
-                            },
-                          ]
-                        : []),
-                    ],
-                  }}
-                >
-                  {(fetcher: any) => {
-                    const adding = fetcher.state !== 'idle';
-                    return (
-                      <button
-                        type="submit"
-                        onClick={onCartOpen}
-                        disabled={adding}
-                        className={clsx(
-                          'btn-primary w-full text-center transition-opacity',
-                          adding && 'opacity-60',
-                        )}
-                      >
-                        {adding
-                          ? isAvantGarde
-                            ? 'ADDING...'
-                            : '追加中...'
-                          : isAvantGarde
-                          ? 'ADD TO CART'
-                          : 'カートに追加'}
-                      </button>
-                    );
-                  }}
-                </CartForm>
+                <>
+                  <button
+                    type="button"
+                    disabled={adding}
+                    onClick={handleAddToCart}
+                    className={clsx(
+                      'btn-primary w-full text-center transition-opacity',
+                      adding && 'opacity-60',
+                    )}
+                  >
+                    {adding
+                      ? isAvantGarde
+                        ? 'ADDING...'
+                        : '追加中...'
+                      : isAvantGarde
+                      ? 'ADD TO CART'
+                      : 'カートに追加'}
+                  </button>
+                  {cartError && (
+                    <p role="alert" className="text-xs mt-2" style={{color: '#B42318'}}>
+                      {cartError}
+                    </p>
+                  )}
+                </>
               ) : (
                 <button
                   disabled

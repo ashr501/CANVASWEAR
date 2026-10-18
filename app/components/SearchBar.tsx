@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Form} from '@remix-run/react';
+import {Form} from 'react-router';
 
 /** ヘッダー左のアイコンをクリックすると検索窓が展開する。狭いヘッダーに常時
  *  テキスト入力を置くとロゴと干渉しやすいため、開閉式にしている。 */

@@ -36,6 +36,7 @@ jobs:
         run: npm ci
 
       - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy
+        # Hydrogen 2026-10: React Routerでビルドし、dist/client と dist/server をデプロイする
+        run: npx shopify hydrogen deploy --build-command "npm run build" --assets-dir dist/client --worker-dir dist/server
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000172112 }}
