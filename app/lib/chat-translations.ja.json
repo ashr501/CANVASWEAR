@@ -1,0 +1,694 @@
+[
+ {
+  "key": "agent_chat.panel.open_chat",
+  "value": "チャットを開く"
+ },
+ {
+  "key": "agent_chat.panel.ask_anything",
+  "value": "何でも質問する"
+ },
+ {
+  "key": "agent_chat.panel.title",
+  "value": "Storekick"
+ },
+ {
+  "key": "agent_chat.panel.unread_replies",
+  "value": "未読の返信"
+ },
+ {
+  "key": "agent_chat.panel.back_to_chat",
+  "value": "チャットに戻る"
+ },
+ {
+  "key": "agent_chat.panel.see_history",
+  "value": "チャット履歴を表示"
+ },
+ {
+  "key": "agent_chat.panel.new_chat",
+  "value": "新しいチャットを作成"
+ },
+ {
+  "key": "agent_chat.panel.close",
+  "value": "チャットを閉じる"
+ },
+ {
+  "key": "agent_chat.panel.undock",
+  "value": "チャットのドック固定を解除"
+ },
+ {
+  "key": "agent_chat.panel.dock",
+  "value": "チャットをドックに固定"
+ },
+ {
+  "key": "agent_chat.panel.expand",
+  "value": "チャットを展開"
+ },
+ {
+  "key": "agent_chat.panel.contract",
+  "value": "チャットを縮小"
+ },
+ {
+  "key": "agent_chat.panel.jump_to_latest",
+  "value": "最新に移動"
+ },
+ {
+  "key": "agent_chat.panel.loading_chat",
+  "value": "チャットを読み込んでいます"
+ },
+ {
+  "key": "agent_chat.input.label",
+  "value": "メッセージを入力"
+ },
+ {
+  "key": "agent_chat.input.placeholder",
+  "value": "何でもご質問ください..."
+ },
+ {
+  "key": "agent_chat.input.send",
+  "value": "送信"
+ },
+ {
+  "key": "agent_chat.input.stop",
+  "value": "生成を停止"
+ },
+ {
+  "key": "agent_chat.thinking",
+  "value": "考え中..."
+ },
+ {
+  "key": "agent_chat.first_response_delayed",
+  "value": "エージェントの応答に時間がかかっています…"
+ },
+ {
+  "key": "agent_chat.searching",
+  "value": "検索中..."
+ },
+ {
+  "key": "agent_chat.message.sent_timestamp",
+  "value": "送信済み · {{time}}"
+ },
+ {
+  "key": "agent_chat.message.automated_label",
+  "value": "自動応答"
+ },
+ {
+  "key": "agent_chat.message.automated_timestamp",
+  "value": "自動 · {{time}}"
+ },
+ {
+  "key": "agent_chat.liveAgentHandoff",
+  "value": "まもなく担当者が対応いたします"
+ },
+ {
+  "key": "agent_chat.human_handoff.action",
+  "value": "担当者とチャット"
+ },
+ {
+  "key": "agent_chat.human_handoff.request",
+  "value": "担当者と話したいです"
+ },
+ {
+  "key": "agent_chat.human_handoff.ai_assistant",
+  "value": "AI アシスタント"
+ },
+ {
+  "key": "agent_chat.greeting.default",
+  "value": "こんにちは！"
+ },
+ {
+  "key": "agent_chat.greeting.with_name",
+  "value": "こんにちは、{{name}}さん！"
+ },
+ {
+  "key": "agent_chat.greeting.welcome",
+  "value": "お買い物、サイズや寸法、配送、返品、注文状況についてご質問いただけます。"
+ },
+ {
+  "key": "agent_chat.greeting.welcome_back",
+  "value": "%{shop_name} にまたお越しいただきありがとうございます！何かお手伝いできることはありますか？"
+ },
+ {
+  "key": "agent_chat.greeting.welcome_back_no_shop",
+  "value": "またお越しいただきありがとうございます！何かお手伝いできることはありますか？"
+ },
+ {
+  "key": "agent_chat.greeting.welcome_to_shop",
+  "value": "%{shop_name} へようこそ。何かお手伝いできることはありますか？"
+ },
+ {
+  "key": "agent_chat.greeting.generic",
+  "value": "何かお手伝いできることはありますか？"
+ },
+ {
+  "key": "agent_chat.disclaimer.text",
+  "value": "このチャットは Shopify の AI を利用しており、間違いが生じる場合があります。メッセージは {{shop_name}} に表示されます。詳細はこちら："
+ },
+ {
+  "key": "agent_chat.disclaimer.text_human",
+  "value": "サービスの提供および改善のため、メッセージは {{shop_name}} および Shopify に表示されます。詳細については、"
+ },
+ {
+  "key": "agent_chat.disclaimer.link_text",
+  "value": "プライバシーポリシー"
+ },
+ {
+  "key": "agent_chat.error.response_unavailable",
+  "value": "応答できません"
+ },
+ {
+  "key": "agent_chat.error.generic",
+  "value": "エラーが発生しました。"
+ },
+ {
+  "key": "agent_chat.error.response_failed",
+  "value": "このメッセージを読み込めませんでした"
+ },
+ {
+  "key": "agent_chat.error.message_send_failed",
+  "value": "メッセージを送信できませんでした"
+ },
+ {
+  "key": "agent_chat.error.attachment_upload_failed",
+  "value": "添付ファイルをアップロードできませんでした"
+ },
+ {
+  "key": "agent_chat.error.first_response_stalled",
+  "value": "エージェントが応答できませんでした"
+ },
+ {
+  "key": "agent_chat.error.try_again",
+  "value": "再試行"
+ },
+ {
+  "key": "agent_chat.error.unavailable",
+  "value": "現在チャットは利用できません。後でもう一度お試しください"
+ },
+ {
+  "key": "agent_chat.error.usage_limit",
+  "value": "メッセージの上限に達しました。後ほどもう一度お試しいただくか、{{email}} までメールを送信してください。"
+ },
+ {
+  "key": "agent_chat.error.usage_limit_no_email",
+  "value": "メッセージの上限に達しました。後ほどもう一度お試しください。"
+ },
+ {
+  "key": "agent_chat.error.cost_quota_unhandled",
+  "value": "現在チャットはご利用いただけません。{{email}} までメールでお問い合わせください。"
+ },
+ {
+  "key": "agent_chat.error.cost_quota_unhandled_no_email",
+  "value": "現在チャットはご利用いただけません。"
+ },
+ {
+  "key": "agent_chat.error.cost_quota_handover",
+  "value": "AI アシスタントは現在ご利用いただけません。担当者がまもなく返信いたします。"
+ },
+ {
+  "key": "agent_chat.unavailable.title",
+  "value": "現在チャットは利用できません"
+ },
+ {
+  "key": "agent_chat.unavailable.description",
+  "value": "チャットの読み込み中に問題が発生しました。"
+ },
+ {
+  "key": "agent_chat.history.heading",
+  "value": "チャット履歴"
+ },
+ {
+  "key": "agent_chat.history.loading",
+  "value": "会話履歴を読み込んでいます"
+ },
+ {
+  "key": "agent_chat.history.aria_label",
+  "value": "会話履歴"
+ },
+ {
+  "key": "agent_chat.history.no_conversations",
+  "value": "会話がありません"
+ },
+ {
+  "key": "agent_chat.history.conversation.one",
+  "value": "会話"
+ },
+ {
+  "key": "agent_chat.history.conversation.other",
+  "value": "会話"
+ },
+ {
+  "key": "agent_chat.history.error_message",
+  "value": "エラーが発生しました。"
+ },
+ {
+  "key": "agent_chat.history.try_again",
+  "value": "再試行"
+ },
+ {
+  "key": "agent_chat.history.no_past",
+  "value": "過去の会話はありません"
+ },
+ {
+  "key": "agent_chat.history.start_new",
+  "value": "新しいチャットを開始"
+ },
+ {
+  "key": "agent_chat.history.untitled",
+  "value": "無題の会話"
+ },
+ {
+  "key": "agent_chat.history.resume",
+  "value": "再開: {{title}}"
+ },
+ {
+  "key": "agent_chat.history.resume_with_time",
+  "value": "再開: {{title}}、{{time}}"
+ },
+ {
+  "key": "agent_chat.history.delete",
+  "value": "会話を削除: {{title}}"
+ },
+ {
+  "key": "agent_chat.history.delete_failed",
+  "value": "会話を削除できませんでした"
+ },
+ {
+  "key": "agent_chat.feedback.group_label",
+  "value": "メッセージへのフィードバック"
+ },
+ {
+  "key": "agent_chat.feedback.thumbs_up",
+  "value": "高評価"
+ },
+ {
+  "key": "agent_chat.feedback.thumbs_down",
+  "value": "低評価"
+ },
+ {
+  "key": "agent_chat.feedback.add_comment",
+  "value": "コメントを追加"
+ },
+ {
+  "key": "agent_chat.feedback.thanks",
+  "value": "フィードバックありがとうございます"
+ },
+ {
+  "key": "agent_chat.feedback.placeholder_up",
+  "value": "良かった点をお聞かせください"
+ },
+ {
+  "key": "agent_chat.feedback.placeholder_down",
+  "value": "改善すべき点をお聞かせください"
+ },
+ {
+  "key": "agent_chat.feedback.comment_label",
+  "value": "フィードバックのコメント"
+ },
+ {
+  "key": "agent_chat.feedback.cancel",
+  "value": "キャンセル"
+ },
+ {
+  "key": "agent_chat.feedback.submit",
+  "value": "送信"
+ },
+ {
+  "key": "agent_chat.feedback.character_count",
+  "value": "{{current}}/{{max}}"
+ },
+ {
+  "key": "agent_chat.feedback.character_limit_reached",
+  "value": "最大文字数に達しました。フィードバックは最大 {{max}} 文字までです。"
+ },
+ {
+  "key": "agent_chat.buyer_profile.button.open",
+  "value": "購入者プロフィール"
+ },
+ {
+  "key": "agent_chat.buyer_profile.title",
+  "value": "購入者プロフィール"
+ },
+ {
+  "key": "agent_chat.buyer_profile.empty",
+  "value": "利用可能な購入者プロフィールはありません。"
+ },
+ {
+  "key": "agent_chat.buyer_profile.close",
+  "value": "閉じる"
+ },
+ {
+  "key": "agent_chat.suggestions.empty_state_label",
+  "value": "おすすめの質問"
+ },
+ {
+  "key": "agent_chat.suggestions.quick_reply_label",
+  "value": "おすすめの返信"
+ },
+ {
+  "key": "agent_chat.auth.sign_in_to_continue",
+  "value": "続けるにはログインしてください"
+ },
+ {
+  "key": "agent_chat.auth.sign_in",
+  "value": "ログイン"
+ },
+ {
+  "key": "agent_chat.auth.skip_and_chat",
+  "value": "スキップしてチャットを開始"
+ },
+ {
+  "key": "agent_chat.auth.pre_chat_title",
+  "value": "チャットをパーソナライズして保存するにはログインしてください"
+ },
+ {
+  "key": "agent_chat.auth.pre_chat_subtitle",
+  "value": "ログインするか、アカウントを作成してください"
+ },
+ {
+  "key": "agent_chat.auth.staff_chat_required_title",
+  "value": "返信を見逃さないために"
+ },
+ {
+  "key": "agent_chat.auth.staff_chat_required_subtitle",
+  "value": "担当者とチャットするにはログインしてください。チャットから離れた場合は、メールを送信します。"
+ },
+ {
+  "key": "agent_chat.auth.share_disclaimer",
+  "value": "続行すると、Shop により名前とメールアドレスがこのストアに共有されます。ストアの {{terms_link}} および {{privacy_link}} をご確認ください"
+ },
+ {
+  "key": "agent_chat.auth.terms_link",
+  "value": "利用規約"
+ },
+ {
+  "key": "agent_chat.auth.privacy_link",
+  "value": "プライバシーポリシー"
+ },
+ {
+  "key": "agent_chat.auth.declined_pre_chat",
+  "value": "ログインしないと、ストアにおつなぎできません。"
+ },
+ {
+  "key": "agent_chat.reply_by_email.continuation_prompt",
+  "value": "チャットを離れた場合、返信があった際にメールを送信します。"
+ },
+ {
+  "key": "agent_chat.reply_by_email.sign_in_prompt",
+  "value": "返信があった際にメールを受け取るには、ログインしてください。"
+ },
+ {
+  "key": "agent_chat.order_lookup.track_order",
+  "value": "注文を追跡"
+ },
+ {
+  "key": "agent_chat.order_lookup.track_another_order",
+  "value": "別の注文を追跡"
+ },
+ {
+  "key": "agent_chat.order_lookup.new_conversation",
+  "value": "新しい会話"
+ },
+ {
+  "key": "agent_chat.order_lookup.follow_up_label",
+  "value": "注文検索のアクション"
+ },
+ {
+  "key": "agent_chat.order_lookup.enter_order_information",
+  "value": "注文情報を入力"
+ },
+ {
+  "key": "agent_chat.order_lookup.prompt",
+  "value": "注文状況を確認するには、注文の詳細をご入力ください。"
+ },
+ {
+  "key": "agent_chat.order_lookup.form_title",
+  "value": "注文を追跡"
+ },
+ {
+  "key": "agent_chat.order_lookup.form_subtitle",
+  "value": "情報を入力してください。"
+ },
+ {
+  "key": "agent_chat.order_lookup.order_number_label",
+  "value": "注文番号"
+ },
+ {
+  "key": "agent_chat.order_lookup.email_label",
+  "value": "メールアドレス"
+ },
+ {
+  "key": "agent_chat.order_lookup.submit",
+  "value": "注文を追跡"
+ },
+ {
+  "key": "agent_chat.order_lookup.cancel",
+  "value": "キャンセル"
+ },
+ {
+  "key": "agent_chat.order_lookup.invalid_order_number",
+  "value": "スペースを含めず、英数字のみで有効な注文番号を入力してください (例: 1006)。"
+ },
+ {
+  "key": "agent_chat.order_lookup.invalid_order_number_whitespace",
+  "value": "スペースを含めず、英数字のみで有効な注文番号を入力してください (例: 1006)。"
+ },
+ {
+  "key": "agent_chat.order_lookup.invalid_email",
+  "value": "有効なメールアドレスを入力してください"
+ },
+ {
+  "key": "agent_chat.order_lookup.generic_error",
+  "value": "注文の検索中に問題が発生しました。もう一度お試しください。"
+ },
+ {
+  "key": "agent_chat.order_lookup.rate_limited_error",
+  "value": "試行回数が多すぎます。後でもう一度お試しください。"
+ },
+ {
+  "key": "agent_chat.order_lookup.locked_composer_status",
+  "value": "注文検索を実行中です。別の質問をするには新しい会話を開始してください。"
+ },
+ {
+  "key": "agent_chat.legacy_contact.form_title",
+  "value": "はじめる前に"
+ },
+ {
+  "key": "agent_chat.legacy_contact.form_subtitle",
+  "value": "チャットから退出した場合に返信できるよう、お客様情報をご入力ください。"
+ },
+ {
+  "key": "agent_chat.legacy_contact.first_name_label",
+  "value": "名"
+ },
+ {
+  "key": "agent_chat.legacy_contact.last_name_label",
+  "value": "姓"
+ },
+ {
+  "key": "agent_chat.legacy_contact.email_label",
+  "value": "メールアドレス"
+ },
+ {
+  "key": "agent_chat.legacy_contact.marketing_opt_in",
+  "value": "ニュースやお得な情報をメールで受け取る"
+ },
+ {
+  "key": "agent_chat.legacy_contact.submit",
+  "value": "チャットを開始"
+ },
+ {
+  "key": "agent_chat.legacy_contact.cancel",
+  "value": "キャンセル"
+ },
+ {
+  "key": "agent_chat.legacy_contact.invalid_first_name",
+  "value": "有効な名を入力してください。"
+ },
+ {
+  "key": "agent_chat.legacy_contact.invalid_last_name",
+  "value": "有効な姓を入力してください。"
+ },
+ {
+  "key": "agent_chat.legacy_contact.invalid_email",
+  "value": "有効なメールアドレスを入力してください。"
+ },
+ {
+  "key": "agent_chat.legacy_contact.invalid_email_length",
+  "value": "メールアドレスが長すぎます。"
+ },
+ {
+  "key": "agent_chat.legacy_contact.generic_error",
+  "value": "エラーが発生しました。"
+ },
+ {
+  "key": "agent_chat.legacy_contact.rate_limited_error",
+  "value": "試行回数が多すぎます。後でもう一度お試しください。"
+ },
+ {
+  "key": "agent_chat.discountCard.useDiscount",
+  "value": "ディスカウントを利用"
+ },
+ {
+  "key": "agent_chat.discountCard.discountApplicationContext",
+  "value": "チェックアウト時に自動的に適用されます"
+ },
+ {
+  "key": "agent_chat.cart.checkout",
+  "value": "チェックアウト"
+ },
+ {
+  "key": "agent_chat.product.add_to_cart",
+  "value": "カートに追加"
+ },
+ {
+  "key": "agent_chat.product.view_details",
+  "value": "詳細を表示"
+ },
+ {
+  "key": "agent_chat.product.out_of_stock",
+  "value": "在庫切れ"
+ },
+ {
+  "key": "agent_chat.product.compare_suggestions",
+  "value": "おすすめを比較"
+ },
+ {
+  "key": "agent_chat.product.hide_suggestions",
+  "value": "おすすめを非表示"
+ },
+ {
+  "key": "agent_chat.product.sold_out",
+  "value": "売り切れ"
+ },
+ {
+  "key": "agent_chat.order.item.one",
+  "value": "アイテム"
+ },
+ {
+  "key": "agent_chat.order.item.other",
+  "value": "アイテム"
+ },
+ {
+  "key": "agent_chat.order.less_items.one",
+  "value": "- {{count}} 点のアイテムを非表示"
+ },
+ {
+  "key": "agent_chat.order.less_items.other",
+  "value": "- {{count}} 点のアイテムを非表示"
+ },
+ {
+  "key": "agent_chat.order.more_items.one",
+  "value": "+ さらに {{count}} 点のアイテム"
+ },
+ {
+  "key": "agent_chat.order.more_items.other",
+  "value": "+ さらに {{count}} 点のアイテム"
+ },
+ {
+  "key": "agent_chat.order.view_order",
+  "value": "注文 {{orderId}} を表示"
+ },
+ {
+  "key": "agent_chat.order.track_shipment",
+  "value": "荷物を追跡"
+ },
+ {
+  "key": "agent_chat.order.of_total",
+  "value": "{{index}} / {{total}}"
+ },
+ {
+  "key": "agent_chat.order.label",
+  "value": "注文 {{number}}"
+ },
+ {
+  "key": "agent_chat.order.count.one",
+  "value": "{{count}} 件の注文"
+ },
+ {
+  "key": "agent_chat.order.count.other",
+  "value": "{{count}} 件の注文"
+ },
+ {
+  "key": "agent_chat.order.ordered_on",
+  "value": "{{date}} に注文"
+ },
+ {
+  "key": "agent_chat.order.select",
+  "value": "注文 {{number}} を選択"
+ },
+ {
+  "key": "agent_chat.return.heading",
+  "value": "返品するアイテムを選択"
+ },
+ {
+  "key": "agent_chat.return.toggle_item",
+  "value": "{{name}} を選択"
+ },
+ {
+  "key": "agent_chat.return.select_item_non_returnable",
+  "value": "{{name}}、返品不可"
+ },
+ {
+  "key": "agent_chat.return.quantity_label",
+  "value": "返品数"
+ },
+ {
+  "key": "agent_chat.return.reason_label",
+  "value": "返品理由"
+ },
+ {
+  "key": "agent_chat.return.reason_placeholder",
+  "value": "理由を選択"
+ },
+ {
+  "key": "agent_chat.return.confirm",
+  "value": "返品をリクエスト"
+ },
+ {
+  "key": "agent_chat.return.confirmed",
+  "value": "返品をリクエストしました"
+ },
+ {
+  "key": "agent_chat.return.reason.size_too_small",
+  "value": "サイズが小さすぎる"
+ },
+ {
+  "key": "agent_chat.return.reason.size_too_large",
+  "value": "サイズが大きすぎる"
+ },
+ {
+  "key": "agent_chat.return.reason.unwanted",
+  "value": "不要になった"
+ },
+ {
+  "key": "agent_chat.return.reason.not_as_described",
+  "value": "説明と異なる"
+ },
+ {
+  "key": "agent_chat.return.reason.wrong_item",
+  "value": "違うアイテム"
+ },
+ {
+  "key": "agent_chat.return.reason.defective",
+  "value": "不良品"
+ },
+ {
+  "key": "agent_chat.return.reason.style",
+  "value": "スタイル"
+ },
+ {
+  "key": "agent_chat.return.reason.color",
+  "value": "色"
+ },
+ {
+  "key": "agent_chat.return.reason.other_reason",
+  "value": "その他"
+ },
+ {
+  "key": "agent_chat.scroll.previous",
+  "value": "前へ"
+ },
+ {
+  "key": "agent_chat.scroll.next",
+  "value": "次へ"
+ }
+]

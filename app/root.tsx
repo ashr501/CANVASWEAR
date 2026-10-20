@@ -16,6 +16,7 @@ import {
 } from 'react-router';
 import {CartAnalyticsTracker, PageViewedTracker} from '~/components/AnalyticsTrackers';
 import {getBrandConfig} from '~/lib/brand.server';
+import {getChatPageData} from '~/lib/chat-page-data';
 import {CartProvider} from '~/lib/cart';
 import {cartHandlers} from '~/lib/cart-handlers';
 import {envContext} from '~/lib/env';
@@ -172,6 +173,14 @@ export default function App() {
           </Layout>
           {/* Shopify Inbox（AIチャット・スタッフへの引き継ぎ）。右下にボタンが出る */}
           {/* チャットの言語を日本語にする（Alo Loreのテーマと同じ指定） */}
+          <script
+            id="shopify-chat-page-data"
+            type="application/json"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(getChatPageData(brand.name)).replace(/</g, '\\u003c'),
+            }}
+          />
           <shopify-store store-domain={origin} country="JP" language="ja" suppressHydrationWarning />
           <shopify-chat suppressHydrationWarning />
         </CartProvider>
