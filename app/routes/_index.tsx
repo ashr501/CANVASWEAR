@@ -223,7 +223,7 @@ export default function Index() {
           </div>
 
           <Suspense fallback={<ProductGridSkeleton />}>
-            <Await resolve={products}>
+            <Await resolve={products} errorElement={null}>
               {(data: any) => {
                 const items = data?.featured?.products?.nodes ?? [];
                 if (items.length === 0) return <EmptyState label={copy.empty} />;
@@ -265,7 +265,7 @@ export default function Index() {
           </div>
 
           <Suspense fallback={<ProductGridSkeleton count={4} />}>
-            <Await resolve={products}>
+            <Await resolve={products} errorElement={null}>
               {(data: any) => {
                 const items = data?.newArrivals?.products?.nodes ?? [];
                 if (items.length === 0) return <EmptyState label={copy.empty} />;
@@ -356,7 +356,7 @@ function SplitHero({brand, products}: {brand: PublicBrand; products: any}) {
           style={{backgroundColor: 'var(--color-hero-bg)'}}
         >
           <Suspense fallback={<HeroCardsSkeleton />}>
-            <Await resolve={products}>
+            <Await resolve={products} errorElement={null}>
               {(data: any) => {
                 const items = (data?.featured?.products?.nodes ?? []).slice(0, 3);
                 if (items.length === 0) return <HeroCardsSkeleton />;
@@ -729,7 +729,7 @@ function CanvaswearHome({
               <CategoryTabs nav={brand.nav} allHandle={brand.collections.all} activeCat={activeCat} />
             }
           >
-            <Await resolve={counts}>
+            <Await resolve={counts} errorElement={null}>
               {(c: Record<string, number>) => (
                 <CategoryTabs
                   nav={brand.nav}
@@ -742,7 +742,7 @@ function CanvaswearHome({
           </Suspense>
 
           <Suspense fallback={<ProductGridSkeleton />}>
-            <Await resolve={categoryProducts}>
+            <Await resolve={categoryProducts} errorElement={null}>
               {(data: any) => {
                 const items = data?.collection?.products?.nodes ?? [];
                 if (items.length === 0) return <EmptyState label={copy.empty} />;
@@ -762,7 +762,7 @@ function CanvaswearHome({
       </section>
 
       <Suspense fallback={null}>
-        <Await resolve={news}>
+        <Await resolve={news} errorElement={null}>
           {(articles: any[]) => <NewsSection articles={articles} viewAllLabel={copy.viewAll} />}
         </Await>
       </Suspense>
@@ -957,7 +957,7 @@ function CanvaswearHero({
             {/* 品ぞろえの多さを最初に伝える。件数が届くまでは何も出さない（高さは確保してレイアウトが跳ねないようにする） */}
             <div className="mt-8 min-h-[3rem]">
               <Suspense fallback={null}>
-                <Await resolve={counts}>
+                <Await resolve={counts} errorElement={null}>
                   {(c: Record<string, number>) => {
                     const total = c[brand.collections.all];
                     if (!total) return null;
@@ -997,7 +997,7 @@ function CanvaswearHero({
           {heroImage ? null : (
           <div className="relative aspect-[4/5] md:aspect-[4/5] max-h-[440px]">
             <Suspense fallback={<HeroImageSkeleton />}>
-              <Await resolve={products}>
+              <Await resolve={products} errorElement={null}>
                 {(data: any) => {
                   const items = data?.featured?.products?.nodes ?? [];
                   if (items.length === 0) return <HeroImageSkeleton />;

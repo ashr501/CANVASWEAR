@@ -86,7 +86,7 @@ export default function ProductsIndex() {
 
         {/* 商品グリッド */}
         <Suspense fallback={<ProductGridSkeleton />}>
-          <Await resolve={products}>
+          <Await resolve={products} errorElement={null}>
             {(data: any) => {
               const connection = data?.collection?.products;
               if (!connection || connection.nodes.length === 0) {

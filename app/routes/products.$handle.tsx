@@ -785,7 +785,7 @@ export default function ProductDetail() {
 
         {/* 関連商品 */}
         <Suspense fallback={null}>
-          <Await resolve={relatedProducts}>
+          <Await resolve={relatedProducts} errorElement={null}>
             {(items: any[]) =>
               items.length > 0 && (
                 <div className="mt-16 pt-16" style={{borderTop: '1px solid var(--color-border)'}}>

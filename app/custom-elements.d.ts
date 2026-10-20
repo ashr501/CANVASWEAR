@@ -5,6 +5,11 @@ declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'shopify-chat': DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
+      'shopify-store': DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
+        'store-domain'?: string;
+        country?: string;
+        language?: string;
+      };
     }
   }
 }

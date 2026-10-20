@@ -88,7 +88,7 @@ export default function SearchPage() {
               <SortSelect />
             </div>
             <Suspense fallback={null}>
-            <Await resolve={products}>
+            <Await resolve={products} errorElement={null}>
               {(data: any) => {
                 const connection = data?.products ?? data;
                 return !connection?.nodes || connection.nodes.length === 0 ? (

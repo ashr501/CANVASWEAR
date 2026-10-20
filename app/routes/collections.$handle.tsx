@@ -125,7 +125,7 @@ export default function CollectionPage() {
             {collection.title}
           </h1>
           <Suspense fallback={null}>
-            <Await resolve={count}>
+            <Await resolve={count} errorElement={null}>
               {(n: number | null) =>
                 n ? (
                   <p className="mt-2 text-sm" style={{color: 'var(--color-text-muted)'}}>

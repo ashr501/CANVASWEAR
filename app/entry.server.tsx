@@ -5,6 +5,10 @@ import {getBrandConfig} from '~/lib/brand.server';
 import {createContentSecurityPolicy} from '~/lib/csp';
 import {NonceContext} from '~/lib/nonce-context';
 
+// 後から流し込む部分（商品数の集計・お知らせなど）を待つ最大時間。
+// React Routerの既定（約5秒）だと、集計が遅いときにページ全体がエラーになるため長めにする。
+export const streamTimeout = 30_000;
+
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,

@@ -105,6 +105,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   // storeDomain / storefrontApiToken はブラウザに渡さない
   return {
     cartData: cartResult.data,
+    origin: new URL(request.url).origin,
     shopify: {
       shop: {shopId: shopData.shop.id as string, storefrontId, myshopifyDomain: brand.storeDomain},
       currency: (shopData.shop.paymentSettings?.currencyCode as string) ?? 'JPY',
@@ -132,7 +133,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 }
 
 export default function App() {
-  const {brand, cartData, shopify} = useLoaderData<typeof loader>();
+  const {brand, cartData, shopify, origin} = useLoaderData<typeof loader>();
   const [cartOpen, setCartOpen] = useState(false);
   const nonce = useNonce();
   const navigate = useNavigate();
@@ -170,6 +171,8 @@ export default function App() {
             <Outlet context={{brand, onCartOpen: () => setCartOpen(true)}} />
           </Layout>
           {/* Shopify Inbox（AIチャット・スタッフへの引き継ぎ）。右下にボタンが出る */}
+          {/* チャットの言語を日本語にする（Alo Loreのテーマと同じ指定） */}
+          <shopify-store store-domain={origin} country="JP" language="ja" suppressHydrationWarning />
           <shopify-chat suppressHydrationWarning />
         </CartProvider>
         <ScrollRestoration nonce={nonce} />
