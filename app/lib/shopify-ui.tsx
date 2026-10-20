@@ -223,8 +223,10 @@ export function getSeoMeta(...inputs: Array<SeoInput | null | undefined>) {
     tags.push({property: 'twitter:description', content: seo.description});
   }
   if (seo.url) {
-    tags.push({tagName: 'link', rel: 'canonical', href: seo.url.split('?')[0]});
-    tags.push({property: 'og:url', content: seo.url});
+    // 旧Hydrogenと同じく、末尾の / は付けない（トップページは https://canvaswears.com）
+    const withoutSlash = (url: string) => url.replace(/\/(?=\?|$)/, '');
+    tags.push({tagName: 'link', rel: 'canonical', href: withoutSlash(seo.url.split('?')[0])});
+    tags.push({property: 'og:url', content: withoutSlash(seo.url.split('?')[0])});
   }
   if (seo.media) {
     const media = typeof seo.media === 'string' ? {url: seo.media} : seo.media;
@@ -241,7 +243,8 @@ export function getSeoMeta(...inputs: Array<SeoInput | null | undefined>) {
     });
   }
   const jsonLd = seo.jsonLd ? (Array.isArray(seo.jsonLd) ? seo.jsonLd : [seo.jsonLd]) : [];
-  for (const item of jsonLd) tags.push({'script:ld+json': item});
+  // 旧Hydrogenと同じく、複数あるときは1つのscriptに配列でまとめる
+  if (jsonLd.length) tags.push({'script:ld+json': jsonLd.length === 1 ? jsonLd[0] : jsonLd});
   return tags;
 }
 
