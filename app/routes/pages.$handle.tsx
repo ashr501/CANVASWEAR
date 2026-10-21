@@ -1,4 +1,5 @@
 import type React from 'react';
+import SocialIcons from '~/components/SocialIcons';
 import {type LoaderFunctionArgs} from 'react-router';
 import {Link, useLoaderData} from 'react-router';
 import {getSeoMeta} from '~/lib/shopify-ui';
@@ -229,16 +230,9 @@ const PAGES: Record<
           </div>
           <div>
             <p className="text-xs tracking-widest uppercase mb-1" style={{color: 'var(--color-primary)'}}>
-              Instagram
+              SNS
             </p>
-            <a
-              href="https://www.instagram.com/canvas_wears_tokyo"
-              target="_blank"
-              rel="noreferrer"
-              className="underline"
-            >
-              @canvas_wears_tokyo
-            </a>
+            <SocialIcons size={44} />
           </div>
         </div>
       </div>

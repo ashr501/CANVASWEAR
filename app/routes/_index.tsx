@@ -1,4 +1,5 @@
 import {type LoaderFunctionArgs} from 'react-router';
+import {SOCIAL_LINKS} from '~/components/SocialIcons';
 import {Await, useLoaderData, useOutletContext, Link} from 'react-router';
 import {Suspense} from 'react';
 import {getSeoMeta} from '~/lib/shopify-ui';
@@ -161,7 +162,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     origin: brand.id === 'custom-print' ? origin : undefined,
     sameAs:
       brand.id === 'custom-print'
-        ? ['https://www.instagram.com/canvas_wears_tokyo']
+        ? SOCIAL_LINKS.map((link) => link.href)
         : [],
   });
 }

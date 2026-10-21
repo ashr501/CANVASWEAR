@@ -1,4 +1,5 @@
 import {Link} from 'react-router';
+import SocialIcons from './SocialIcons';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
@@ -109,18 +110,10 @@ export default function Footer({brand}: FooterProps) {
             >
               FOLLOW
             </h3>
+            <div className="mb-4">
+              <SocialIcons />
+            </div>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="https://www.instagram.com/canvas_wears_tokyo"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm transition-colors"
-                  style={{color: 'var(--color-text-muted)'}}
-                >
-                  Instagram
-                </a>
-              </li>
               <li>
                 <Link
                   to="/pages/contact"
