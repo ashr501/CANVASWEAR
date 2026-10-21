@@ -4,6 +4,7 @@
  */
 export const SOCIAL_LINKS: Array<{name: string; href: string; icon: 'instagram' | 'x'}> = [
   {name: 'Instagram', href: 'https://www.instagram.com/canvas_wears_tokyo', icon: 'instagram'},
+  {name: 'X', href: 'https://x.com/canvas_wears', icon: 'x'},
 ];
 
 function Icon({icon}: {icon: 'instagram' | 'x'}) {
