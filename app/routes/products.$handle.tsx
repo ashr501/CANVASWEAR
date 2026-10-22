@@ -634,7 +634,7 @@ export default function ProductDetail() {
                   }}
                 />
                 <p className="text-xs mt-2" style={{color: 'var(--color-text-muted)'}}>
-                  ご記入内容がそのまま注文情報に記録されます（{printNote.length}/200）
+                  ご記入内容をもとに、ご注文後に当店から確認のご連絡をします。200文字まで（あと{200 - printNote.length}文字）
                 </p>
               </div>
             )}
