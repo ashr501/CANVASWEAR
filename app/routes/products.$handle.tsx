@@ -17,6 +17,13 @@ import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
+import PatternPicker from '~/components/PatternPicker';
+import {
+  COMMON_PATTERNS,
+  PATTERN_PICKER_TAG,
+  stripLegacyPatternPicker,
+  type CommonPattern,
+} from '~/lib/pattern-picker';
 
 export const meta = ({data}: any) => {
   if (!data?.product) return [{title: '商品'}];
@@ -168,8 +175,13 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
         )
     : Promise.resolve([]);
 
+  // Alo Loreで「柄見本から選ぶ」が出る商品（タグで目印）には同じ柄選びを出す
+  const descriptionHtml = stripLegacyPatternPicker(product.product.descriptionHtml ?? '');
+  const patterns = product.product.tags.includes(PATTERN_PICKER_TAG) ? COMMON_PATTERNS : null;
+
   return ({
-    product: product.product,
+    product: {...product.product, descriptionHtml},
+    commonPatterns: patterns,
     brandId: brand.id,
     relatedProducts,
     seoUrl: request.url,
@@ -179,11 +191,14 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export default function ProductDetail() {
-  const {product, brandId, relatedProducts} = useLoaderData<typeof loader>();
+  const {product, brandId, relatedProducts, commonPatterns} = useLoaderData<typeof loader>();
   const {onCartOpen, brand} = useOutletContext<{onCartOpen: () => void; brand: PublicBrand}>();
   const isAvantGarde = isBoldBrand(brandId);
   const [selectedImage, setSelectedImage] = useState(0);
   const [printNote, setPrintNote] = useState('');
+  const [pattern, setPattern] = useState<CommonPattern | null>(null);
+  const [useDate, setUseDate] = useState('');
+  const [scene, setScene] = useState('');
   const [printFile, setPrintFile] = useState<{url: string; fileName: string} | null>(
     null,
   );
@@ -263,7 +278,16 @@ export default function ProductDetail() {
               {key: 'ファイル名', value: printFile.fileName},
             ]
           : []),
-        ...(printNote.trim() ? [{key: 'プリント内容', value: printNote.trim()}] : []),
+        ...(pattern
+          ? [
+              {key: '柄番号', value: pattern.id},
+              {key: '柄名', value: pattern.name},
+            ]
+          : []),
+        ...(useDate ? [{key: 'ご使用予定日', value: useDate}] : []),
+        ...(scene ? [{key: 'ご利用シーン', value: scene}] : []),
+        // Alo Loreと同じ項目名にして、どちらのサイトの注文も同じ形で届くようにする
+        ...(printNote.trim() ? [{key: 'ご要望・コメント', value: printNote.trim()}] : []),
         ...(expressOn
           ? [{key: 'お急ぎ仕上げ', value: `あり（+¥${expressTier!.price.toLocaleString('ja-JP')}）`}]
           : []),
@@ -535,7 +559,21 @@ export default function ProductDetail() {
             {/* カスタムプリントの入稿 */}
             {isCustomPrint && (
               <div className="mb-6">
-                <StepBadge n={2} label="デザインデータを入稿" />
+                <StepBadge
+                  n={2}
+                  label={commonPatterns ? '柄を選ぶ・デザインデータを入稿' : 'デザインデータを入稿'}
+                />
+                {commonPatterns && (
+                  <div className="mb-4">
+                    <p className="text-sm font-medium mb-2" style={{color: 'var(--color-text)'}}>
+                      柄見本から選ぶ
+                    </p>
+                    <PatternPicker patterns={commonPatterns} selected={pattern} onSelect={setPattern} />
+                    <p className="text-sm font-medium mt-5 mb-2" style={{color: 'var(--color-text)'}}>
+                      または、自分のデータを入稿する
+                    </p>
+                  </div>
+                )}
 
                 <label
                   className="flex items-center justify-center gap-2 w-full p-4 text-sm cursor-pointer transition-colors"
@@ -616,6 +654,43 @@ export default function ProductDetail() {
             {isCustomPrint && (
               <div className="mb-6">
                 <StepBadge n={3} label="ご指定・ご要望" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                  <label className="text-xs" style={{color: 'var(--color-text-muted)'}}>
+                    ご使用予定日
+                    <input
+                      type="date"
+                      value={useDate}
+                      onChange={(e) => setUseDate(e.target.value)}
+                      className="block w-full mt-1 p-2.5 text-sm"
+                      style={{
+                        backgroundColor: 'var(--color-surface)',
+                        color: 'var(--color-text)',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius)',
+                      }}
+                    />
+                  </label>
+                  <label className="text-xs" style={{color: 'var(--color-text-muted)'}}>
+                    ご利用シーン
+                    <select
+                      value={scene}
+                      onChange={(e) => setScene(e.target.value)}
+                      className="block w-full mt-1 p-2.5 text-sm"
+                      style={{
+                        backgroundColor: 'var(--color-surface)',
+                        color: 'var(--color-text)',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius)',
+                      }}
+                    >
+                      <option value="">選択してください</option>
+                      <option>ご自身用</option>
+                      <option>プレゼント・贈り物用</option>
+                      <option>イベント・パーティー用</option>
+                      <option>その他</option>
+                    </select>
+                  </label>
+                </div>
                 <textarea
                   id="print-note"
                   aria-label="ご指定・ご要望"
@@ -764,7 +839,7 @@ export default function ProductDetail() {
                   {isAvantGarde ? 'TAGS' : 'タグ'}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {product.tags.map((tag: string) => (
+                  {product.tags.filter((tag: string) => tag !== PATTERN_PICKER_TAG).map((tag: string) => (
                     <span
                       key={tag}
                       className="text-xs px-2 py-1"
