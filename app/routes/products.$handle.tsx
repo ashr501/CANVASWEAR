@@ -17,13 +17,7 @@ import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
-import PatternPicker from '~/components/PatternPicker';
-import {
-  COMMON_PATTERNS,
-  PATTERN_PICKER_TAG,
-  stripLegacyPatternPicker,
-  type CommonPattern,
-} from '~/lib/pattern-picker';
+import {stripLegacyPatternPicker} from '~/lib/pattern-picker';
 
 export const meta = ({data}: any) => {
   if (!data?.product) return [{title: '商品'}];
@@ -175,13 +169,11 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
         )
     : Promise.resolve([]);
 
-  // Alo Loreで「柄見本から選ぶ」が出る商品（タグで目印）には同じ柄選びを出す
+  // 説明文に埋め込まれたAlo Lore用の柄選び（CANVASWEARSでは動かず空の枠になる）を取り除く
   const descriptionHtml = stripLegacyPatternPicker(product.product.descriptionHtml ?? '');
-  const patterns = product.product.tags.includes(PATTERN_PICKER_TAG) ? COMMON_PATTERNS : null;
 
   return ({
     product: {...product.product, descriptionHtml},
-    commonPatterns: patterns,
     brandId: brand.id,
     relatedProducts,
     seoUrl: request.url,
@@ -191,12 +183,11 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export default function ProductDetail() {
-  const {product, brandId, relatedProducts, commonPatterns} = useLoaderData<typeof loader>();
+  const {product, brandId, relatedProducts} = useLoaderData<typeof loader>();
   const {onCartOpen, brand} = useOutletContext<{onCartOpen: () => void; brand: PublicBrand}>();
   const isAvantGarde = isBoldBrand(brandId);
   const [selectedImage, setSelectedImage] = useState(0);
   const [printNote, setPrintNote] = useState('');
-  const [pattern, setPattern] = useState<CommonPattern | null>(null);
   const [useDate, setUseDate] = useState('');
   const [scene, setScene] = useState('');
   const [printFile, setPrintFile] = useState<{url: string; fileName: string} | null>(
@@ -276,12 +267,6 @@ export default function ProductDetail() {
           ? [
               {key: 'プリント画像', value: printFile.url},
               {key: 'ファイル名', value: printFile.fileName},
-            ]
-          : []),
-        ...(pattern
-          ? [
-              {key: '柄番号', value: pattern.id},
-              {key: '柄名', value: pattern.name},
             ]
           : []),
         ...(useDate ? [{key: 'ご使用予定日', value: useDate}] : []),
@@ -559,21 +544,7 @@ export default function ProductDetail() {
             {/* カスタムプリントの入稿 */}
             {isCustomPrint && (
               <div className="mb-6">
-                <StepBadge
-                  n={2}
-                  label={commonPatterns ? '柄を選ぶ・デザインデータを入稿' : 'デザインデータを入稿'}
-                />
-                {commonPatterns && (
-                  <div className="mb-4">
-                    <p className="text-sm font-medium mb-2" style={{color: 'var(--color-text)'}}>
-                      柄見本から選ぶ
-                    </p>
-                    <PatternPicker patterns={commonPatterns} selected={pattern} onSelect={setPattern} />
-                    <p className="text-sm font-medium mt-5 mb-2" style={{color: 'var(--color-text)'}}>
-                      または、自分のデータを入稿する
-                    </p>
-                  </div>
-                )}
+                <StepBadge n={2} label="デザインデータを入稿" />
 
                 <label
                   className="flex items-center justify-center gap-2 w-full p-4 text-sm cursor-pointer transition-colors"
@@ -839,7 +810,7 @@ export default function ProductDetail() {
                   {isAvantGarde ? 'TAGS' : 'タグ'}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {product.tags.filter((tag: string) => tag !== PATTERN_PICKER_TAG).map((tag: string) => (
+                  {product.tags.map((tag: string) => (
                     <span
                       key={tag}
                       className="text-xs px-2 py-1"
