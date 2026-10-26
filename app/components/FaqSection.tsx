@@ -1,97 +1,138 @@
 import {Link} from 'react-router';
-export const CANVASWEAR_FAQ: Array<{q: string; a: string; link?: {href: string; label: string}}> = [
-  // 入稿・データ
+export const FAQ_CATEGORIES = [
+  '入稿・データ',
+  'デザイン・柄',
+  'ご注文・数量',
+  '納期・送料・お支払い',
+  '品質・返品',
+] as const;
+
+export type FaqItem = {
+  cat: (typeof FAQ_CATEGORIES)[number];
+  /** トップ・商品ページに出す、よく聞かれる質問 */
+  popular?: boolean;
+  q: string;
+  a: string;
+  link?: {href: string; label: string};
+};
+
+// 質問を足すときは、cat（分類）を付けてこの配列に足す。/faq に自動で分類されて並ぶ。
+// Alo Lore の商品ページにも scripts/build_alolore_faq.py で同じ内容を出している。
+export const CANVASWEAR_FAQ: FaqItem[] = [
   {
+    cat: '入稿・データ',
+    popular: true,
     q: 'どんなデータを送ればいいですか？',
     a: 'スマホで撮った写真を、商品ページからそのまま送って注文できます。パソコンは必要ありません（PNG・JPEG、20MBまで）。',
   },
   {
+    cat: '入稿・データ',
     q: 'プリント用の画像は、どのくらいのサイズで用意すればよいですか？',
     a: '必要な画像サイズは、商品とプリントする範囲によって変わります。できるだけ縮小や圧縮をしていない、元の高画質データをご用意ください。ドレス全面に大きく配置する柄は、小さなワンポイントより多くの画素が必要です。',
     link: {href: '/pages/print-data-guide', label: 'きれいに仕上がる画像の選び方を見る'},
   },
   {
+    cat: '入稿・データ',
     q: '「300dpi」の画像なら大丈夫ですか？',
     a: 'DPIの数字だけでは判断できません。大切なのは、画像の縦横の画素数（px）と、実際に印刷する大きさです。小さな画像を大きく引き伸ばすとぼやけるため、DPIを300に変更するだけでは画質は良くなりません。',
     link: {href: '/pages/print-data-guide', label: 'きれいに仕上がる画像の選び方を見る'},
   },
   {
+    cat: '入稿・データ',
     q: 'デザイン用のテンプレートはありますか？',
-    a: 'テンプレートの有無や仕様は、商品によって異なります。ご希望の商品名・品番と、使いたい画像を添えてお問い合わせください。',
+    a: '1点からお手頃な価格でお作りするため、商品ごとのデザイン用テンプレートはご用意していません。使いたい写真やイラストを、そのまま商品ページからお送りください（スマホの写真で大丈夫です）。配置や向きのご希望は「ご指定・ご要望」欄にお書きください。サイト上でデザインできる仕組みは、ただいま準備中です。',
   },
   {
+    cat: '入稿・データ',
     q: '同じ柄を繰り返して使う場合も、大きな画像が必要ですか？',
     a: '繰り返し柄は、ひとつの柄を何cmの大きさで印刷するかによって必要な画素数が変わります。継ぎ目なくつながるデータかどうかも確認が必要です。',
     link: {href: '/pages/print-data-guide', label: 'きれいに仕上がる画像の選び方を見る'},
   },
   {
+    cat: '入稿・データ',
     q: '写真でもイラストでも大丈夫ですか？',
     a: 'はい、写真もイラストも全面フルカラーで再現できます。ご希望の配置や色味はご要望欄からお伝えください。',
   },
   {
+    cat: 'デザイン・柄',
     q: '他のお店などの柄を再現できますか？',
     a: 'そっくりそのまま再現することはできません。学校・企業・チームの名前やロゴ、他の方が作った柄をそのまま写すと、権利の侵害になるおそれがあるためです。色の組み合わせや模様の雰囲気を参考に、お客様ご自身で作ったオリジナルの柄であれば、お作りすることができます。',
   },
   {
+    cat: 'デザイン・柄',
     q: 'デザインが決まっていません。手伝ってもらえますか？',
     a: 'お手頃な価格でお作りするため、デザインはお客様にご用意いただくのが基本です。お手持ちの写真やイラストを使って新しいデザインにしたい、写真をアレンジしたいがどうすればよいか分からない、といった場合は、追加料金にてお手伝いいたしますので、ご相談ください。なお、他の方の柄やデザインを真似して作ることはお受けしていません。',
     link: {href: '/pages/contact', label: 'お問い合わせはこちら'},
   },
   {
+    cat: 'デザイン・柄',
     q: '写真を1枚大きく使うか、コラージュにするか迷っています。イメージ案を作ってもらえますか？',
     a: 'イメージ案の作成はデザイン作業になるため、追加料金がかかります。「1枚を大きく配置する案」「複数の写真をコラージュする案」など、いくつか案をご覧になりたい場合は、使いたい写真と作りたい商品を添えてご相談ください。お見積りをお伝えしたうえで承ります。ご自身で配置を決めてご入稿いただく場合は、追加料金はかかりません。',
     link: {href: '/pages/contact', label: 'お問い合わせはこちら'},
   },
   {
+    cat: 'デザイン・柄',
+    popular: true,
     q: '文字を入れると追加料金はかかりますか？',
     a: 'かかりません。全面フルカラーのプリントで製作するため、写真やイラストに文字を加えても料金は変わりません。入れたい文字はご要望欄にお書きください。',
   },
   {
+    cat: 'デザイン・柄',
     q: '画面で見た色と仕上がりの色は同じですか？',
     a: 'モニターは光で、プリントは染料で色を表現するため、まったく同じにはなりません。とくに蛍光色や濃い青・紫は、わずかに沈んで見えることがあります。色味を厳密に合わせたい場合は、ご注文前にご相談ください。',
   },
-  // 注文・数量
   {
+    cat: 'ご注文・数量',
     q: '何点から注文できますか？',
     a: '1点から製作できます。柄の在庫を持たないので、思い立ったときにオーダーいただけます。',
   },
   {
+    cat: 'ご注文・数量',
+    popular: true,
     q: 'チームウェアやノベルティなど、まとめて作れますか？',
     a: 'はい、承っています。まとめてのご注文には数量割引があります（5〜9点 10%OFF、10〜19点 15%OFF、20点以上 25%OFF）。数量割引はカートでは自動で適用されないため、枚数と用途をお問い合わせください。注文書にてお見積りとご注文を承ります。同じデザインで複数サイズを組み合わせることもできます。',
   },
   {
+    cat: 'ご注文・数量',
     q: '同じデザインで、色違いを注文できますか？',
     a: 'はい、できます。色違いのご注文は、取り違えを防ぐため、当店でお客様専用の商品ページをお作りします。そのページで色・サイズ・枚数を選んでカートに入れ、ご注文ください。まずはお問い合わせください。色を変えたデータは、お客様にご用意いただきます。数量割引は、柄も色もまったく同じ商品が対象です。色違いの場合は、色ごとに点数を数えます。',
     link: {href: '/pages/contact', label: 'お問い合わせはこちら'},
   },
-  // 納期・費用
   {
+    cat: '納期・送料・お支払い',
+    popular: true,
     q: 'どのくらいで届きますか？',
     a: 'すべて受注生産のため、通常はデザイン確定後およそ1ヶ月でのお届けです。お急ぎの場合は、商品ページで「お急ぎ仕上げ」を選ぶと、データ確認後およそ2週間でお届けします。海外で製作しているため、混雑期はさらにお時間をいただく場合があります。',
   },
   {
+    cat: '納期・送料・お支払い',
+    popular: true,
     q: 'お急ぎ仕上げの料金はいくらですか？',
     a: '1点ごとに追加料金がかかります。Tシャツ・パンツ・水着・キッズ服・小物などは1点につき3,000円、ドレス・アウター・上下セット・バッグ・シューズ・大きな雑貨などは1点につき5,000円です。たとえば2点ともお急ぎにする場合は、2点分の料金になります。お急ぎ仕上げの商品は製作工場から海外配送（FedExまたはDHL）で直接お届けし、関税・輸入消費税も料金に含まれます。受け取り時の追加のお支払いはありません。まとめてお急ぎ仕上げでご注文の場合は割引もございますので、お問い合わせください。',
   },
   {
+    cat: '納期・送料・お支払い',
     q: '商品はどこから発送されますか？',
     a: '国内の事務所から発送する場合と、海外の製作工場から直接お届けする場合があります。納期や配送方法によって発送元が変わりますので、ご了承ください。なるべくお手頃な価格で商品をお届けするため、海外から直接お届けする場合があります。',
   },
   {
+    cat: '納期・送料・お支払い',
     q: '送料はいくらですか？',
     a: '配送先の地域によって異なります。正確な金額はカート・ご注文手続きの画面でご確認いただけます。',
   },
   {
+    cat: '納期・送料・お支払い',
     q: '支払い方法は何が使えますか？',
     a: 'クレジットカード決済と銀行振込をご利用いただけます。銀行振込の場合はご注文後3日以内にお振り込みください。',
   },
-  // 品質
   {
+    cat: '品質・返品',
     q: '洗濯すると色落ちしませんか？',
     a: '昇華プリントは染料が生地の繊維そのものに定着するため、洗濯を重ねてもひび割れや色落ちが起きにくい仕上がりです。',
   },
-  // 返品
   {
+    cat: '品質・返品',
+    popular: true,
     q: '注文後のキャンセルや返品はできますか？',
     a: 'お一人ひとりのデザインで製作する受注生産品のため、お客様のご都合によるキャンセル・返品・交換はお受けできません。デザインとサイズをよくご確認のうえご注文ください。なお、不良品や誤配送の場合は、商品到着後3日以内にご連絡いただければ返品・交換の対応をいたします。',
   },
@@ -131,9 +172,57 @@ function CopyrightNotice() {
   );
 }
 
-/** design.mdの FAQ Accordion。ネイティブ <details>/<summary> でキーボード操作にも対応。
- *  ホーム・商品ページ共通で使う（商品ページでは compact で見出しを小さくする）。 */
+/** 質問1つ分のアコーディオン。ネイティブ <details>/<summary> でキーボード操作にも対応。 */
+export function FaqItemRow({item}: {item: FaqItem}) {
+  const {q, a, link} = item;
+  return (
+    <details
+      className="group"
+      style={{
+        borderRadius: '16px',
+        border: '1px solid var(--color-border)',
+        backgroundColor: 'var(--color-bg)',
+      }}
+    >
+      <summary
+        className="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-4 text-sm md:text-base"
+        style={{color: 'var(--color-text)', fontFamily: 'var(--font-body)', fontWeight: 500}}
+      >
+        {q}
+        <span
+          className="shrink-0 transition-transform duration-300 group-open:rotate-180"
+          style={{color: 'var(--color-primary)'}}
+          aria-hidden="true"
+        >
+          ▾
+        </span>
+      </summary>
+      <p
+        className="px-6 pb-5 text-sm leading-loose"
+        style={{color: 'var(--color-text-muted)', fontFamily: 'var(--font-body)'}}
+      >
+        {a}
+        {link && (
+          <>
+            {' '}
+            <Link to={link.href} className="underline" style={{color: 'var(--color-primary)'}}>
+              {link.label}
+            </Link>
+          </>
+        )}
+      </p>
+    </details>
+  );
+}
+
+export {CopyrightNotice};
+
+/**
+ * トップ・商品ページ用。よく聞かれる質問だけを出し、残りは /faq へ案内する
+ * （全部並べると長くて見づらいため）。商品ページでは compact で見出しを小さくする。
+ */
 export default function FaqSection({compact = false}: {compact?: boolean}) {
+  const popular = CANVASWEAR_FAQ.filter((item) => item.popular);
   return (
     <section
       className="section-pad"
@@ -160,45 +249,15 @@ export default function FaqSection({compact = false}: {compact?: boolean}) {
         <CopyrightNotice />
 
         <div className="space-y-3">
-          {CANVASWEAR_FAQ.map(({q, a, link}) => (
-            <details
-              key={q}
-              className="group"
-              style={{
-                borderRadius: '16px',
-                border: '1px solid var(--color-border)',
-                backgroundColor: 'var(--color-bg)',
-              }}
-            >
-              <summary
-                className="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-4 text-sm md:text-base"
-                style={{color: 'var(--color-text)', fontFamily: 'var(--font-body)', fontWeight: 500}}
-              >
-                {q}
-                <span
-                  className="shrink-0 transition-transform duration-300 group-open:rotate-180"
-                  style={{color: 'var(--color-primary)'}}
-                  aria-hidden="true"
-                >
-                  ▾
-                </span>
-              </summary>
-              <p
-                className="px-6 pb-5 text-sm leading-loose"
-                style={{color: 'var(--color-text-muted)', fontFamily: 'var(--font-body)'}}
-              >
-                {a}
-                {link && (
-                  <>
-                    {' '}
-                    <Link to={link.href} className="underline" style={{color: 'var(--color-primary)'}}>
-                      {link.label}
-                    </Link>
-                  </>
-                )}
-              </p>
-            </details>
+          {popular.map((item) => (
+            <FaqItemRow key={item.q} item={item} />
           ))}
+        </div>
+
+        <div className="text-center mt-8">
+          <Link to="/faq" className="btn-outline inline-block">
+            すべての質問を見る（{CANVASWEAR_FAQ.length}件）
+          </Link>
         </div>
       </div>
     </section>

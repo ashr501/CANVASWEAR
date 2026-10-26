@@ -84,6 +84,7 @@ export default function Footer({brand}: FooterProps) {
             <ul className="space-y-3">
               {[
                 {label: 'CANVASWEARSについて', href: '/pages/about'},
+                {label: 'よくあるご質問', href: '/faq'},
                 {label: '配送・返品', href: '/pages/shipping'},
                 {label: 'お問い合わせ', href: '/pages/contact'},
                 {label: '会社概要', href: '/pages/company'},

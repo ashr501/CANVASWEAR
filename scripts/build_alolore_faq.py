@@ -14,7 +14,8 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 src = (ROOT / "app/components/FaqSection.tsx").read_text(encoding="utf-8")
 
-block = src[src.index("export const CANVASWEAR_FAQ"):src.index("];")]
+start = src.index("export const CANVASWEAR_FAQ")
+block = src[start:src.index("];", start)]
 faq = re.findall(r"q: '([^']+)',\s*a: '([^']+)',(?:\s*link: \{href: '([^']+)', label: '([^']+)'\},)?", block)
 if len(faq) < 10:
     sys.exit(f"FAQの読み取りに失敗しました（{len(faq)}件）")
