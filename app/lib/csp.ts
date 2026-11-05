@@ -45,6 +45,8 @@ export function createContentSecurityPolicy({
       'blob:',
       ...shopifyHosts,
       'https://qr-official.line.me',
+      // 柄ライブラリ（ZD Custom）の柄画像
+      'https://oss-prd.zdcustom.com',
       ...(uploadOrigin ? [uploadOrigin] : []),
     ],
     // 商品動画は cdn.shopify.com ではなくストアのプライマリドメイン（alolore.shop/cdn/shop/videos/...）から配信される

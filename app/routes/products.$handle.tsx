@@ -18,6 +18,7 @@ import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 import {stripLegacyPatternPicker} from '~/lib/pattern-picker';
+import PatternLibraryPicker, {type SelectedLibraryPattern} from '~/components/PatternLibraryPicker';
 
 export const meta = ({data}: any) => {
   if (!data?.product) return [{title: '商品'}];
@@ -189,6 +190,8 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [printNote, setPrintNote] = useState('');
   const [useDate, setUseDate] = useState('');
+  const [libraryPattern, setLibraryPattern] = useState<SelectedLibraryPattern | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [scene, setScene] = useState('');
   const [printFile, setPrintFile] = useState<{url: string; fileName: string} | null>(
     null,
@@ -267,6 +270,12 @@ export default function ProductDetail() {
           ? [
               {key: 'プリント画像', value: printFile.url},
               {key: 'ファイル名', value: printFile.fileName},
+            ]
+          : []),
+        ...(libraryPattern
+          ? [
+              {key: '柄番号', value: libraryPattern.code},
+              {key: '柄の画像', value: libraryPattern.full},
             ]
           : []),
         ...(useDate ? [{key: 'ご使用予定日', value: useDate}] : []),
@@ -544,7 +553,60 @@ export default function ProductDetail() {
             {/* カスタムプリントの入稿 */}
             {isCustomPrint && (
               <div className="mb-6">
-                <StepBadge n={2} label="デザインデータを入稿" />
+                <StepBadge n={2} label="柄を選ぶ・デザインデータを入稿" />
+
+                {/* 柄ライブラリ（自分の画像がなくても注文できる） */}
+                {libraryPattern ? (
+                  <div
+                    className="flex items-center gap-3 p-3 mb-3"
+                    style={{border: '1px solid var(--color-primary)', borderRadius: 'var(--radius)'}}
+                  >
+                    <img
+                      src={libraryPattern.thumb}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      className="w-16 h-16 object-cover"
+                      style={{borderRadius: 8}}
+                    />
+                    <p className="text-sm flex-1" style={{color: 'var(--color-text)'}}>
+                      選んだ柄：<strong>{libraryPattern.code}</strong>
+                      <span className="block text-xs" style={{color: 'var(--color-text-muted)'}}>
+                        {libraryPattern.category}
+                      </span>
+                    </p>
+                    <div className="flex flex-col gap-1 text-xs">
+                      <button type="button" onClick={() => setPickerOpen(true)} className="underline" style={{color: 'var(--color-text-muted)'}}>
+                        変える
+                      </button>
+                      <button type="button" onClick={() => setLibraryPattern(null)} className="underline" style={{color: 'var(--color-text-muted)'}}>
+                        取り消す
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setPickerOpen(true)}
+                    className="w-full p-4 mb-3 text-sm text-left"
+                    style={{
+                      border: '1px solid var(--color-border)',
+                      borderRadius: 'var(--radius)',
+                      backgroundColor: 'var(--color-bg)',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    <strong>柄ライブラリから選ぶ</strong>
+                    <span className="block text-xs mt-1" style={{color: 'var(--color-text-muted)'}}>
+                      ハワイアン・花・海・トライバルなど約1万点。画像をお持ちでなくてもご注文いただけます。
+                    </span>
+                  </button>
+                )}
+                {pickerOpen && (
+                  <PatternLibraryPicker onSelect={setLibraryPattern} onClose={() => setPickerOpen(false)} />
+                )}
+                <p className="text-xs mb-2" style={{color: 'var(--color-text-muted)'}}>
+                  {libraryPattern ? '自分の画像も使いたい場合は、あわせて入稿してください。' : 'または、自分の画像を入稿する'}
+                </p>
 
                 <label
                   className="flex items-center justify-center gap-2 w-full p-4 text-sm cursor-pointer transition-colors"
