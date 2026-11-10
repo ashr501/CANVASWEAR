@@ -49,6 +49,7 @@ export default function ProductCard({product, brandId}: ProductCardProps) {
         {product.featuredImage ? (
           <Image
             data={product.featuredImage}
+            alt={product.featuredImage.altText?.trim() || product.title}
             className={clsx(
               'w-full h-full object-cover transition-transform duration-700',
               isAvantGarde

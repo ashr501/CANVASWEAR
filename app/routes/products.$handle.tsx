@@ -396,6 +396,7 @@ export default function ProductDetail() {
               ) : selectedItem ? (
                 <Image
                   data={selectedItem.image}
+                  alt={selectedItem.image.altText?.trim() || product.title}
                   className={clsx(
                     'w-full h-full object-cover',
                     isAvantGarde &&
@@ -460,6 +461,7 @@ export default function ProductDetail() {
                     ) : (
                       <Image
                         data={item.image}
+                        alt={item.image.altText?.trim() || product.title}
                         className={clsx(
                           'w-full h-full object-cover',
                           isAvantGarde && 'grayscale',
