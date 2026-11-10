@@ -259,7 +259,7 @@ type VariantLike = {
 
 /**
  * 旧Hydrogenの <VariantSelector> と同じ使い方の部品。
- * 各値は「その値を選んだ商品ページ」へのリンク（?サイズ=M など）になる。
+ * 各値に対応する商品ページの URL（?サイズ=M など）を組み立てる。
  * 選択中の値は、表示中のバリアント（selectedVariant）から決める。
  */
 export function VariantSelector({

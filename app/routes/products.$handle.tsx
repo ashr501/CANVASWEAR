@@ -3,6 +3,7 @@ import {type LoaderFunctionArgs} from 'react-router';
 import {
   Await,
   useLoaderData,
+  useNavigate,
   useOutletContext,
   Link,
 } from 'react-router';
@@ -186,6 +187,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 export default function ProductDetail() {
   const {product, brandId, relatedProducts} = useLoaderData<typeof loader>();
   const {onCartOpen, brand} = useOutletContext<{onCartOpen: () => void; brand: PublicBrand}>();
+  const navigate = useNavigate();
   const isAvantGarde = isBoldBrand(brandId);
   const [selectedImage, setSelectedImage] = useState(0);
   const [printNote, setPrintNote] = useState('');
@@ -520,11 +522,10 @@ export default function ProductDetail() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {option.values.map(({value, isAvailable: optAvailable, isActive, to}) => (
-                      <Link
+                      <button
                         key={value}
-                        to={to}
-                        prefetch="intent"
-                        replace
+                        type="button"
+                        onClick={() => navigate(to, {replace: true, preventScrollReset: true})}
                         className="px-4 py-2 text-xs tracking-wider uppercase transition-all duration-150"
                         style={{
                           borderRadius: 'var(--radius)',
@@ -540,10 +541,11 @@ export default function ProductDetail() {
                           opacity: optAvailable ? 1 : 0.4,
                           cursor: optAvailable ? 'pointer' : 'not-allowed',
                         }}
+                        aria-pressed={isActive}
                         aria-disabled={!optAvailable}
                       >
                         {value}
-                      </Link>
+                      </button>
                     ))}
                   </div>
                 </div>
