@@ -201,6 +201,7 @@ type SeoInput = {
   titleTemplate?: string | null;
   description?: string | null;
   url?: string | null;
+  canonicalUrl?: string;
   media?: string | {url: string; altText?: string | null; type?: string} | null;
   jsonLd?: object | object[];
   robots?: {noIndex?: boolean; noFollow?: boolean};
@@ -225,7 +226,7 @@ export function getSeoMeta(...inputs: Array<SeoInput | null | undefined>) {
   if (seo.url) {
     // 旧Hydrogenと同じく、末尾の / は付けない（トップページは https://canvaswears.com）
     const withoutSlash = (url: string) => url.replace(/\/(?=\?|$)/, '');
-    tags.push({tagName: 'link', rel: 'canonical', href: withoutSlash(seo.url.split('?')[0])});
+    tags.push({tagName: 'link', rel: 'canonical', href: seo.canonicalUrl ?? withoutSlash(seo.url.split('?')[0])});
     tags.push({property: 'og:url', content: withoutSlash(seo.url.split('?')[0])});
   }
   if (seo.media) {

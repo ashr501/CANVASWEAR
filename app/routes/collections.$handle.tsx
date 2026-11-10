@@ -17,7 +17,16 @@ import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 export const meta = ({data}: any) => {
   if (!data?.collection) return [{title: 'コレクション'}];
   const {collection, seoUrl, brandName, origin, handle} = data;
-  const canonical = seoUrl.split('?')[0];
+  const canonical = new URL(seoUrl);
+  const cursor = canonical.searchParams.get('cursor');
+  const direction = canonical.searchParams.get('direction');
+  canonical.search = '';
+  if (cursor) {
+    canonical.searchParams.set('cursor', cursor);
+    if (direction === 'next' || direction === 'previous') {
+      canonical.searchParams.set('direction', direction);
+    }
+  }
 
   return getSeoMeta({
     title: collection.title,
@@ -26,6 +35,7 @@ export const meta = ({data}: any) => {
       ? stripHtml(collection.description)
       : undefined,
     url: seoUrl,
+    canonicalUrl: canonical.href,
     media: collection.image?.url ?? undefined,
     jsonLd: [
       {
@@ -33,7 +43,7 @@ export const meta = ({data}: any) => {
         '@type': 'CollectionPage',
         name: collection.title,
         description: collection.description || undefined,
-        url: canonical,
+        url: canonical.href,
       },
       breadcrumbJsonLd(origin, [
         {name: 'ホーム', path: '/'},

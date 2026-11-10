@@ -10,8 +10,6 @@ Disallow: /cart
 Disallow: /account
 Disallow: /api/
 Disallow: /search
-Disallow: /*?cursor=
-Disallow: /*?*cursor=
 Disallow: /*?sort=
 Disallow: /*?*sort=
 Allow: /
