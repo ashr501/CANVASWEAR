@@ -1,5 +1,8 @@
 import type {LoaderFunctionArgs} from 'react-router';
 import {getBrandConfig} from '~/lib/brand.server';
+import {NEWS_LIST_QUERY, SHOPIFY_PAGE_QUERY} from '~/lib/queries';
+import {staticPageHandles} from './pages.$handle';
+import {policyHandles} from './policies.$handle';
 
 const MAX_PAGES = 6; // 250件 x 6 = 1500件までカバー
 
@@ -44,12 +47,40 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     after = connection.pageInfo.endCursor;
   }
 
+  const locale = context.storefront.i18n;
+  const [news, printGuide] = await Promise.all([
+    brand.newsBlog
+      ? context.storefront.query(NEWS_LIST_QUERY, {
+          variables: {blog: brand.newsBlog, country: locale.country, language: locale.language},
+          cache: context.storefront.CacheShort(),
+        })
+      : null,
+    brand.id === 'custom-print'
+      ? context.storefront.query(SHOPIFY_PAGE_QUERY, {
+          variables: {handle: 'print-data-guide', country: locale.country, language: locale.language},
+          cache: context.storefront.CacheShort(),
+        }).catch(() => null)
+      : null,
+  ]);
+  const articles: Array<{handle: string}> = news?.blog?.articles?.nodes ?? [];
+  const collections = new Set([...brand.nav.map(({handle}) => handle), brand.collections.all]);
+  const contentPaths = [
+    ...staticPageHandles.map((handle) => `/pages/${handle}`),
+    ...policyHandles.map((handle) => `/policies/${handle}`),
+    '/faq',
+    ...(printGuide?.page ? ['/pages/print-data-guide'] : []),
+    ...(brand.newsBlog
+      ? ['/news', ...articles.map(({handle}) => `/news/${encodeURIComponent(handle)}`)]
+      : []),
+  ];
+
   const urls = [
     {loc: origin, priority: '1.0'},
     {loc: `${origin}/products`, priority: '0.8'},
     {loc: `${origin}/videos`, priority: '0.5'},
-    ...brand.nav.map((n) => ({
-      loc: `${origin}/collections/${n.handle}`,
+    ...contentPaths.map((path) => ({loc: `${origin}${path}`, priority: '0.5'})),
+    ...Array.from(collections, (handle) => ({
+      loc: `${origin}/collections/${handle}`,
       priority: '0.7',
     })),
     ...products.map((p) => ({

@@ -281,6 +281,8 @@ const PAGES: Record<
   },
 };
 
+export const staticPageHandles = Object.keys(PAGES);
+
 export const meta = ({data}: any) => {
   if (data?.shopifyPage) {
     const {title, seo} = data.shopifyPage;

@@ -18,6 +18,8 @@ const HANDLE_TO_QUERY: Record<string, string> = {
   `,
 };
 
+export const policyHandles = Object.keys(HANDLE_TO_QUERY);
+
 export const meta = ({data}: any) => {
   if (!data?.policy) return [{title: 'ポリシー'}];
   return getSeoMeta({title: data.policy.title, url: data.seoUrl});
