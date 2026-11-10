@@ -177,6 +177,7 @@ export const PRODUCT_QUERY = `#graphql
       variants(first: 100) {
         nodes {
           id
+          sku
           availableForSale
           price {
             amount

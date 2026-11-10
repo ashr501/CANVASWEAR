@@ -23,8 +23,9 @@ import PatternLibraryPicker, {type SelectedLibraryPattern} from '~/components/Pa
 
 export const meta = ({data}: any) => {
   if (!data?.product) return [{title: '商品'}];
-  const {product, seoUrl, brandName, origin} = data;
-  const price = product.selectedVariant?.price ?? product.priceRange.minVariantPrice;
+  const {product, seoUrl, brandName, brandId, origin} = data;
+  const variant = product.selectedVariant ?? product.variants.nodes[0];
+  const price = variant?.price ?? product.priceRange.minVariantPrice;
   const canonical = seoUrl.split('?')[0];
   const description = product.descriptionHtml
     ? stripHtml(product.descriptionHtml)
@@ -35,6 +36,7 @@ export const meta = ({data}: any) => {
     titleTemplate: titleTemplate(brandName),
     description,
     url: seoUrl,
+    type: 'product',
     media: product.images.nodes[0]
       ? {url: product.images.nodes[0].url, altText: product.images.nodes[0].altText ?? product.title}
       : undefined,
@@ -45,7 +47,7 @@ export const meta = ({data}: any) => {
         name: product.title,
         description,
         image: product.images.nodes.map((img: any) => img.url),
-        sku: product.selectedVariant?.sku ?? undefined,
+        sku: variant?.sku || undefined,
         brand: {'@type': 'Brand', name: brandName},
         offers: {
           '@type': 'Offer',
@@ -53,10 +55,23 @@ export const meta = ({data}: any) => {
           priceCurrency: price.currencyCode,
           price: price.amount,
           itemCondition: 'https://schema.org/NewCondition',
-          availability: product.selectedVariant?.availableForSale
+          availability: variant?.availableForSale
             ? 'https://schema.org/InStock'
             : 'https://schema.org/OutOfStock',
           seller: {'@type': 'Organization', name: brandName},
+          ...(brandId === 'custom-print' && {
+            shippingDetails: {
+              '@type': 'OfferShippingDetails',
+              shippingDestination: {'@type': 'DefinedRegion', addressCountry: 'JP'},
+              shippingSettingsLink: `${origin}/pages/shipping`,
+            },
+            hasMerchantReturnPolicy: {
+              '@type': 'MerchantReturnPolicy',
+              applicableCountry: 'JP',
+              merchantReturnLink: `${origin}/policies/refund-policy`,
+              itemDefectReturnFees: 'https://schema.org/FreeReturn',
+            },
+          }),
         },
       },
       breadcrumbJsonLd(origin, [

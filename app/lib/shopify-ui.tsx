@@ -202,6 +202,7 @@ type SeoInput = {
   description?: string | null;
   url?: string | null;
   canonicalUrl?: string;
+  type?: string;
   media?: string | {url: string; altText?: string | null; type?: string} | null;
   jsonLd?: object | object[];
   robots?: {noIndex?: boolean; noFollow?: boolean};
@@ -229,9 +230,13 @@ export function getSeoMeta(...inputs: Array<SeoInput | null | undefined>) {
     tags.push({tagName: 'link', rel: 'canonical', href: seo.canonicalUrl ?? withoutSlash(seo.url.split('?')[0])});
     tags.push({property: 'og:url', content: withoutSlash(seo.url.split('?')[0])});
   }
+  if (seo.title || seo.type) tags.push({property: 'og:type', content: seo.type ?? 'website'});
   if (seo.media) {
     const media = typeof seo.media === 'string' ? {url: seo.media} : seo.media;
+    tags.push({property: 'og:image', content: media.url});
     tags.push({property: 'og:image:url', content: media.url});
+    tags.push({name: 'twitter:card', content: 'summary_large_image'});
+    tags.push({name: 'twitter:image', content: media.url});
     tags.push({property: 'og:image:secure_url', content: media.url});
     const type = media.url.match(/\.(jpe?g|png|webp|gif)(\?|$)/i)?.[1]?.toLowerCase();
     if (type) tags.push({property: 'og:image:type', content: `image/${type === 'jpg' ? 'jpeg' : type}`});
