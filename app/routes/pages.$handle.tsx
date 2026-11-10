@@ -286,16 +286,17 @@ export const staticPageHandles = Object.keys(PAGES);
 export const meta = ({data}: any) => {
   if (data?.shopifyPage) {
     const {title, seo} = data.shopifyPage;
-    return getSeoMeta({title: seo?.title || title, description: seo?.description || undefined});
+    return getSeoMeta({title: seo?.title || title, description: seo?.description || undefined, url: data.seoUrl});
   }
   const page = data?.handle ? PAGES[data.handle] : undefined;
-  return getSeoMeta({title: page?.title ?? 'ページ', description: page?.description});
+  return getSeoMeta({title: page?.title ?? 'ページ', description: page?.description, url: data?.seoUrl});
 };
 
-export async function loader({params, context}: LoaderFunctionArgs) {
+export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {handle} = params;
   if (!handle) throw new Response('Not found', {status: 404});
-  if (PAGES[handle]) return {handle, shopifyPage: null};
+  const seoUrl = new URL(request.url).origin + `/pages/${encodeURIComponent(handle)}`;
+  if (Object.hasOwn(PAGES, handle)) return {handle, shopifyPage: null, seoUrl};
 
   // サイト内に定義のないページは、Shopifyのページ（Alo Loreと共通）を表示する
   const data: any = await context.storefront.query(SHOPIFY_PAGE_QUERY, {
@@ -307,7 +308,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
   if (!data?.page) throw new Response('Not found', {status: 404});
-  return {handle, shopifyPage: data.page as {title: string; body: string; seo: any}};
+  return {handle, seoUrl, shopifyPage: data.page as {title: string; body: string; seo: any}};
 }
 
 export default function StaticPage() {

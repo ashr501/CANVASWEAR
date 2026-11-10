@@ -197,6 +197,7 @@ export function ErrorBoundary() {
   const rootData = useRouteLoaderData<typeof loader>('root');
   const brand = rootData?.brand;
   const is404 = isRouteErrorResponse(error) && error.status === 404;
+  const title = is404 ? 'ページが見つかりません' : 'エラーが発生しました';
 
   return (
     <html lang="ja" data-brand={brand?.id} data-ui={brand?.uiMode}>
@@ -204,7 +205,7 @@ export function ErrorBoundary() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         {brand?.googleFonts && <link rel="stylesheet" href={brand.googleFonts} />}
-        <Meta />
+        <title>{brand ? `${title} | ${brand.name}` : title}</title>
         <Links />
       </head>
       <body style={{backgroundColor: 'var(--color-bg)', color: 'var(--color-text)'}}>
@@ -228,7 +229,7 @@ export function ErrorBoundary() {
               color: 'var(--color-text)',
             }}
           >
-            {is404 ? 'ページが見つかりません' : 'エラーが発生しました'}
+            {title}
           </h1>
           <p
             className="text-sm"
@@ -245,6 +246,17 @@ export function ErrorBoundary() {
           >
             トップページに戻る
           </a>
+          {is404 && brand && (
+            <nav aria-label="主要コレクション" className="mt-6">
+              <ul className="flex flex-wrap justify-center gap-4">
+                {brand.nav.slice(0, 6).map(({handle, label}) => (
+                  <li key={handle}>
+                    <a className="underline" href={`/collections/${handle}`}>{label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
         <Scripts nonce={nonce} />
       </body>
