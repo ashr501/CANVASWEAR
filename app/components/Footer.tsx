@@ -1,6 +1,6 @@
 import {Link} from 'react-router';
 import SocialIcons from './SocialIcons';
-import clsx from 'clsx';
+import BrandLogo from './BrandLogo';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 interface FooterProps {
@@ -21,19 +21,9 @@ export default function Footer({brand}: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* ブランド */}
           <div>
-            <p
-              className={clsx(
-                'mb-4',
-                isAvantGarde ? 'text-3xl tracking-[0.3em]' : 'text-2xl tracking-[0.2em]',
-                'uppercase',
-              )}
-              style={{
-                fontFamily: 'var(--font-heading)',
-                color: 'var(--color-text)',
-              }}
-            >
-              {brand.name}
-            </p>
+            <div className="mb-4">
+              <BrandLogo brand={brand} size="lg" />
+            </div>
             <p
               className="text-sm leading-relaxed"
               style={{color: 'var(--color-text-muted)'}}

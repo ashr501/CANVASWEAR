@@ -1,0 +1,3029 @@
+{
+  "version": "2.9",
+  "children": [
+    {
+      "type": "frame",
+      "id": "cw05g",
+      "name": "01 Logo — 5案",
+      "layout": "vertical",
+      "x": 0,
+      "y": 0,
+      "width": 1200,
+      "fill": "#FBF7F2",
+      "padding": 56,
+      "gap": 32,
+      "children": [
+        {
+          "type": "frame",
+          "id": "cw002",
+          "name": "Title",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "cw000",
+              "content": "LOGO",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "500",
+              "fill": "#62594F",
+              "letterSpacing": 2.4
+            },
+            {
+              "type": "text",
+              "id": "cw001",
+              "content": "ロゴ案（Tシャツを使わない5方向）",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 32,
+              "fontWeight": "700",
+              "fill": "#1F1B18"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw03o",
+          "name": "Row 1",
+          "layout": "horizontal",
+          "alignItems": "stretch",
+          "gap": 20,
+          "width": "fill_container",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cw01t",
+              "name": "Logo 1",
+              "layout": "vertical",
+              "fill": "#FFFFFF",
+              "cornerRadius": 20,
+              "padding": 32,
+              "gap": 26,
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw003",
+                  "content": "1 — 柄タイル",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#62594F"
+                },
+                {
+                  "type": "frame",
+                  "id": "cw00h",
+                  "name": "Logo / 柄タイル",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw00d",
+                      "name": "Mark / 柄タイル",
+                      "layout": "none",
+                      "width": 48,
+                      "height": 48,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw004",
+                          "x": 0,
+                          "y": 0,
+                          "width": 21.6,
+                          "height": 21.6,
+                          "cornerRadius": 5.4,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "cw005",
+                          "x": 5.76,
+                          "y": 5.76,
+                          "width": 10.08,
+                          "height": 10.08,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw006",
+                          "x": 26.4,
+                          "y": 0,
+                          "width": 21.6,
+                          "height": 21.6,
+                          "cornerRadius": 5.4,
+                          "fill": "#1F1B18"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw007",
+                          "x": 31.2,
+                          "y": 4.8,
+                          "width": 16.8,
+                          "height": 16.8,
+                          "geometry": "M0 16.8A16.8 16.8 0 0 1 16.8 0V16.8Z",
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw008",
+                          "x": 0,
+                          "y": 26.4,
+                          "width": 21.6,
+                          "height": 21.6,
+                          "cornerRadius": 5.4,
+                          "fill": "#1F1B18"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw009",
+                          "x": 4.8,
+                          "y": 32.4,
+                          "width": 12,
+                          "height": 3.12,
+                          "cornerRadius": 1.56,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00a",
+                          "x": 4.8,
+                          "y": 39.6,
+                          "width": 12,
+                          "height": 3.12,
+                          "cornerRadius": 1.56,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00b",
+                          "x": 26.4,
+                          "y": 26.4,
+                          "width": 21.6,
+                          "height": 21.6,
+                          "cornerRadius": 5.4,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw00c",
+                          "x": 31.8,
+                          "y": 31.8,
+                          "width": 10.8,
+                          "height": 10.8,
+                          "geometry": "M5.4 0L10.8 5.4L5.4 10.8L0 5.4Z",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw00g",
+                      "name": "Wordmark",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 0,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cw00e",
+                          "content": "CANVAS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "700",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        },
+                        {
+                          "type": "text",
+                          "id": "cw00f",
+                          "content": "WEARS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "300",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw01c",
+                  "name": "Sizes",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw00r",
+                      "name": "Mark / 柄タイル",
+                      "layout": "none",
+                      "width": 40,
+                      "height": 40,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw00i",
+                          "x": 0,
+                          "y": 0,
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 4.5,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "cw00j",
+                          "x": 4.8,
+                          "y": 4.8,
+                          "width": 8.4,
+                          "height": 8.4,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00k",
+                          "x": 22,
+                          "y": 0,
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 4.5,
+                          "fill": "#1F1B18"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw00l",
+                          "x": 26,
+                          "y": 4,
+                          "width": 14,
+                          "height": 14,
+                          "geometry": "M0 14A14 14 0 0 1 14 0V14Z",
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00m",
+                          "x": 0,
+                          "y": 22,
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 4.5,
+                          "fill": "#1F1B18"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00n",
+                          "x": 4,
+                          "y": 27,
+                          "width": 10,
+                          "height": 2.6,
+                          "cornerRadius": 1.3,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00o",
+                          "x": 4,
+                          "y": 33,
+                          "width": 10,
+                          "height": 2.6,
+                          "cornerRadius": 1.3,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00p",
+                          "x": 22,
+                          "y": 22,
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 4.5,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw00q",
+                          "x": 26.5,
+                          "y": 26.5,
+                          "width": 9,
+                          "height": 9,
+                          "geometry": "M4.5 0L9 4.5L4.5 9L0 4.5Z",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw011",
+                      "name": "Mark / 柄タイル",
+                      "layout": "none",
+                      "width": 28,
+                      "height": 28,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw00s",
+                          "x": 0,
+                          "y": 0,
+                          "width": 12.6,
+                          "height": 12.6,
+                          "cornerRadius": 3.15,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "cw00t",
+                          "x": 3.36,
+                          "y": 3.36,
+                          "width": 5.88,
+                          "height": 5.88,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00u",
+                          "x": 15.4,
+                          "y": 0,
+                          "width": 12.6,
+                          "height": 12.6,
+                          "cornerRadius": 3.15,
+                          "fill": "#1F1B18"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw00v",
+                          "x": 18.2,
+                          "y": 2.8,
+                          "width": 9.8,
+                          "height": 9.8,
+                          "geometry": "M0 9.8A9.8 9.8 0 0 1 9.8 0V9.8Z",
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00w",
+                          "x": 0,
+                          "y": 15.4,
+                          "width": 12.6,
+                          "height": 12.6,
+                          "cornerRadius": 3.15,
+                          "fill": "#1F1B18"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00x",
+                          "x": 2.8,
+                          "y": 18.9,
+                          "width": 7,
+                          "height": 1.82,
+                          "cornerRadius": 0.91,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00y",
+                          "x": 2.8,
+                          "y": 23.1,
+                          "width": 7,
+                          "height": 1.82,
+                          "cornerRadius": 0.91,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw00z",
+                          "x": 15.4,
+                          "y": 15.4,
+                          "width": 12.6,
+                          "height": 12.6,
+                          "cornerRadius": 3.15,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw010",
+                          "x": 18.55,
+                          "y": 18.55,
+                          "width": 6.3,
+                          "height": 6.3,
+                          "geometry": "M3.15 0L6.3 3.15L3.15 6.3L0 3.15Z",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw01b",
+                      "name": "Mark / 柄タイル",
+                      "layout": "none",
+                      "width": 16,
+                      "height": 16,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw012",
+                          "x": 0,
+                          "y": 0,
+                          "width": 7.2,
+                          "height": 7.2,
+                          "cornerRadius": 1.8,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "cw013",
+                          "x": 1.92,
+                          "y": 1.92,
+                          "width": 3.36,
+                          "height": 3.36,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw014",
+                          "x": 8.8,
+                          "y": 0,
+                          "width": 7.2,
+                          "height": 7.2,
+                          "cornerRadius": 1.8,
+                          "fill": "#1F1B18"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw015",
+                          "x": 10.4,
+                          "y": 1.6,
+                          "width": 5.6,
+                          "height": 5.6,
+                          "geometry": "M0 5.6A5.6 5.6 0 0 1 5.6 0V5.6Z",
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw016",
+                          "x": 0,
+                          "y": 8.8,
+                          "width": 7.2,
+                          "height": 7.2,
+                          "cornerRadius": 1.8,
+                          "fill": "#1F1B18"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw017",
+                          "x": 1.6,
+                          "y": 10.8,
+                          "width": 4,
+                          "height": 1.04,
+                          "cornerRadius": 0.52,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw018",
+                          "x": 1.6,
+                          "y": 13.2,
+                          "width": 4,
+                          "height": 1.04,
+                          "cornerRadius": 0.52,
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw019",
+                          "x": 8.8,
+                          "y": 8.8,
+                          "width": 7.2,
+                          "height": 7.2,
+                          "cornerRadius": 1.8,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw01a",
+                          "x": 10.6,
+                          "y": 10.6,
+                          "width": 3.6,
+                          "height": 3.6,
+                          "geometry": "M1.8 0L3.6 1.8L1.8 3.6L0 1.8Z",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw01r",
+                  "name": "On ink",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "fill": "#1F1B18",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw01q",
+                      "name": "Logo / 柄タイル",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 7,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cw01m",
+                          "name": "Mark / 柄タイル",
+                          "layout": "none",
+                          "width": 28,
+                          "height": 28,
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "id": "cw01d",
+                              "x": 0,
+                              "y": 0,
+                              "width": 12.6,
+                              "height": 12.6,
+                              "cornerRadius": 3.15,
+                              "fill": "#D43D24"
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "cw01e",
+                              "x": 3.36,
+                              "y": 3.36,
+                              "width": 5.88,
+                              "height": 5.88,
+                              "fill": "#1F1B18"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "cw01f",
+                              "x": 15.4,
+                              "y": 0,
+                              "width": 12.6,
+                              "height": 12.6,
+                              "cornerRadius": 3.15,
+                              "fill": "#FBF7F2"
+                            },
+                            {
+                              "type": "path",
+                              "id": "cw01g",
+                              "x": 18.2,
+                              "y": 2.8,
+                              "width": 9.8,
+                              "height": 9.8,
+                              "geometry": "M0 9.8A9.8 9.8 0 0 1 9.8 0V9.8Z",
+                              "fill": "#1F1B18"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "cw01h",
+                              "x": 0,
+                              "y": 15.4,
+                              "width": 12.6,
+                              "height": 12.6,
+                              "cornerRadius": 3.15,
+                              "fill": "#FBF7F2"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "cw01i",
+                              "x": 2.8,
+                              "y": 18.9,
+                              "width": 7,
+                              "height": 1.82,
+                              "cornerRadius": 0.91,
+                              "fill": "#1F1B18"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "cw01j",
+                              "x": 2.8,
+                              "y": 23.1,
+                              "width": 7,
+                              "height": 1.82,
+                              "cornerRadius": 0.91,
+                              "fill": "#1F1B18"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "cw01k",
+                              "x": 15.4,
+                              "y": 15.4,
+                              "width": 12.6,
+                              "height": 12.6,
+                              "cornerRadius": 3.15,
+                              "fill": "#D43D24"
+                            },
+                            {
+                              "type": "path",
+                              "id": "cw01l",
+                              "x": 18.55,
+                              "y": 18.55,
+                              "width": 6.3,
+                              "height": 6.3,
+                              "geometry": "M3.15 0L6.3 3.15L3.15 6.3L0 3.15Z",
+                              "fill": "#1F1B18"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "cw01p",
+                          "name": "Wordmark",
+                          "layout": "horizontal",
+                          "alignItems": "center",
+                          "gap": 0,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "cw01n",
+                              "content": "CANVAS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "700",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            },
+                            {
+                              "type": "text",
+                              "id": "cw01o",
+                              "content": "WEARS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "300",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "cw01s",
+                  "content": "水玉・曲線・しま・ひし形。4つの柄で「どんな柄でも」を表す。アプリのアイコンやタグにもそのまま使える。",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#62594F",
+                  "lineHeight": 1.8,
+                  "textGrowth": "fixed-width",
+                  "width": 264
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw02q",
+              "name": "Logo 2",
+              "layout": "vertical",
+              "fill": "#FFFFFF",
+              "cornerRadius": 20,
+              "padding": 32,
+              "gap": 26,
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw01u",
+                  "content": "2 — ハンガー × キャンバス",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#62594F"
+                },
+                {
+                  "type": "frame",
+                  "id": "cw022",
+                  "name": "Logo / ハンガー × キャンバス",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw01y",
+                      "name": "Mark / ハンガー × キャンバス",
+                      "layout": "none",
+                      "width": 48,
+                      "height": 48,
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "cw01v",
+                          "x": 20.4,
+                          "y": 3.98,
+                          "width": 7.68,
+                          "height": 11.62,
+                          "geometry": "M0 3.82A3.84 3.84 0 1 1 5.52 7.3C4.32 7.9 3.6 8.74 3.6 10.06V11.62",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 3.12,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw01w",
+                          "x": 6,
+                          "y": 15.6,
+                          "width": 36,
+                          "height": 10.2,
+                          "geometry": "M18 0L0 10.2H36Z",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 3.12,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw01x",
+                          "x": 9.6,
+                          "y": 25.8,
+                          "width": 28.8,
+                          "height": 20.4,
+                          "cornerRadius": 4.2,
+                          "fill": "#D43D24"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw021",
+                      "name": "Wordmark",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 0,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cw01z",
+                          "content": "CANVAS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "700",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        },
+                        {
+                          "type": "text",
+                          "id": "cw020",
+                          "content": "WEARS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "300",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw02f",
+                  "name": "Sizes",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw026",
+                      "name": "Mark / ハンガー × キャンバス",
+                      "layout": "none",
+                      "width": 40,
+                      "height": 40,
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "cw023",
+                          "x": 17,
+                          "y": 3.32,
+                          "width": 6.4,
+                          "height": 9.68,
+                          "geometry": "M0 3.18A3.2 3.2 0 1 1 4.6 6.08C3.6 6.58 3 7.28 3 8.38V9.68",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 2.6,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw024",
+                          "x": 5,
+                          "y": 13,
+                          "width": 30,
+                          "height": 8.5,
+                          "geometry": "M15 0L0 8.5H30Z",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 2.6,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw025",
+                          "x": 8,
+                          "y": 21.5,
+                          "width": 24,
+                          "height": 17,
+                          "cornerRadius": 3.5,
+                          "fill": "#D43D24"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw02a",
+                      "name": "Mark / ハンガー × キャンバス",
+                      "layout": "none",
+                      "width": 28,
+                      "height": 28,
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "cw027",
+                          "x": 11.9,
+                          "y": 2.32,
+                          "width": 4.48,
+                          "height": 6.78,
+                          "geometry": "M0 2.23A2.24 2.24 0 1 1 3.22 4.26C2.52 4.61 2.1 5.1 2.1 5.87V6.78",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.82,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw028",
+                          "x": 3.5,
+                          "y": 9.1,
+                          "width": 21,
+                          "height": 5.95,
+                          "geometry": "M10.5 0L0 5.95H21Z",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.82,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw029",
+                          "x": 5.6,
+                          "y": 15.05,
+                          "width": 16.8,
+                          "height": 11.9,
+                          "cornerRadius": 2.45,
+                          "fill": "#D43D24"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw02e",
+                      "name": "Mark / ハンガー × キャンバス",
+                      "layout": "none",
+                      "width": 16,
+                      "height": 16,
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "cw02b",
+                          "x": 6.8,
+                          "y": 1.33,
+                          "width": 2.56,
+                          "height": 3.87,
+                          "geometry": "M0 1.27A1.28 1.28 0 1 1 1.84 2.43C1.44 2.63 1.2 2.91 1.2 3.35V3.87",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.04,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw02c",
+                          "x": 2,
+                          "y": 5.2,
+                          "width": 12,
+                          "height": 3.4,
+                          "geometry": "M6 0L0 3.4H12Z",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.04,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw02d",
+                          "x": 3.2,
+                          "y": 8.6,
+                          "width": 9.6,
+                          "height": 6.8,
+                          "cornerRadius": 1.4,
+                          "fill": "#D43D24"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw02o",
+                  "name": "On ink",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "fill": "#1F1B18",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw02n",
+                      "name": "Logo / ハンガー × キャンバス",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 7,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cw02j",
+                          "name": "Mark / ハンガー × キャンバス",
+                          "layout": "none",
+                          "width": 28,
+                          "height": 28,
+                          "children": [
+                            {
+                              "type": "path",
+                              "id": "cw02g",
+                              "x": 11.9,
+                              "y": 2.32,
+                              "width": 4.48,
+                              "height": 6.78,
+                              "geometry": "M0 2.23A2.24 2.24 0 1 1 3.22 4.26C2.52 4.61 2.1 5.1 2.1 5.87V6.78",
+                              "stroke": {
+                                "align": "center",
+                                "thickness": 1.82,
+                                "fill": "#FBF7F2",
+                                "cap": "round",
+                                "join": "round"
+                              }
+                            },
+                            {
+                              "type": "path",
+                              "id": "cw02h",
+                              "x": 3.5,
+                              "y": 9.1,
+                              "width": 21,
+                              "height": 5.95,
+                              "geometry": "M10.5 0L0 5.95H21Z",
+                              "stroke": {
+                                "align": "center",
+                                "thickness": 1.82,
+                                "fill": "#FBF7F2",
+                                "cap": "round",
+                                "join": "round"
+                              }
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "cw02i",
+                              "x": 5.6,
+                              "y": 15.05,
+                              "width": 16.8,
+                              "height": 11.9,
+                              "cornerRadius": 2.45,
+                              "fill": "#D43D24"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "cw02m",
+                          "name": "Wordmark",
+                          "layout": "horizontal",
+                          "alignItems": "center",
+                          "gap": 0,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "cw02k",
+                              "content": "CANVAS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "700",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            },
+                            {
+                              "type": "text",
+                              "id": "cw02l",
+                              "content": "WEARS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "300",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "cw02p",
+                  "content": "ハンガーに掛かった一枚のキャンバス。「着るもの」をTシャツの形を使わずに伝える。形がいちばん単純。",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#62594F",
+                  "lineHeight": 1.8,
+                  "textGrowth": "fixed-width",
+                  "width": 264
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw03n",
+              "name": "Logo 3",
+              "layout": "vertical",
+              "fill": "#FFFFFF",
+              "cornerRadius": 20,
+              "padding": 32,
+              "gap": 26,
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw02r",
+                  "content": "3 — 鉛筆 × キャンバス",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#62594F"
+                },
+                {
+                  "type": "frame",
+                  "id": "cw02z",
+                  "name": "Logo / 鉛筆 × キャンバス",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw02v",
+                      "name": "Mark / 鉛筆 × キャンバス",
+                      "layout": "none",
+                      "width": 48,
+                      "height": 48,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw02s",
+                          "x": 1.8,
+                          "y": 1.8,
+                          "width": 44.4,
+                          "height": 44.4,
+                          "cornerRadius": 10.8,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 3.6,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw02t",
+                          "x": 16.79,
+                          "y": 10.43,
+                          "width": 20.78,
+                          "height": 20.78,
+                          "geometry": "M14.84 0L20.78 5.94L5.94 20.78L0 14.84Z",
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw02u",
+                          "x": 14.24,
+                          "y": 25.27,
+                          "width": 8.48,
+                          "height": 8.48,
+                          "geometry": "M2.54 0L8.48 5.94L0 8.48Z",
+                          "fill": "#1F1B18"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw02y",
+                      "name": "Wordmark",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 0,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cw02w",
+                          "content": "CANVAS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "700",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        },
+                        {
+                          "type": "text",
+                          "id": "cw02x",
+                          "content": "WEARS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "300",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw03c",
+                  "name": "Sizes",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw033",
+                      "name": "Mark / 鉛筆 × キャンバス",
+                      "layout": "none",
+                      "width": 40,
+                      "height": 40,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw030",
+                          "x": 1.5,
+                          "y": 1.5,
+                          "width": 37,
+                          "height": 37,
+                          "cornerRadius": 9,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 3,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw031",
+                          "x": 13.99,
+                          "y": 8.69,
+                          "width": 17.32,
+                          "height": 17.32,
+                          "geometry": "M12.37 0L17.32 4.95L4.95 17.32L0 12.37Z",
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw032",
+                          "x": 11.87,
+                          "y": 21.06,
+                          "width": 7.07,
+                          "height": 7.07,
+                          "geometry": "M2.12 0L7.07 4.95L0 7.07Z",
+                          "fill": "#1F1B18"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw037",
+                      "name": "Mark / 鉛筆 × キャンバス",
+                      "layout": "none",
+                      "width": 28,
+                      "height": 28,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw034",
+                          "x": 1.05,
+                          "y": 1.05,
+                          "width": 25.9,
+                          "height": 25.9,
+                          "cornerRadius": 6.3,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 2.1,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw035",
+                          "x": 9.79,
+                          "y": 6.08,
+                          "width": 12.12,
+                          "height": 12.12,
+                          "geometry": "M8.66 0L12.12 3.47L3.47 12.12L0 8.66Z",
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw036",
+                          "x": 8.31,
+                          "y": 14.74,
+                          "width": 4.95,
+                          "height": 4.95,
+                          "geometry": "M1.48 0L4.95 3.47L0 4.95Z",
+                          "fill": "#1F1B18"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw03b",
+                      "name": "Mark / 鉛筆 × キャンバス",
+                      "layout": "none",
+                      "width": 16,
+                      "height": 16,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw038",
+                          "x": 0.6,
+                          "y": 0.6,
+                          "width": 14.8,
+                          "height": 14.8,
+                          "cornerRadius": 3.6,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.2,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw039",
+                          "x": 5.6,
+                          "y": 3.48,
+                          "width": 6.93,
+                          "height": 6.93,
+                          "geometry": "M4.95 0L6.93 1.98L1.98 6.93L0 4.95Z",
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw03a",
+                          "x": 4.75,
+                          "y": 8.42,
+                          "width": 2.83,
+                          "height": 2.83,
+                          "geometry": "M0.85 0L2.83 1.98L0 2.83Z",
+                          "fill": "#1F1B18"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw03l",
+                  "name": "On ink",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "fill": "#1F1B18",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw03k",
+                      "name": "Logo / 鉛筆 × キャンバス",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 7,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cw03g",
+                          "name": "Mark / 鉛筆 × キャンバス",
+                          "layout": "none",
+                          "width": 28,
+                          "height": 28,
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "id": "cw03d",
+                              "x": 1.05,
+                              "y": 1.05,
+                              "width": 25.9,
+                              "height": 25.9,
+                              "cornerRadius": 6.3,
+                              "stroke": {
+                                "align": "center",
+                                "thickness": 2.1,
+                                "fill": "#FBF7F2",
+                                "cap": "round",
+                                "join": "round"
+                              }
+                            },
+                            {
+                              "type": "path",
+                              "id": "cw03e",
+                              "x": 9.79,
+                              "y": 6.08,
+                              "width": 12.12,
+                              "height": 12.12,
+                              "geometry": "M8.66 0L12.12 3.47L3.47 12.12L0 8.66Z",
+                              "fill": "#D43D24"
+                            },
+                            {
+                              "type": "path",
+                              "id": "cw03f",
+                              "x": 8.31,
+                              "y": 14.74,
+                              "width": 4.95,
+                              "height": 4.95,
+                              "geometry": "M1.48 0L4.95 3.47L0 4.95Z",
+                              "fill": "#FBF7F2"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "cw03j",
+                          "name": "Wordmark",
+                          "layout": "horizontal",
+                          "alignItems": "center",
+                          "gap": 0,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "cw03h",
+                              "content": "CANVAS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "700",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            },
+                            {
+                              "type": "text",
+                              "id": "cw03i",
+                              "content": "WEARS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "300",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "cw03m",
+                  "content": "キャンバスに描く鉛筆。「描いたものが、着るものになる」。自分のデザインで作る店だと伝わる。",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#62594F",
+                  "lineHeight": 1.8,
+                  "textGrowth": "fixed-width",
+                  "width": 264
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw05f",
+          "name": "Row 2",
+          "layout": "horizontal",
+          "alignItems": "stretch",
+          "gap": 20,
+          "width": "fill_container",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cw04g",
+              "name": "Logo 4",
+              "layout": "vertical",
+              "fill": "#FFFFFF",
+              "cornerRadius": 20,
+              "padding": 32,
+              "gap": 26,
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw03p",
+                  "content": "4 — Cがキャンバスを抱く",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#62594F"
+                },
+                {
+                  "type": "frame",
+                  "id": "cw03w",
+                  "name": "Logo / Cがキャンバスを抱く",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw03s",
+                      "name": "Mark / Cがキャンバスを抱く",
+                      "layout": "none",
+                      "width": 48,
+                      "height": 48,
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "cw03q",
+                          "x": 3.68,
+                          "y": 3.6,
+                          "width": 36.16,
+                          "height": 40.8,
+                          "geometry": "M36.16 7.44A20.4 20.4 0 1 0 36.16 33.36",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 7.2,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw03r",
+                          "x": 18,
+                          "y": 16.8,
+                          "width": 14.4,
+                          "height": 14.4,
+                          "cornerRadius": 3.6,
+                          "fill": "#D43D24"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw03v",
+                      "name": "Wordmark",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 0,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cw03t",
+                          "content": "CANVAS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "700",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        },
+                        {
+                          "type": "text",
+                          "id": "cw03u",
+                          "content": "WEARS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "300",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw046",
+                  "name": "Sizes",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw03z",
+                      "name": "Mark / Cがキャンバスを抱く",
+                      "layout": "none",
+                      "width": 40,
+                      "height": 40,
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "cw03x",
+                          "x": 3.07,
+                          "y": 3,
+                          "width": 30.13,
+                          "height": 34,
+                          "geometry": "M30.13 6.2A17 17 0 1 0 30.13 27.8",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 6,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw03y",
+                          "x": 15,
+                          "y": 14,
+                          "width": 12,
+                          "height": 12,
+                          "cornerRadius": 3,
+                          "fill": "#D43D24"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw042",
+                      "name": "Mark / Cがキャンバスを抱く",
+                      "layout": "none",
+                      "width": 28,
+                      "height": 28,
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "cw040",
+                          "x": 2.15,
+                          "y": 2.1,
+                          "width": 21.09,
+                          "height": 23.8,
+                          "geometry": "M21.09 4.34A11.9 11.9 0 1 0 21.09 19.46",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 4.2,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw041",
+                          "x": 10.5,
+                          "y": 9.8,
+                          "width": 8.4,
+                          "height": 8.4,
+                          "cornerRadius": 2.1,
+                          "fill": "#D43D24"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw045",
+                      "name": "Mark / Cがキャンバスを抱く",
+                      "layout": "none",
+                      "width": 16,
+                      "height": 16,
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "cw043",
+                          "x": 1.23,
+                          "y": 1.2,
+                          "width": 12.05,
+                          "height": 13.6,
+                          "geometry": "M12.05 2.48A6.8 6.8 0 1 0 12.05 11.12",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 2.4,
+                            "fill": "#1F1B18",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw044",
+                          "x": 6,
+                          "y": 5.6,
+                          "width": 4.8,
+                          "height": 4.8,
+                          "cornerRadius": 1.2,
+                          "fill": "#D43D24"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw04e",
+                  "name": "On ink",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "fill": "#1F1B18",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw04d",
+                      "name": "Logo / Cがキャンバスを抱く",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 7,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cw049",
+                          "name": "Mark / Cがキャンバスを抱く",
+                          "layout": "none",
+                          "width": 28,
+                          "height": 28,
+                          "children": [
+                            {
+                              "type": "path",
+                              "id": "cw047",
+                              "x": 2.15,
+                              "y": 2.1,
+                              "width": 21.09,
+                              "height": 23.8,
+                              "geometry": "M21.09 4.34A11.9 11.9 0 1 0 21.09 19.46",
+                              "stroke": {
+                                "align": "center",
+                                "thickness": 4.2,
+                                "fill": "#FBF7F2",
+                                "cap": "round",
+                                "join": "round"
+                              }
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "cw048",
+                              "x": 10.5,
+                              "y": 9.8,
+                              "width": 8.4,
+                              "height": 8.4,
+                              "cornerRadius": 2.1,
+                              "fill": "#D43D24"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "cw04c",
+                          "name": "Wordmark",
+                          "layout": "horizontal",
+                          "alignItems": "center",
+                          "gap": 0,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "cw04a",
+                              "content": "CANVAS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "700",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            },
+                            {
+                              "type": "text",
+                              "id": "cw04b",
+                              "content": "WEARS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "300",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "cw04f",
+                  "content": "頭文字のCの中に小さなキャンバス。すっきりしているが、何の店かは伝わりにくい。",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#62594F",
+                  "lineHeight": 1.8,
+                  "textGrowth": "fixed-width",
+                  "width": 264
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw05d",
+              "name": "Logo 5",
+              "layout": "vertical",
+              "fill": "#FFFFFF",
+              "cornerRadius": 20,
+              "padding": 32,
+              "gap": 26,
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw04h",
+                  "content": "5 — 織りネーム",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#62594F"
+                },
+                {
+                  "type": "frame",
+                  "id": "cw04p",
+                  "name": "Logo / 織りネーム",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw04l",
+                      "name": "Mark / 織りネーム",
+                      "layout": "none",
+                      "width": 48,
+                      "height": 48,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw04i",
+                          "x": 0,
+                          "y": 0,
+                          "width": 48,
+                          "height": 48,
+                          "cornerRadius": 10.8,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw04j",
+                          "x": 6,
+                          "y": 6,
+                          "width": 36,
+                          "height": 36,
+                          "cornerRadius": 6,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.92,
+                            "fill": "#FBF7F2",
+                            "cap": "round",
+                            "join": "round",
+                            "dashPattern": [
+                              3.84,
+                              3.12
+                            ]
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw04k",
+                          "x": 16.44,
+                          "y": 15.6,
+                          "width": 14.52,
+                          "height": 16.8,
+                          "geometry": "M14.52 2.64A8.4 8.4 0 1 0 14.52 14.16",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 4.08,
+                            "fill": "#FBF7F2",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw04o",
+                      "name": "Wordmark",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 0,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cw04m",
+                          "content": "CANVAS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "700",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        },
+                        {
+                          "type": "text",
+                          "id": "cw04n",
+                          "content": "WEARS",
+                          "fontFamily": "Outfit",
+                          "fontSize": 25,
+                          "fontWeight": "300",
+                          "fill": "#1F1B18",
+                          "letterSpacing": 1.5
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw052",
+                  "name": "Sizes",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "gap": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw04t",
+                      "name": "Mark / 織りネーム",
+                      "layout": "none",
+                      "width": 40,
+                      "height": 40,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw04q",
+                          "x": 0,
+                          "y": 0,
+                          "width": 40,
+                          "height": 40,
+                          "cornerRadius": 9,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw04r",
+                          "x": 5,
+                          "y": 5,
+                          "width": 30,
+                          "height": 30,
+                          "cornerRadius": 5,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.6,
+                            "fill": "#FBF7F2",
+                            "cap": "round",
+                            "join": "round",
+                            "dashPattern": [
+                              3.2,
+                              2.6
+                            ]
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw04s",
+                          "x": 13.7,
+                          "y": 13,
+                          "width": 12.1,
+                          "height": 14,
+                          "geometry": "M12.1 2.2A7 7 0 1 0 12.1 11.8",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 3.4,
+                            "fill": "#FBF7F2",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw04x",
+                      "name": "Mark / 織りネーム",
+                      "layout": "none",
+                      "width": 28,
+                      "height": 28,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw04u",
+                          "x": 0,
+                          "y": 0,
+                          "width": 28,
+                          "height": 28,
+                          "cornerRadius": 6.3,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw04v",
+                          "x": 3.5,
+                          "y": 3.5,
+                          "width": 21,
+                          "height": 21,
+                          "cornerRadius": 3.5,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.12,
+                            "fill": "#FBF7F2",
+                            "cap": "round",
+                            "join": "round",
+                            "dashPattern": [
+                              2.24,
+                              1.82
+                            ]
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw04w",
+                          "x": 9.59,
+                          "y": 9.1,
+                          "width": 8.47,
+                          "height": 9.8,
+                          "geometry": "M8.47 1.54A4.9 4.9 0 1 0 8.47 8.26",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 2.38,
+                            "fill": "#FBF7F2",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cw051",
+                      "name": "Mark / 織りネーム",
+                      "layout": "none",
+                      "width": 16,
+                      "height": 16,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "cw04y",
+                          "x": 0,
+                          "y": 0,
+                          "width": 16,
+                          "height": 16,
+                          "cornerRadius": 3.6,
+                          "fill": "#D43D24"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "cw04z",
+                          "x": 2,
+                          "y": 2,
+                          "width": 12,
+                          "height": 12,
+                          "cornerRadius": 2,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 0.64,
+                            "fill": "#FBF7F2",
+                            "cap": "round",
+                            "join": "round",
+                            "dashPattern": [
+                              1.28,
+                              1.04
+                            ]
+                          }
+                        },
+                        {
+                          "type": "path",
+                          "id": "cw050",
+                          "x": 5.48,
+                          "y": 5.2,
+                          "width": 4.84,
+                          "height": 5.6,
+                          "geometry": "M4.84 0.88A2.8 2.8 0 1 0 4.84 4.72",
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.36,
+                            "fill": "#FBF7F2",
+                            "cap": "round",
+                            "join": "round"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cw05b",
+                  "name": "On ink",
+                  "layout": "horizontal",
+                  "alignItems": "center",
+                  "fill": "#1F1B18",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cw05a",
+                      "name": "Logo / 織りネーム",
+                      "layout": "horizontal",
+                      "alignItems": "center",
+                      "gap": 7,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cw056",
+                          "name": "Mark / 織りネーム",
+                          "layout": "none",
+                          "width": 28,
+                          "height": 28,
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "id": "cw053",
+                              "x": 0,
+                              "y": 0,
+                              "width": 28,
+                              "height": 28,
+                              "cornerRadius": 6.3,
+                              "fill": "#D43D24"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "cw054",
+                              "x": 3.5,
+                              "y": 3.5,
+                              "width": 21,
+                              "height": 21,
+                              "cornerRadius": 3.5,
+                              "stroke": {
+                                "align": "center",
+                                "thickness": 1.12,
+                                "fill": "#FBF7F2",
+                                "cap": "round",
+                                "join": "round",
+                                "dashPattern": [
+                                  2.24,
+                                  1.82
+                                ]
+                              }
+                            },
+                            {
+                              "type": "path",
+                              "id": "cw055",
+                              "x": 9.59,
+                              "y": 9.1,
+                              "width": 8.47,
+                              "height": 9.8,
+                              "geometry": "M8.47 1.54A4.9 4.9 0 1 0 8.47 8.26",
+                              "stroke": {
+                                "align": "center",
+                                "thickness": 2.38,
+                                "fill": "#FBF7F2",
+                                "cap": "round",
+                                "join": "round"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "cw059",
+                          "name": "Wordmark",
+                          "layout": "horizontal",
+                          "alignItems": "center",
+                          "gap": 0,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "cw057",
+                              "content": "CANVAS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "700",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            },
+                            {
+                              "type": "text",
+                              "id": "cw058",
+                              "content": "WEARS",
+                              "fontFamily": "Outfit",
+                              "fontSize": 18,
+                              "fontWeight": "300",
+                              "fill": "#FBF7F2",
+                              "letterSpacing": 1.08
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "cw05c",
+                  "content": "服の内側に縫い付けるブランドタグ。縫い目の点線で「布もの」だと分かる。朱色の面が強い。",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#62594F",
+                  "lineHeight": 1.8,
+                  "textGrowth": "fixed-width",
+                  "width": 264
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw05e",
+              "name": "Spacer",
+              "layout": "vertical",
+              "width": "fill_container",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "cw06d",
+      "name": "03 Catchcopy",
+      "layout": "vertical",
+      "x": 1280,
+      "y": 0,
+      "width": 1200,
+      "fill": "#FBF7F2",
+      "padding": 56,
+      "gap": 32,
+      "children": [
+        {
+          "type": "frame",
+          "id": "cw05j",
+          "name": "Title",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "cw05h",
+              "content": "CATCHCOPY",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "500",
+              "fill": "#62594F",
+              "letterSpacing": 2.4
+            },
+            {
+              "type": "text",
+              "id": "cw05i",
+              "content": "キャッチコピー",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 32,
+              "fontWeight": "700",
+              "fill": "#1F1B18"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw05o",
+          "name": "Main",
+          "layout": "vertical",
+          "fill": "#1F1B18",
+          "cornerRadius": 20,
+          "padding": 48,
+          "gap": 16,
+          "width": "fill_container",
+          "children": [
+            {
+              "type": "text",
+              "id": "cw05k",
+              "content": "WEAR YOUR CANVAS",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "500",
+              "fill": "#D43D24",
+              "letterSpacing": 3.2
+            },
+            {
+              "type": "text",
+              "id": "cw05l",
+              "content": "着るものぜんぶ、",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 56,
+              "fontWeight": "900",
+              "fill": "#FBF7F2",
+              "lineHeight": 1.3
+            },
+            {
+              "type": "text",
+              "id": "cw05m",
+              "content": "キャンバス。",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 56,
+              "fontWeight": "900",
+              "fill": "#D43D24",
+              "lineHeight": 1.3
+            },
+            {
+              "type": "text",
+              "id": "cw05n",
+              "content": "写真もイラストも、全面フルカラーの昇華プリントで。Tシャツからドレス、バッグまで、どんな柄でも1点からお作りします。",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 15,
+              "fontWeight": "400",
+              "fill": "#D8CEC2",
+              "lineHeight": 1.9,
+              "textGrowth": "fixed-width",
+              "width": 560
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw05s",
+          "name": "Copy 1",
+          "layout": "horizontal",
+          "alignItems": "center",
+          "gap": 24,
+          "width": "fill_container",
+          "padding": [
+            18,
+            0
+          ],
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#EADFD3"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "cw05p",
+              "content": "01",
+              "fontFamily": "Outfit",
+              "fontSize": 18,
+              "fontWeight": "700",
+              "fill": "#D43D24"
+            },
+            {
+              "type": "text",
+              "id": "cw05q",
+              "content": "着るものぜんぶ、キャンバス。",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 22,
+              "fontWeight": "700",
+              "fill": "#1F1B18",
+              "textGrowth": "fixed-width",
+              "width": 420
+            },
+            {
+              "type": "text",
+              "id": "cw05r",
+              "content": "採用。ブランド名の意味をそのまま言い切る。サイトのトップに使用中",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 13,
+              "fontWeight": "400",
+              "fill": "#62594F",
+              "lineHeight": 1.7,
+              "textGrowth": "fixed-width",
+              "width": 540
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw05w",
+          "name": "Copy 2",
+          "layout": "horizontal",
+          "alignItems": "center",
+          "gap": 24,
+          "width": "fill_container",
+          "padding": [
+            18,
+            0
+          ],
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#EADFD3"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "cw05t",
+              "content": "02",
+              "fontFamily": "Outfit",
+              "fontSize": 18,
+              "fontWeight": "700",
+              "fill": "#D43D24"
+            },
+            {
+              "type": "text",
+              "id": "cw05u",
+              "content": "どんな柄でも、1点から。",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 22,
+              "fontWeight": "700",
+              "fill": "#1F1B18",
+              "textGrowth": "fixed-width",
+              "width": 420
+            },
+            {
+              "type": "text",
+              "id": "cw05v",
+              "content": "これまでのコピー。機能が一言で伝わるので、説明文・検索向けの文として継続",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 13,
+              "fontWeight": "400",
+              "fill": "#62594F",
+              "lineHeight": 1.7,
+              "textGrowth": "fixed-width",
+              "width": 540
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw060",
+          "name": "Copy 3",
+          "layout": "horizontal",
+          "alignItems": "center",
+          "gap": 24,
+          "width": "fill_container",
+          "padding": [
+            18,
+            0
+          ],
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#EADFD3"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "cw05x",
+              "content": "03",
+              "fontFamily": "Outfit",
+              "fontSize": 18,
+              "fontWeight": "700",
+              "fill": "#D43D24"
+            },
+            {
+              "type": "text",
+              "id": "cw05y",
+              "content": "写真も、絵も、そのまま服になる。",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 22,
+              "fontWeight": "700",
+              "fill": "#1F1B18",
+              "textGrowth": "fixed-width",
+              "width": 420
+            },
+            {
+              "type": "text",
+              "id": "cw05z",
+              "content": "初めての人に仕組みが伝わる。広告・SNS向き",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 13,
+              "fontWeight": "400",
+              "fill": "#62594F",
+              "lineHeight": 1.7,
+              "textGrowth": "fixed-width",
+              "width": 540
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw064",
+          "name": "Copy 4",
+          "layout": "horizontal",
+          "alignItems": "center",
+          "gap": 24,
+          "width": "fill_container",
+          "padding": [
+            18,
+            0
+          ],
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#EADFD3"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "cw061",
+              "content": "04",
+              "fontFamily": "Outfit",
+              "fontSize": 18,
+              "fontWeight": "700",
+              "fill": "#D43D24"
+            },
+            {
+              "type": "text",
+              "id": "cw062",
+              "content": "好きな柄を、着よう。",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 22,
+              "fontWeight": "700",
+              "fill": "#1F1B18",
+              "textGrowth": "fixed-width",
+              "width": 420
+            },
+            {
+              "type": "text",
+              "id": "cw063",
+              "content": "いちばん短い。バナーやタグ向き",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 13,
+              "fontWeight": "400",
+              "fill": "#62594F",
+              "lineHeight": 1.7,
+              "textGrowth": "fixed-width",
+              "width": 540
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw068",
+          "name": "Copy 5",
+          "layout": "horizontal",
+          "alignItems": "center",
+          "gap": 24,
+          "width": "fill_container",
+          "padding": [
+            18,
+            0
+          ],
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#EADFD3"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "cw065",
+              "content": "05",
+              "fontFamily": "Outfit",
+              "fontSize": 18,
+              "fontWeight": "700",
+              "fill": "#D43D24"
+            },
+            {
+              "type": "text",
+              "id": "cw066",
+              "content": "描いたものが、着るものになる。",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 22,
+              "fontWeight": "700",
+              "fill": "#1F1B18",
+              "textGrowth": "fixed-width",
+              "width": 420
+            },
+            {
+              "type": "text",
+              "id": "cw067",
+              "content": "イラストを描く人に向けた言い方",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 13,
+              "fontWeight": "400",
+              "fill": "#62594F",
+              "lineHeight": 1.7,
+              "textGrowth": "fixed-width",
+              "width": 540
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw06c",
+          "name": "Copy 6",
+          "layout": "horizontal",
+          "alignItems": "center",
+          "gap": 24,
+          "width": "fill_container",
+          "padding": [
+            18,
+            0
+          ],
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#EADFD3"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "cw069",
+              "content": "06",
+              "fontFamily": "Outfit",
+              "fontSize": 18,
+              "fontWeight": "700",
+              "fill": "#D43D24"
+            },
+            {
+              "type": "text",
+              "id": "cw06a",
+              "content": "世界に一着を、1点から。",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 22,
+              "fontWeight": "700",
+              "fill": "#1F1B18",
+              "textGrowth": "fixed-width",
+              "width": 420
+            },
+            {
+              "type": "text",
+              "id": "cw06b",
+              "content": "ギフト・記念品の訴求向き",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 13,
+              "fontWeight": "400",
+              "fill": "#62594F",
+              "lineHeight": 1.7,
+              "textGrowth": "fixed-width",
+              "width": 540
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "cw07c",
+      "name": "04 Color & Type",
+      "layout": "vertical",
+      "x": 1280,
+      "y": 1220,
+      "width": 1200,
+      "fill": "#FBF7F2",
+      "padding": 56,
+      "gap": 32,
+      "children": [
+        {
+          "type": "frame",
+          "id": "cw06g",
+          "name": "Title",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "cw06e",
+              "content": "COLOR & TYPE",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "500",
+              "fill": "#62594F",
+              "letterSpacing": 2.4
+            },
+            {
+              "type": "text",
+              "id": "cw06f",
+              "content": "色と書体",
+              "fontFamily": "Zen Kaku Gothic New",
+              "fontSize": 32,
+              "fontWeight": "700",
+              "fill": "#1F1B18"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw071",
+          "name": "Colors",
+          "layout": "horizontal",
+          "alignItems": "center",
+          "gap": 16,
+          "width": "fill_container",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cw06k",
+              "name": "Swatch 朱（インク）",
+              "layout": "vertical",
+              "fill": "#D43D24",
+              "cornerRadius": 16,
+              "padding": 20,
+              "gap": 4,
+              "width": "fill_container",
+              "height": 150,
+              "justifyContent": "end",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#EADFD3"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw06h",
+                  "content": "朱（インク）",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#FBF7F2"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06i",
+                  "content": "#D43D24",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#FBF7F2"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06j",
+                  "content": "ボタン・強調・ロゴ",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 11,
+                  "fontWeight": "400",
+                  "fill": "#F3D9D2"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw06o",
+              "name": "Swatch 墨",
+              "layout": "vertical",
+              "fill": "#1F1B18",
+              "cornerRadius": 16,
+              "padding": 20,
+              "gap": 4,
+              "width": "fill_container",
+              "height": 150,
+              "justifyContent": "end",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#EADFD3"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw06l",
+                  "content": "墨",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#FBF7F2"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06m",
+                  "content": "#1F1B18",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#FBF7F2"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06n",
+                  "content": "文字・ロゴ",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 11,
+                  "fontWeight": "400",
+                  "fill": "#F3D9D2"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw06s",
+              "name": "Swatch 生成り",
+              "layout": "vertical",
+              "fill": "#FBF7F2",
+              "cornerRadius": 16,
+              "padding": 20,
+              "gap": 4,
+              "width": "fill_container",
+              "height": 150,
+              "justifyContent": "end",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#EADFD3"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw06p",
+                  "content": "生成り",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#1F1B18"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06q",
+                  "content": "#FBF7F2",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#1F1B18"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06r",
+                  "content": "ページの地色",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 11,
+                  "fontWeight": "400",
+                  "fill": "#62594F"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw06w",
+              "name": "Swatch 砂",
+              "layout": "vertical",
+              "fill": "#F6EADF",
+              "cornerRadius": 16,
+              "padding": 20,
+              "gap": 4,
+              "width": "fill_container",
+              "height": 150,
+              "justifyContent": "end",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#EADFD3"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw06t",
+                  "content": "砂",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#1F1B18"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06u",
+                  "content": "#F6EADF",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#1F1B18"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06v",
+                  "content": "帯・アイコンの地",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 11,
+                  "fontWeight": "400",
+                  "fill": "#62594F"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw070",
+              "name": "Swatch 罫線",
+              "layout": "vertical",
+              "fill": "#EADFD3",
+              "cornerRadius": 16,
+              "padding": 20,
+              "gap": 4,
+              "width": "fill_container",
+              "height": 150,
+              "justifyContent": "end",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#EADFD3"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw06x",
+                  "content": "罫線",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 15,
+                  "fontWeight": "700",
+                  "fill": "#1F1B18"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06y",
+                  "content": "#EADFD3",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#1F1B18"
+                },
+                {
+                  "type": "text",
+                  "id": "cw06z",
+                  "content": "枠線・区切り",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 11,
+                  "fontWeight": "400",
+                  "fill": "#62594F"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cw07b",
+          "name": "Type",
+          "layout": "horizontal",
+          "alignItems": "stretch",
+          "gap": 24,
+          "width": "fill_container",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cw076",
+              "name": "Type JP",
+              "layout": "vertical",
+              "fill": "#FFFFFF",
+              "cornerRadius": 20,
+              "padding": 40,
+              "gap": 16,
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw072",
+                  "content": "HEADING — ZEN KAKU GOTHIC NEW 700 / 900",
+                  "fontFamily": "Outfit",
+                  "fontSize": 12,
+                  "fontWeight": "500",
+                  "fill": "#62594F",
+                  "letterSpacing": 2.4
+                },
+                {
+                  "type": "text",
+                  "id": "cw073",
+                  "content": "カテゴリから探す",
+                  "fontFamily": "Zen Kaku Gothic New",
+                  "fontSize": 34,
+                  "fontWeight": "700",
+                  "fill": "#1F1B18"
+                },
+                {
+                  "type": "text",
+                  "id": "cw074",
+                  "content": "BODY — NOTO SANS JP 400 / 500",
+                  "fontFamily": "Outfit",
+                  "fontSize": 12,
+                  "fontWeight": "500",
+                  "fill": "#62594F",
+                  "letterSpacing": 2.4
+                },
+                {
+                  "type": "text",
+                  "id": "cw075",
+                  "content": "写真もイラストも、全面フルカラーで再現できます。",
+                  "fontFamily": "Noto Sans JP",
+                  "fontSize": 15,
+                  "fontWeight": "400",
+                  "fill": "#62594F"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cw07a",
+              "name": "Type EN",
+              "layout": "vertical",
+              "fill": "#FFFFFF",
+              "cornerRadius": 20,
+              "padding": 40,
+              "gap": 16,
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cw077",
+                  "content": "DISPLAY — OUTFIT 300 / 500 / 700",
+                  "fontFamily": "Outfit",
+                  "fontSize": 12,
+                  "fontWeight": "500",
+                  "fill": "#62594F",
+                  "letterSpacing": 2.4
+                },
+                {
+                  "type": "text",
+                  "id": "cw078",
+                  "content": "HOW TO ORDER  01 02 03",
+                  "fontFamily": "Outfit",
+                  "fontSize": 30,
+                  "fontWeight": "700",
+                  "fill": "#1F1B18"
+                },
+                {
+                  "type": "text",
+                  "id": "cw079",
+                  "content": "欧文の小見出し・数字・ロゴに使用",
+                  "fontFamily": "Noto Sans JP",
+                  "fontSize": 13,
+                  "fontWeight": "400",
+                  "fill": "#62594F"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

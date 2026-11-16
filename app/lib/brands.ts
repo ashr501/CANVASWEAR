@@ -289,13 +289,13 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     id: 'custom-print',
     name: 'CANVASWEARS',
     nameJa: 'キャンバスウェアーズ',
-    tagline: 'Your Canvas',
+    tagline: 'Wear Your Canvas',
     taglineJa: '昇華プリントで、どんな柄も1点から。',
     uiMode: 'clean',
     heroLayout: 'split',
-    heroHeading: ['どんな柄でも、', '1点から。'],
+    heroHeading: ['着るものぜんぶ、', 'キャンバス。'],
     heroBody:
-      '写真もイラストも全面フルカラー。染料が繊維そのものを染めるので、ごわつかず、洗っても色落ちしません。',
+      '写真もイラストも、全面フルカラーの昇華プリントで。Tシャツからドレス、バッグまで、どんな柄でも1点からお作りします。',
     hostMatches: ['canvaswear', 'custom-print'],
     envPrefix: 'BRAND4',
     collections: {
@@ -334,7 +334,7 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     },
     copy: {
       ...JA_COPY,
-      heroEyebrow: 'CUSTOM PRINT',
+      heroEyebrow: 'WEAR YOUR CANVAS',
       featuredEyebrow: '人気の柄',
       featuredHeading: 'ピックアップ',
       allItemsEyebrow: 'ALL PRINTS',
@@ -349,24 +349,28 @@ export const BRANDS: Record<BrandId, BrandDefinition> = {
     },
     theme: {
       cssVars: {
-        '--color-bg': '#FDF9F6',
+        // 生成りのキャンバス地 × 朱色のインク × 墨色。ロゴ（brand/）と同じ3色
+        '--color-bg': '#FBF7F2',
         '--color-surface': '#FFFFFF',
-        '--color-hero-bg': '#FDE8EC',
-        '--color-primary': '#D71920',
-        '--color-secondary': '#C73351',
-        '--color-accent': '#D04865',
-        '--color-text': '#333333',
-        '--color-text-muted': '#4B5563',
-        '--color-border': '#F3E3E6',
-        '--font-heading': "'Noto Serif JP'",
+        '--color-hero-bg': '#F6EADF',
+        // 白文字を載せても読める濃さ（コントラスト比 4.6:1）
+        '--color-primary': '#D43D24',
+        '--color-secondary': '#B5301A',
+        '--color-accent': '#D43D24',
+        '--color-text': '#1F1B18',
+        '--color-text-muted': '#62594F',
+        '--color-border': '#EADFD3',
+        '--font-heading': "'Zen Kaku Gothic New'",
         '--font-body': "'Noto Sans JP'",
-        '--section-spacing': '4rem',
+        // 欧文の見出し・数字・ロゴ用
+        '--font-display': "'Outfit'",
+        '--section-spacing': '4.5rem',
         '--gutter': '1.25rem',
         '--ease': 'cubic-bezier(0.22, 1, 0.36, 1)',
-        '--radius': '24px',
+        '--radius': '20px',
       },
       googleFonts:
-        'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap',
+        'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@300;500;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap',
     },
   },
 };
