@@ -390,3 +390,34 @@
 
 /* お知らせ本文。記事の段落どうしに余白を取る（本文はShopify側のHTML） */
 .news-body p { margin-bottom: 1.5rem; }
+
+/* ===================================
+   CANVASWEARS: 横に流れる帯（トップページ）
+   同じ行を3つ並べ、1行ぶんだけ左へ動かして繰り返す。
+   =================================== */
+.cw-ticker {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.cw-ticker__row {
+  display: flex;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: cw-ticker 28s linear infinite;
+}
+
+@keyframes cw-ticker {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-ticker__row {
+    animation: none;
+  }
+}

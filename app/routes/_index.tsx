@@ -14,6 +14,7 @@ import {formatCount} from '~/lib/format';
 import {countCollections} from '~/lib/counts.server';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
+import PatternTile from '~/components/PatternTile';
 import {getBrandConfig} from '~/lib/brand.server';
 import {siteJsonLd, originOf} from '~/lib/seo';
 import clsx from 'clsx';
@@ -703,7 +704,7 @@ function CanvaswearHome({
   return (
     <div>
       <CanvaswearHero brand={brand} products={products} counts={counts} />
-      <ValueStrip />
+      <Ticker />
 
       {/* カテゴリを選んで商品を切り替えられるセクション。
           ?cat=<handle> で選択（SSR。クライアント状態を持たない） */}
@@ -762,7 +763,9 @@ function CanvaswearHome({
         </div>
       </section>
 
+      <StatementBand body={brand.concept.body} />
       <HowToOrder categoryCount={brand.nav.length} />
+      <BulkBand />
 
       <Suspense fallback={null}>
         <Await resolve={news} errorElement={null}>
@@ -885,8 +888,26 @@ function CanvaswearHero({
   const heroImage = brand.copy.heroImage;
 
   return (
-    <section className="relative overflow-hidden" style={{backgroundColor: 'var(--color-bg)'}}>
-      <div className="container-brand py-10 md:py-16">
+    <section
+      className="relative overflow-hidden"
+      style={{
+        backgroundColor: 'var(--color-bg)',
+        // 布目のような細かい点。右上にだけ出して、文字の後ろは無地にする
+        backgroundImage:
+          'radial-gradient(circle at 1px 1px, var(--color-border) 1.5px, transparent 0)',
+        backgroundSize: '22px 22px',
+        backgroundPosition: 'right top',
+      }}
+    >
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(100deg, var(--color-bg) 0%, var(--color-bg) 38%, transparent 75%)',
+        }}
+      />
+      <div className="container-brand relative py-10 md:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           <div className="lg:col-span-5">
             <p
@@ -910,8 +931,8 @@ function CanvaswearHero({
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontWeight: 900,
-                fontSize: 'clamp(2.1rem, 4.2vw, 3.5rem)',
-                lineHeight: 1.3,
+                fontSize: 'clamp(2.3rem, 4.9vw, 4.25rem)',
+                lineHeight: 1.22,
                 letterSpacing: '0.01em',
                 color: 'var(--color-text)',
               }}
@@ -983,7 +1004,32 @@ function CanvaswearHero({
             </div>
           </div>
 
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 relative">
+            {heroImage && (
+              <>
+                <PatternTile
+                  kind="dots"
+                  tone="red"
+                  size={84}
+                  className="absolute -top-7 right-6 md:-top-9 md:right-10 z-10 w-14 h-14 md:w-[84px] md:h-[84px]"
+                  style={{transform: 'rotate(8deg)', boxShadow: '0 10px 24px rgba(31,27,24,0.14)'}}
+                />
+                <PatternTile
+                  kind="wave"
+                  tone="ink"
+                  size={72}
+                  className="absolute -bottom-6 -left-2 md:-bottom-8 md:-left-8 z-10 w-12 h-12 md:w-[72px] md:h-[72px]"
+                  style={{transform: 'rotate(-10deg)', boxShadow: '0 10px 24px rgba(31,27,24,0.14)'}}
+                />
+                <PatternTile
+                  kind="stripes"
+                  tone="sand"
+                  size={56}
+                  className="hidden md:block absolute -bottom-10 right-16 z-10"
+                  style={{transform: 'rotate(6deg)', boxShadow: '0 10px 24px rgba(31,27,24,0.10)'}}
+                />
+              </>
+            )}
             {heroImage ? (
               // ラインナップ画像は白背景なので、白い台紙（キャンバス）に載せて見せる
               <figure
@@ -1084,55 +1130,220 @@ const VALUE_POINTS = [
   },
 ];
 
-function ValueStrip() {
+/** ヒーロー直下を横に流れる帯。店の約束を短い言葉で繰り返す。
+ *  動きを減らす設定の人には止めて見せる（app.css の .cw-ticker）。 */
+const TICKER_WORDS = ['1点から製作', '全面フルカラー', '写真もイラストも', '洗っても色落ちしにくい', 'スマホの写真でOK'];
+
+function Ticker() {
+  const row = (hidden: boolean) => (
+    <ul className="cw-ticker__row" aria-hidden={hidden || undefined}>
+      {TICKER_WORDS.map((word) => (
+        <li key={word} className="flex items-center gap-6 md:gap-8 pr-6 md:pr-8">
+          <span>{word}</span>
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+            <path d="M5 0L10 5L5 10L0 5Z" fill="var(--color-primary)" />
+          </svg>
+        </li>
+      ))}
+    </ul>
+  );
   return (
     <div
+      className="cw-ticker py-3.5 md:py-4 text-sm md:text-base"
       style={{
-        backgroundColor: 'var(--color-surface)',
-        borderTop: '1px solid var(--color-border)',
-        borderBottom: '1px solid var(--color-border)',
+        backgroundColor: '#1F1B18',
+        color: '#FBF7F2',
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 700,
       }}
     >
-      <ul className="container-brand grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-5 py-6 md:py-7">
-        {VALUE_POINTS.map(({title, body, icon}) => (
-          <li key={title} className="flex items-center gap-4">
-            <span
-              className="flex items-center justify-center w-11 h-11 rounded-full shrink-0"
-              style={{backgroundColor: 'var(--color-hero-bg)', color: 'var(--color-primary)'}}
-            >
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                {icon}
-              </svg>
-            </span>
-            <div>
-              <p
-                className="text-sm"
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  color: 'var(--color-text)',
-                }}
-              >
-                {title}
-              </p>
-              <p className="text-xs mt-0.5" style={{color: 'var(--color-text-muted)'}}>
-                {body}
-              </p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {row(false)}
+      {row(true)}
+      {row(true)}
     </div>
+  );
+}
+
+/** 昇華プリントの説明。墨色の大きな帯にして、白い商品一覧との間にめりはりを付ける。 */
+function StatementBand({body}: {body: string}) {
+  return (
+    <section
+      className="section-pad relative overflow-hidden"
+      style={{backgroundColor: '#1F1B18', color: '#FBF7F2'}}
+    >
+      <PatternTile
+        kind="arc"
+        tone="red"
+        size={220}
+        className="absolute -right-16 -top-16 opacity-90 hidden md:block"
+        style={{transform: 'rotate(180deg)'}}
+      />
+      <PatternTile
+        kind="diamond"
+        tone="red"
+        size={64}
+        className="absolute right-6 top-6 md:hidden"
+        style={{transform: 'rotate(8deg)'}}
+      />
+      <div className="container-brand relative">
+        <p
+          className="text-xs mb-4"
+          style={{
+            color: 'var(--color-primary)',
+            fontFamily: 'var(--font-display, var(--font-heading))',
+            fontWeight: 500,
+            letterSpacing: '0.2em',
+          }}
+        >
+          ABOUT SUBLIMATION PRINT
+        </p>
+        <h2
+          className="mb-6 max-w-3xl"
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 900,
+            fontSize: 'clamp(1.75rem, 3.6vw, 3rem)',
+            lineHeight: 1.4,
+            color: '#FBF7F2',
+          }}
+        >
+          <span className="block">写真も、絵も、</span>
+          <span className="block">そのまま服になる。</span>
+        </h2>
+        <p className="text-sm md:text-[15px] leading-loose max-w-2xl mb-10 md:mb-12" style={{color: '#D8CEC2'}}>
+          {body}
+        </p>
+        <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          {VALUE_POINTS.map(({title, body: text, icon}) => (
+            <li
+              key={title}
+              className="flex items-center gap-4 p-5"
+              style={{backgroundColor: '#2B2520', borderRadius: 'var(--radius)'}}
+            >
+              <span
+                className="flex items-center justify-center w-11 h-11 rounded-full shrink-0"
+                style={{backgroundColor: 'var(--color-primary)', color: '#FFFFFF'}}
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  {icon}
+                </svg>
+              </span>
+              <div>
+                <p className="text-[15px]" style={{fontFamily: 'var(--font-heading)', fontWeight: 700}}>
+                  {title}
+                </p>
+                <p className="text-xs mt-1" style={{color: '#B9AEA2'}}>
+                  {text}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/** まとめて注文の割引。割引率はFAQ（FaqSection.tsx「チームウェアやノベルティなど…」）と同じ。
+ *  カートでは自動で適用されないので、買い物かごではなく問い合わせへ送る。 */
+const BULK_TIERS = [
+  {range: '5〜9点', off: '10'},
+  {range: '10〜19点', off: '15'},
+  {range: '20点以上', off: '25'},
+];
+
+function BulkBand() {
+  return (
+    <section className="section-pad" style={{backgroundColor: 'var(--color-surface)'}}>
+      <div className="container-brand">
+        <div
+          className="relative overflow-hidden grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center p-7 md:p-12"
+          style={{backgroundColor: 'var(--color-primary)', color: '#FFFFFF', borderRadius: '28px'}}
+        >
+          <PatternTile
+            kind="dots"
+            tone="ink"
+            size={120}
+            className="absolute -right-8 -top-10 opacity-25"
+            style={{transform: 'rotate(12deg)'}}
+          />
+          <div className="relative">
+            <p
+              className="text-xs mb-3"
+              style={{
+                fontFamily: 'var(--font-display, var(--font-heading))',
+                fontWeight: 500,
+                letterSpacing: '0.2em',
+              }}
+            >
+              FOR TEAMS &amp; EVENTS
+            </p>
+            <h2
+              className="mb-4"
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 900,
+                fontSize: 'clamp(1.6rem, 3vw, 2.4rem)',
+                lineHeight: 1.4,
+                color: '#FFFFFF',
+              }}
+            >
+              おそろいで作ると、
+              <br />
+              最大25%OFF。
+            </h2>
+            <p className="text-sm leading-loose mb-7 max-w-md" style={{color: '#FFE9E3'}}>
+              チームウェアやノベルティなど、まとめてのご注文には数量割引があります。同じデザインでサイズを組み合わせることもできます。割引はカートでは自動で付かないため、枚数と用途をお知らせください。
+            </p>
+            <Link
+              to="/pages/contact"
+              className="inline-block px-8 py-3.5 rounded-full text-sm transition-transform duration-200 hover:-translate-y-0.5"
+              style={{
+                backgroundColor: '#FFFFFF',
+                color: '#1F1B18',
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+              }}
+            >
+              見積もりを相談する
+            </Link>
+          </div>
+          <ul className="relative grid grid-cols-3 gap-2.5 md:gap-4">
+            {BULK_TIERS.map(({range, off}) => (
+              <li
+                key={range}
+                className="text-center py-6 md:py-9 px-2"
+                style={{backgroundColor: '#FFFFFF', color: '#1F1B18', borderRadius: 'var(--radius)'}}
+              >
+                <p className="text-xs md:text-sm font-medium mb-2">{range}</p>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-display, var(--font-heading))',
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    color: 'var(--color-primary)',
+                  }}
+                >
+                  <span style={{fontSize: 'clamp(2rem, 4.4vw, 3.25rem)'}}>{off}</span>
+                  <span className="text-sm md:text-lg">%OFF</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 }
 

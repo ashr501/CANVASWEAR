@@ -101,7 +101,7 @@ export default function CollectionPage() {
     <div>
       {/* コレクションヘッダー */}
       <div
-        className="py-16 md:py-24"
+        className={brand.uiMode === 'clean' ? 'py-10 md:py-14' : 'py-16 md:py-24'}
         style={
           isAvantGarde
             ? {borderBottom: '1px solid var(--color-border)'}
