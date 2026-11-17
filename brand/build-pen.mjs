@@ -1,7 +1,12 @@
 // brand/canvaswears-brand.pen を作り直すスクリプト（node brand/build-pen.mjs）。
 // Pencilで直接編集してもよい。色やコピーをまとめて変えたいときだけこちらを使う。
 import {writeFileSync} from 'node:fs';
-import {MARKS, colors, toSvg} from './marks.mjs';
+import {readFileSync} from 'node:fs';
+
+// ロゴの形。サイト（app/lib/logo-data.json）と同じデータを使う。別案とカナは brand/logo-extra.json
+const LOGO = JSON.parse(readFileSync(new URL('../app/lib/logo-data.json', import.meta.url), 'utf8'));
+const EXTRA = JSON.parse(readFileSync(new URL('./logo-extra.json', import.meta.url), 'utf8'));
+const CHEEK = '#F2A08F';
 
 const INK = '#1F1B18', PAPER = '#FBF7F2', RED = '#D43D24', SAND = '#F6EADF', MUTED = '#62594F', LINE = '#EADFD3';
 let n = 0;
@@ -16,7 +21,7 @@ const r = (v) => Math.round(v * 100) / 100;
 /** 絶対座標のパスを、bboxの左上が原点になるようにずらして k 倍する */
 function fitPath(d, [ox, oy], k) {
   return d.replace(/([MLHVAQCZ])([^MLHVAQCZ]*)/g, (_, c, rest) => {
-    const v = rest.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+    const v = (rest.match(/-?\d*\.?\d+/g) || []).map(Number);
     const X = (x) => r((x - ox) * k), Y = (y) => r((y - oy) * k);
     if (c === 'Z') return 'Z';
     if (c === 'H') return 'H' + X(v[0]);
@@ -25,45 +30,68 @@ function fitPath(d, [ox, oy], k) {
     return c + v.map((n, i) => (i % 2 ? Y(n) : X(n))).join(' ');
   });
 }
+const pathNode = (name, d, bbox, k, paint, dx = 0, dy = 0) => ({
+  type: 'path', id: id(), name, x: r((bbox[0] + dx) * k), y: r((bbox[1] + dy) * k),
+  width: r(bbox[2] * k), height: r(bbox[3] * k), geometry: fitPath(d, [bbox[0], bbox[1]], k), ...paint,
+});
+const roleColor = (role, dark) => ({ink: dark ? PAPER : INK, red: RED, cream: PAPER, cheek: CHEEK})[role];
 
-/** marks.mjs のシンボルを Pencil の図形にする */
-function mark(key, size, dark = false) {
-  const k = size / 40, c = colors(dark);
-  const paint = (e) => e.fill
-    ? {fill: c[e.fill]}
-    : {stroke: {align: 'center', thickness: r(e.sw * k), fill: c[e.stroke], cap: 'round', join: 'round', ...(e.dash ? {dashPattern: e.dash.map((v) => r(v * k))} : {})}};
-  return frame('Mark / ' + MARKS[key].name, {layout: 'none', width: size, height: size}, MARKS[key].els.map((e) => {
-    if (e.t === 'rect') return {type: 'rectangle', id: id(), x: r(e.x * k), y: r(e.y * k), width: r(e.w * k), height: r(e.h * k), cornerRadius: r(e.rx * k), ...paint(e)};
-    if (e.t === 'circle') return {type: 'ellipse', id: id(), x: r((e.cx - e.r) * k), y: r((e.cy - e.r) * k), width: r(e.r * 2 * k), height: r(e.r * 2 * k), ...paint(e)};
-    const [x, y, w, h] = e.bbox;
-    return {type: 'path', id: id(), x: r(x * k), y: r(y * k), width: r(w * k), height: r(h * k), geometry: fitPath(e.d, [x, y], k), ...paint(e)};
-  }));
+/** シンボル（100×100の座標で定義）を size px の Pencil 図形にする */
+function mark(els, size, dark = false, name = 'Mark') {
+  const k = size / 100;
+  const nodes = els.map((e, i) => {
+    if (e.t === 'edge') return pathNode('Pinked edge', LOGO.EDGE, [5, 5, 90, 90], k, {fill: RED, stroke: {align: 'center', thickness: r(LOGO.EDGE_STROKE * k), fill: RED, join: 'round'}});
+    if (e.t === 'ellipse') return {type: 'ellipse', id: id(), name: 'Dot ' + i, x: r((e.cx - e.rx) * k), y: r((e.cy - e.ry) * k), width: r(e.rx * 2 * k), height: r(e.ry * 2 * k), fill: roleColor(e.fill, dark)};
+    return pathNode('Line ' + i, e.d, e.bbox, k, {stroke: {align: 'center', thickness: r(e.sw * k), fill: roleColor(e.stroke, dark), cap: 'round', join: 'round'}});
+  });
+  return frame(name, {layout: 'none', width: size, height: size}, nodes);
 }
-const wordmark = (size, ink = INK) => row('Wordmark', {gap: 0}, [
-  text('CANVAS', {fontSize: size, fontWeight: '700', fill: ink, letterSpacing: r(size * 0.06)}),
-  text('WEARS', {fontSize: size, fontWeight: '300', fill: ink, letterSpacing: r(size * 0.06)}),
-]);
-const lockup = (key, m, w, dark = false) => row('Logo / ' + MARKS[key].name, {gap: r(m * 0.25)}, [mark(key, m, dark), wordmark(w, dark ? PAPER : INK)]);
+/** 横組みロゴ（シンボル＋文字）。高さ h px */
+function logo(h, dark = false, els = LOGO.MARK) {
+  const k = h / LOGO.WORD.height;
+  const w = LOGO.WORD;
+  return frame('Logo', {layout: 'none', width: r(w.width * k), height: h}, [
+    mark(els, h, dark, 'Symbol'),
+    pathNode('canvas', w.canvas.d, w.canvas.bbox, k, {fill: dark ? PAPER : INK}),
+    pathNode('wears', w.wears.d, w.wears.bbox, k, {fill: RED}),
+  ]);
+}
+/** 縦組み（シンボル／文字／カナ）。カナはブランド資料用 */
+function stacked(scale = 1) {
+  const w = LOGO.WORD, kana = EXTRA.KANA, k = scale;
+  const wordW = (w.width - 124) * k, W = Math.max(wordW, kana.advance * k);
+  return col('Logo stacked', {gap: r(16 * k), alignItems: 'center'}, [
+    mark(LOGO.MARK, r(100 * k), false, 'Symbol'),
+    frame('Word', {layout: 'none', width: r(wordW), height: r(32 * k)}, [
+      pathNode('canvas', w.canvas.d, w.canvas.bbox, k, {fill: INK}, -124, -35),
+      pathNode('wears', w.wears.d, w.wears.bbox, k, {fill: RED}, -124, -35),
+    ]),
+    frame('Kana', {layout: 'none', width: r(kana.bbox[2] * k), height: r(kana.bbox[3] * k)}, [
+      pathNode('キャンバスウェアーズ', kana.d, kana.bbox, k, {fill: MUTED}, -kana.bbox[0], -kana.bbox[1]),
+    ]),
+  ]);
+}
 
 const label = (s) => text(s, {fontSize: 12, fontWeight: '500', fill: MUTED, letterSpacing: 2.4});
 const card = (name, fill, children, o = {}) => col(name, {fill, cornerRadius: 20, padding: 40, gap: 32, width: 'fill_container', ...o}, children);
 const board = (name, x, y, children) => col(name, {x, y, width: 1200, fill: PAPER, padding: 56, gap: 32}, children);
 const title = (en, ja) => col('Title', {gap: 8}, [label(en), jp(ja, {fontSize: 32, fontWeight: '700'})]);
+const note = (s, width) => jp(s, {fontSize: 14, fill: MUTED, lineHeight: 1.9, textGrowth: 'fixed-width', width});
 
-const logoCard = (key, i) => card('Logo ' + (i + 1), '#FFFFFF', [
-  jp(`${i + 1} — ${MARKS[key].name}`, {fontSize: 15, fontWeight: '700', fill: MUTED}),
-  lockup(key, 48, 25),
-  row('Sizes', {gap: 18}, [mark(key, 40), mark(key, 28), mark(key, 16)]),
-  row('On ink', {fill: INK, cornerRadius: 12, padding: [12, 16]}, [lockup(key, 28, 18, true)]),
-  jp(MARKS[key].note, {fontSize: 13, fill: MUTED, lineHeight: 1.8, textGrowth: 'fixed-width', width: 264}),
-], {padding: 32, gap: 26});
-const keys = Object.keys(MARKS);
-const logoBoard = board('01 Logo — 5案', 0, 0, [
-  title('LOGO', 'ロゴ案（Tシャツを使わない5方向）'),
-  row('Row 1', {gap: 20, width: 'fill_container', alignItems: 'stretch'}, keys.slice(0, 3).map(logoCard)),
-  row('Row 2', {gap: 20, width: 'fill_container', alignItems: 'stretch'}, [
-    ...keys.slice(3).map((k, i) => logoCard(k, i + 3)),
-    col('Spacer', {width: 'fill_container'}, []),
+const logoBoard = board('01 Logo', 0, 0, [
+  title('LOGO', 'ロゴ：生地くん'),
+  note('ピンキングばさみで切った生地の切れ端に、にっこり顔。「布にプリントする店」と「かわいい」を一つの形で伝えます。文字は丸みのある Fredoka を輪郭にしたもので、canvas は墨、wears は朱。', 1088),
+  row('Main', {gap: 24, width: 'fill_container', alignItems: 'stretch'}, [
+    card('On white', '#FFFFFF', [label('ON WHITE'), logo(96), logo(48),
+      row('Sizes', {gap: 20}, [mark(LOGO.MARK, 64), mark(LOGO.MARK, 32), mark(LOGO.MARK, 16)])]),
+    card('On ink', INK, [text('ON INK', {fontSize: 12, fontWeight: '500', fill: '#B9AEA2', letterSpacing: 2.4}), logo(96, true), logo(48, true),
+      row('Sizes', {gap: 20}, [mark(LOGO.MARK, 64, true), mark(LOGO.MARK, 32, true), mark(LOGO.MARK, 16, true)])]),
+  ]),
+  row('Sub', {gap: 24, width: 'fill_container', alignItems: 'stretch'}, [
+    card('Stacked', '#FFFFFF', [label('STACKED — 店頭・タグ・パッケージ'), stacked(1)], {alignItems: 'center'}),
+    card('Sticker', '#FFFFFF', [label('STICKER — SNS・ステッカー用（ほっぺ付き）'),
+      row('Row', {gap: 24}, [mark(EXTRA.MARKS.faceCheeks.els, 128), mark(EXTRA.MARKS.faceCheeks.els, 64)]),
+      note('大きく使うときだけ、ほっぺを付けた版。32px より小さいところでは使わない。', 420)]),
   ]),
 ]);
 
@@ -111,9 +139,14 @@ const styleBoard = board('04 Color & Type', 1280, 1220, [
 ]);
 
 writeFileSync(new URL('./canvaswears-brand.pen', import.meta.url), JSON.stringify({version: '2.9', children: [logoBoard, copyBoard, styleBoard]}, null, 2) + '\n');
-// 書き出しSVG（明るい背景用 / 暗い背景用）
-for (const key of Object.keys(MARKS)) {
-  writeFileSync(new URL(`./logo-${key}.svg`, import.meta.url), toSvg(key) + '\n');
-  writeFileSync(new URL(`./logo-${key}-on-dark.svg`, import.meta.url), toSvg(key, {dark: true}) + '\n');
-}
+// 書き出しSVG
+const svgMark = (els, dark) => `<path d="${LOGO.EDGE}" fill="${RED}" stroke="${RED}" stroke-width="${LOGO.EDGE_STROKE}" stroke-linejoin="round"/>` + els.filter((e) => e.t !== 'edge').map((e) => e.t === 'ellipse'
+  ? `<ellipse cx="${e.cx}" cy="${e.cy}" rx="${e.rx}" ry="${e.ry}" fill="${roleColor(e.fill, dark)}"/>`
+  : `<path d="${e.d}" fill="none" stroke="${roleColor(e.stroke, dark)}" stroke-width="${e.sw}" stroke-linecap="round"/>`).join('');
+const svgFile = (name, vb, body) => writeFileSync(new URL(`./${name}.svg`, import.meta.url), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${body}</svg>\n`);
+const W = LOGO.WORD;
+svgFile('logo', `-2 -2 ${r(W.width + 4)} 104`, svgMark(LOGO.MARK, false) + `<path d="${W.canvas.d}" fill="${INK}"/><path d="${W.wears.d}" fill="${RED}"/>`);
+svgFile('logo-on-dark', `-2 -2 ${r(W.width + 4)} 104`, svgMark(LOGO.MARK, true) + `<path d="${W.canvas.d}" fill="${PAPER}"/><path d="${W.wears.d}" fill="${RED}"/>`);
+svgFile('symbol', '-2 -2 104 104', svgMark(LOGO.MARK, false));
+svgFile('symbol-sticker', '-2 -2 104 104', svgMark(EXTRA.MARKS.faceCheeks.els, false));
 console.log('nodes:', n);

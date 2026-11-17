@@ -1,34 +1,80 @@
+import LOGO from '~/lib/logo-data.json';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
+const CREAM = '#FBF7F2';
+
+type MarkEl =
+  | {t: 'edge'}
+  | {t: 'ellipse'; cx: number; cy: number; rx: number; ry: number; fill: string}
+  | {t: 'path'; d: string; stroke: string; sw: number};
+
+/** ロゴの部品。色の役割名（ink / red / cream）を実際の色に置き換える */
+function paint(role: string) {
+  if (role === 'ink') return 'currentColor';
+  if (role === 'red') return 'var(--color-primary)';
+  return CREAM;
+}
+
+function MarkShapes() {
+  return (
+    <>
+      <path
+        d={LOGO.EDGE}
+        fill={paint('red')}
+        stroke={paint('red')}
+        strokeWidth={LOGO.EDGE_STROKE}
+        strokeLinejoin="round"
+      />
+      {(LOGO.MARK as MarkEl[]).map((el, i) => {
+        if (el.t === 'ellipse') {
+          return <ellipse key={i} cx={el.cx} cy={el.cy} rx={el.rx} ry={el.ry} fill={paint(el.fill)} />;
+        }
+        if (el.t === 'path') {
+          return (
+            <path
+              key={i}
+              d={el.d}
+              fill="none"
+              stroke={paint(el.stroke)}
+              strokeWidth={el.sw}
+              strokeLinecap="round"
+            />
+          );
+        }
+        return null;
+      })}
+    </>
+  );
+}
+
 /**
- * CANVASWEARSのシンボル「柄タイル」。水玉・曲線・しま・ひし形の4つの柄で
- * 「どんな柄でも」を表す。墨色のタイルは文字色に合わせるので、暗い背景でも使える。
- * 形の元データは brand/marks.mjs（Pencilファイルと書き出しSVGも同じ形）。
+ * CANVASWEARSのシンボル「生地くん」。ピンキングばさみで切った生地の切れ端に顔。
+ * 形の元データは app/lib/logo-data.json（Pencilファイル brand/canvaswears-brand.pen と同じ形）。
  */
 export function CanvasMark({size = 28}: {size?: number}) {
-  const ink = 'currentColor';
-  const red = 'var(--color-primary)';
-  // 柄の抜き色。ロゴを置く場所の地色に合わせる
-  const paper = 'var(--color-surface)';
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <MarkShapes />
+    </svg>
+  );
+}
+
+/** シンボル＋文字（canvas は文字色、wears は朱）。文字は書体ではなく輪郭のデータで描く */
+function CanvaswearsLogo({height}: {height: number}) {
+  const {WORD} = LOGO;
   return (
     <svg
-      width={size}
-      height={size}
-      viewBox="0 0 40 40"
-      aria-hidden="true"
-      focusable="false"
-      style={{flexShrink: 0}}
+      height={height}
+      width={(height * WORD.width) / WORD.height}
+      viewBox={`0 0 ${WORD.width} ${WORD.height}`}
+      role="img"
+      aria-label="CANVASWEARS"
+      style={{color: 'var(--color-text)', overflow: 'visible', display: 'block'}}
     >
-      <rect width="18" height="18" rx="4.5" fill={red} />
-      <circle cx="9" cy="9" r="4.2" fill={paper} />
-      <rect x="22" width="18" height="18" rx="4.5" fill={ink} />
-      <path d="M26 18A14 14 0 0 1 40 4V18Z" fill={paper} />
-      <rect y="22" width="18" height="18" rx="4.5" fill={ink} />
-      <rect x="4" y="27" width="10" height="2.6" rx="1.3" fill={paper} />
-      <rect x="4" y="33" width="10" height="2.6" rx="1.3" fill={paper} />
-      <rect x="22" y="22" width="18" height="18" rx="4.5" fill={red} />
-      <path d="M31 26.5L35.5 31L31 35.5L26.5 31Z" fill={paper} />
+      <MarkShapes />
+      <path d={WORD.canvas.d} fill={paint('ink')} />
+      <path d={WORD.wears.d} fill={paint('red')} />
     </svg>
   );
 }
@@ -45,28 +91,7 @@ export default function BrandLogo({
   size?: 'md' | 'lg';
 }) {
   if (brand.id === 'custom-print') {
-    return (
-      <span
-        className="inline-flex items-center gap-2 md:gap-2.5"
-        style={{color: 'var(--color-text)'}}
-        aria-label={brand.name}
-        role="img"
-      >
-        <CanvasMark size={size === 'lg' ? 34 : 28} />
-        <span
-          aria-hidden="true"
-          className={size === 'lg' ? 'text-2xl' : 'text-lg md:text-xl'}
-          style={{
-            fontFamily: 'var(--font-display, var(--font-heading))',
-            letterSpacing: '0.06em',
-            lineHeight: 1,
-          }}
-        >
-          <span style={{fontWeight: 700}}>CANVAS</span>
-          <span style={{fontWeight: 300}}>WEARS</span>
-        </span>
-      </span>
-    );
+    return <CanvaswearsLogo height={size === 'lg' ? 40 : 34} />;
   }
 
   const isBold = isBoldBrand(brand.id);

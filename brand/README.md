@@ -4,23 +4,24 @@
 
 | ファイル | 中身 |
 |---|---|
-| `canvaswears-brand.pen` | Pencilファイル。ロゴ5案、キャッチコピー6案、色と書体 |
+| `canvaswears-brand.pen` | Pencilファイル。ロゴ（横組み・縦組み・ステッカー版）、キャッチコピー6案、色と書体 |
 | `brand-board.png` | 上のPencilファイルと同じ内容の見本画像 |
-| `logo-<案>.svg` / `logo-<案>-on-dark.svg` | 各案のシンボル（明るい背景用 / 暗い背景用） |
-| `marks.mjs` | シンボルの形の定義。Pencilファイル・SVG・サイトはこの形をもとにしている |
+| `logo.svg` / `logo-on-dark.svg` | 横組みロゴ（明るい背景用 / 暗い背景用） |
+| `symbol.svg` / `symbol-sticker.svg` | シンボルだけ（通常版 / ほっぺ付きのステッカー版） |
+| `logo-extra.json` | ブランド資料にだけ使う形（ステッカー版・カナ） |
 | `build-pen.mjs` | PencilファイルとSVGを作り直すスクリプト（`node brand/build-pen.mjs`） |
 
-## ロゴ
+## ロゴ「生地くん」
 
-Tシャツの形は使わない。案は5つ（`tiles` 柄タイル / `hanger` ハンガー×キャンバス /
-`pencil` 鉛筆×キャンバス / `hug` Cがキャンバスを抱く / `label` 織りネーム）。
-サイトにはいま `tiles` を仮に入れてある。**どれを採用するかは未決定。**
-決まったら `app/components/BrandLogo.tsx` の `CanvasMark` をその案の形に差し替え、この節を書き直す。
+ピンキングばさみで切った生地の切れ端（朱）に、生成り色のにっこり顔。
+文字は丸みのある Fredoka 600 の小文字を輪郭（パス）にしたもので、`canvas` は墨、`wears` は朱。
+書体を読み込まなくても同じ形で出るよう、サイトでもSVGのパスで描いている。
 
-文字は Outfit で `CANVAS`（700）＋ `WEARS`（300）、字間 0.06em。サイトでは画像ではなくコードで描いている。
-
-- 朱と墨の役割を入れ替えない
-- 暗い背景では墨の部分と文字を生成り（`#FBF7F2`）にする。朱色はそのまま
+- 形のデータは `app/lib/logo-data.json` の1か所。サイト（`app/components/BrandLogo.tsx`）、
+  Pencilファイル、書き出しSVGはすべてここから作る
+- 暗い背景では `canvas` を生成り（`#FBF7F2`）にする。生地と `wears` は朱のまま
+- ほっぺ付きのステッカー版は、SNSのアイコンやステッカーなど大きく使うときだけ（32pxより小さくしない）
+- 生地を回したり、顔の向きや表情を変えたりしない
 
 ## コピー
 
