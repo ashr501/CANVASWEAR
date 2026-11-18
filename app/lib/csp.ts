@@ -45,6 +45,9 @@ export function createContentSecurityPolicy({
       'blob:',
       ...shopifyHosts,
       'https://qr-official.line.me',
+      // Instagramの投稿画像（トップページ）
+      'https://*.cdninstagram.com',
+      'https://*.fbcdn.net',
       // 柄ライブラリ（ZD Custom）の柄画像
       'https://oss-prd.zdcustom.com',
       ...(uploadOrigin ? [uploadOrigin] : []),

@@ -41,5 +41,7 @@ declare global {
     R2_SECRET_ACCESS_KEY: string;
     R2_BUCKET: string;
     R2_PUBLIC_BASE_URL: string;
+    /** Instagram API with Instagram Login の長期アクセストークン（トップページの投稿表示。未設定なら出さない） */
+    INSTAGRAM_ACCESS_TOKEN?: string;
   }
 }
