@@ -1,6 +1,7 @@
+import type {CSSProperties} from 'react';
 import {Link} from 'react-router';
 import SocialIcons from './SocialIcons';
-import clsx from 'clsx';
+import BrandLogo from './BrandLogo';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 
 interface FooterProps {
@@ -9,31 +10,34 @@ interface FooterProps {
 
 export default function Footer({brand}: FooterProps) {
   const isAvantGarde = isBoldBrand(brand.id);
+  const isClean = brand.uiMode === 'clean';
 
   return (
     <footer
-      style={{
-        borderTop: '1px solid var(--color-border)',
-        backgroundColor: isAvantGarde ? 'var(--color-bg)' : 'var(--color-surface)',
-      }}
+      style={
+        isClean
+          ? // 墨色のフッター。色の変数をここで上書きするので、中の文字・罫線・ロゴは
+            // 何も変えなくても暗い背景用の色になる
+            ({
+              '--color-text': '#FBF7F2',
+              '--color-text-muted': '#B9AEA2',
+              '--color-border': '#3A332D',
+              '--color-surface': '#1F1B18',
+              backgroundColor: '#1F1B18',
+            } as CSSProperties)
+          : {
+              borderTop: '1px solid var(--color-border)',
+              backgroundColor: isAvantGarde ? 'var(--color-bg)' : 'var(--color-surface)',
+            }
+      }
     >
       <div className="container-brand section-pad">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* ブランド */}
           <div>
-            <p
-              className={clsx(
-                'mb-4',
-                isAvantGarde ? 'text-3xl tracking-[0.3em]' : 'text-2xl tracking-[0.2em]',
-                'uppercase',
-              )}
-              style={{
-                fontFamily: 'var(--font-heading)',
-                color: 'var(--color-text)',
-              }}
-            >
-              {brand.name}
-            </p>
+            <div className="mb-4">
+              <BrandLogo brand={brand} size="lg" />
+            </div>
             <p
               className="text-sm leading-relaxed"
               style={{color: 'var(--color-text-muted)'}}

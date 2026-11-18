@@ -156,22 +156,33 @@
    Brand: custom-print (CANVASWEAR)
    =================================== */
 [data-brand="custom-print"] {
-  --color-bg: #FDF9F6;
+  --color-bg: #FBF7F2;
   --color-surface: #FFFFFF;
-  --color-hero-bg: #FDE8EC;
-  --color-primary: #D71920;
-  --color-secondary: #C73351;
-  --color-accent: #D04865;
-  --color-text: #333333;
-  --color-text-muted: #4B5563;
-  --color-border: #F3E3E6;
-  --font-heading: 'Noto Serif JP';
+  --color-hero-bg: #F6EADF;
+  --color-primary: #D43D24;
+  --color-secondary: #B5301A;
+  --color-accent: #D43D24;
+  --color-text: #1F1B18;
+  --color-text-muted: #62594F;
+  --color-border: #EADFD3;
+  --font-heading: 'Zen Kaku Gothic New';
   --font-body: 'Noto Sans JP';
-  --section-spacing: 4rem;
+  --font-display: 'Outfit';
+  --section-spacing: 4.5rem;
   --gutter: 1.25rem;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --radius: 24px;
+  --radius: 20px;
   --header-height: 64px;
+}
+
+/* cleanはゴシック体の見出しなので、太さを指定していない見出しも太字にそろえる */
+[data-ui="clean"] h1,
+[data-ui="clean"] h2 {
+  /* ゴシック体には斜体がなく、機械的に傾けた字になるので立てる */
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
 }
 
 /* ===================================
@@ -264,31 +275,32 @@
     color: #FFFFFF;
     border-radius: 9999px;
     font-family: var(--font-heading);
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     font-size: 0.9rem;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 20px rgba(212, 61, 36, 0.22);
   }
 
   [data-ui="clean"] .btn-primary:hover {
     background-color: var(--color-secondary);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 26px rgba(212, 61, 36, 0.28);
     transform: translateY(-1px);
   }
 
   [data-ui="clean"] .btn-outline {
     @apply inline-block px-8 py-3.5 transition-all duration-200;
-    border: 1px solid var(--color-border);
+    border: 1.5px solid var(--color-text);
     color: var(--color-text);
     border-radius: 9999px;
     font-family: var(--font-heading);
-    font-weight: 500;
-    letter-spacing: 0.02em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     font-size: 0.9rem;
   }
 
   [data-ui="clean"] .btn-outline:hover {
-    border-color: var(--color-text);
+    background-color: var(--color-text);
+    color: var(--color-bg);
   }
 
   /* Product grid */
@@ -378,3 +390,34 @@
 
 /* お知らせ本文。記事の段落どうしに余白を取る（本文はShopify側のHTML） */
 .news-body p { margin-bottom: 1.5rem; }
+
+/* ===================================
+   CANVASWEARS: 横に流れる帯（トップページ）
+   同じ行を3つ並べ、1行ぶんだけ左へ動かして繰り返す。
+   =================================== */
+.cw-ticker {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.cw-ticker__row {
+  display: flex;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: cw-ticker 28s linear infinite;
+}
+
+@keyframes cw-ticker {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-ticker__row {
+    animation: none;
+  }
+}

@@ -3,6 +3,7 @@ import {useCart} from '~/lib/cart';
 import clsx from 'clsx';
 import {isBoldBrand, type PublicBrand} from '~/lib/brands';
 import SearchBar from './SearchBar';
+import BrandLogo from './BrandLogo';
 
 interface HeaderProps {
   brand: PublicBrand;
@@ -11,6 +12,7 @@ interface HeaderProps {
 
 export default function Header({brand, onCartOpen}: HeaderProps) {
   const isAvantGarde = isBoldBrand(brand.id);
+  const isClean = brand.uiMode === 'clean';
   const cartCount = useCart((state) => state.data.totalQuantity);
 
   // ブランド固有のカテゴリ + 全商品。ブランドを追加すればナビも自動で入れ替わる
@@ -41,21 +43,8 @@ export default function Header({brand, onCartOpen}: HeaderProps) {
         <SearchBar />
 
         {/* ロゴ中央 */}
-        <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-          <span
-            className={clsx(
-              'tracking-[0.3em] uppercase',
-              isAvantGarde ? 'text-3xl md:text-4xl' : 'text-2xl md:text-3xl',
-            )}
-            style={{
-              fontFamily: 'var(--font-heading)',
-              color: 'var(--color-text)',
-              fontWeight: isAvantGarde ? 400 : 400,
-              letterSpacing: isAvantGarde ? '0.4em' : '0.25em',
-            }}
-          >
-            {brand.name}
-          </span>
+        <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex items-center">
+          <BrandLogo brand={brand} />
         </Link>
 
         {/* カートアイコン右 */}
@@ -73,10 +62,16 @@ export default function Header({brand, onCartOpen}: HeaderProps) {
           <Link
             key={to}
             to={to}
-            className="text-xs tracking-widest uppercase whitespace-nowrap transition-colors hover:opacity-70"
+            className={clsx(
+              'whitespace-nowrap transition-colors',
+              isClean
+                ? 'text-[13px] font-medium tracking-wide hover:text-[var(--color-primary)]'
+                : 'text-xs tracking-widest uppercase hover:opacity-70',
+            )}
             style={{
-              color: 'var(--color-text-muted)',
-              fontFamily: isAvantGarde ? 'var(--font-body)' : 'var(--font-heading)',
+              color: isClean ? undefined : 'var(--color-text-muted)',
+              fontFamily:
+                isAvantGarde || isClean ? 'var(--font-body)' : 'var(--font-heading)',
             }}
           >
             {label}

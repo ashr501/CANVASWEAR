@@ -3,7 +3,7 @@ import {Image, Money} from '~/lib/shopify-ui';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import clsx from 'clsx';
 import {useState} from 'react';
-import {isBoldBrand} from '~/lib/brands';
+import {getUiMode, isBoldBrand} from '~/lib/brands';
 
 interface ProductCardProps {
   product: {
@@ -32,6 +32,7 @@ interface ProductCardProps {
 export default function ProductCard({product, brandId}: ProductCardProps) {
   const [hovered, setHovered] = useState(false);
   const isAvantGarde = isBoldBrand(brandId);
+  const isClean = getUiMode(brandId) === 'clean';
   const isAvailable = product.variants.nodes[0]?.availableForSale;
 
   return (
@@ -111,9 +112,14 @@ export default function ProductCard({product, brandId}: ProductCardProps) {
           {product.title}
         </h3>
         <p
-          className="text-sm"
+          className={isClean ? 'text-sm font-bold' : 'text-sm'}
           style={{
-            color: isAvantGarde ? 'var(--color-text-muted)' : 'var(--color-primary)',
+            // cleanでは価格を赤にしない（一覧全体がセール表示のように見えるため）
+            color: isAvantGarde
+              ? 'var(--color-text-muted)'
+              : isClean
+                ? 'var(--color-text)'
+                : 'var(--color-primary)',
             fontFamily: 'var(--font-body)',
           }}
         >
