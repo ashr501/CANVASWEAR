@@ -15,6 +15,8 @@ import {countCollections} from '~/lib/counts.server';
 import ProductCard from '~/components/ProductCard';
 import FaqSection from '~/components/FaqSection';
 import PatternTile from '~/components/PatternTile';
+import InstagramSection from '~/components/InstagramSection';
+import {getInstagramPosts, type InstagramPost} from '~/lib/instagram.server';
 import {getBrandConfig} from '~/lib/brand.server';
 import {siteJsonLd, originOf} from '~/lib/seo';
 import clsx from 'clsx';
@@ -141,6 +143,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
         ]).catch(() => ({}))
       : Promise.resolve({});
 
+  // Instagramの最近の投稿。待たずにページを返し、届いたら流し込む
+  const instagram: Promise<InstagramPost[]> =
+    brand.id === 'custom-print'
+      ? getInstagramPosts({
+          token: context.env.INSTAGRAM_ACCESS_TOKEN,
+          cache: context.cache as unknown as Cache,
+          waitUntil: context.waitUntil,
+        })
+      : Promise.resolve([]);
+
   const origin = originOf(request);
 
   // brandをそのまま返すとStorefrontトークンまでブラウザに渡ってしまうので、
@@ -151,6 +163,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     activeCat,
     news,
     counts,
+    instagram,
     brandId: brand.id,
     seoTitle: `${brand.nameJa}｜${brand.taglineJa}`,
     seoDescription:
@@ -169,7 +182,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 }
 
 export default function Index() {
-  const {products, categoryProducts, activeCat, news, counts, brandId} =
+  const {products, categoryProducts, activeCat, news, counts, instagram, brandId} =
     useLoaderData<typeof loader>();
   const {brand} = useOutletContext<{brand: PublicBrand; onCartOpen: () => void}>();
 
@@ -182,6 +195,7 @@ export default function Index() {
         activeCat={activeCat}
         news={news}
         counts={counts}
+        instagram={instagram}
       />
     );
   }
@@ -689,6 +703,7 @@ function CanvaswearHome({
   activeCat,
   news,
   counts,
+  instagram,
 }: {
   brand: PublicBrand;
   products: any;
@@ -696,6 +711,7 @@ function CanvaswearHome({
   activeCat: string;
   news: Promise<any[]>;
   counts: Promise<Record<string, number>>;
+  instagram: Promise<InstagramPost[]>;
 }) {
   const copy = brand.copy;
   const isAll = activeCat === brand.collections.all;
@@ -762,6 +778,12 @@ function CanvaswearHome({
           </div>
         </div>
       </section>
+
+      <Suspense fallback={null}>
+        <Await resolve={instagram} errorElement={<InstagramSection posts={[]} />}>
+          {(posts: InstagramPost[]) => <InstagramSection posts={posts} />}
+        </Await>
+      </Suspense>
 
       <StatementBand body={brand.concept.body} />
       <HowToOrder categoryCount={brand.nav.length} />

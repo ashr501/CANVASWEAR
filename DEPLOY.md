@@ -391,3 +391,30 @@ Oxygenの場合はストアフロント設定の環境変数、Vercelの場合�
   データは、R2のライフサイクルルール（例: 90日で削除）で整理してください。
 - 公開URLを知っていれば誰でも閲覧できます。推測されにくいUUIDを使って
   いますが、機密性の高いデータの入稿には向きません。
+
+## CANVASWEARS: トップページにInstagramの投稿を出す
+
+トップページの「最近つくったもの」に、Instagram（@canvas_wears_tokyo）の最近の投稿6件を出す。
+環境変数 `INSTAGRAM_ACCESS_TOKEN` が無いあいだは、フォローの案内だけを出す。
+
+### 必要なもの
+
+- Instagramアカウントが**プロアカウント（ビジネスまたはクリエイター）**になっていること
+  （Instagramアプリ → 設定 → アカウントの種類とツール → プロアカウントに切り替える。無料）
+- Meta for Developers のアカウント（Facebookアカウントでログイン）
+
+### 手順（初回のみ・15分ほど）
+
+1. https://developers.facebook.com/apps でアプリを作成する（用途は「Instagramとの連携」などを選ぶ）
+2. アプリの管理画面で **Instagram → API setup with Instagram business login** を開く
+3. 「Add account」で @canvas_wears_tokyo を追加し、**Generate token** を押す
+   （この画面で発行したトークンは60日有効の長期トークン）
+4. Shopify管理画面 → Hydrogen → CANVASWEAR → ストアフロントの設定 → 環境変数 に
+   `INSTAGRAM_ACCESS_TOKEN` として貼り付け、本番（Production）に保存する
+5. 数分後、トップページに投稿が出ることを確認する（投稿一覧は1時間キャッシュ）
+
+### その後
+
+- トークンの期限（60日）は、サイトが7日に1回自動で延長を試みる
+- それでも投稿が出なくなったら、手順3でトークンを発行し直し、手順4で差し替える
+- トークンはパスワードと同じ扱い。GitHubやチャットに貼らない
