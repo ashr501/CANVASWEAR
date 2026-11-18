@@ -1007,26 +1007,20 @@ function CanvaswearHero({
           <div className="lg:col-span-7 relative">
             {heroImage && (
               <>
+                {/* 飾りは商品やモデルに重ならないよう、画像の左上の角と下辺の空いたところにだけ置く */}
                 <PatternTile
-                  kind="dots"
+                  kind="diamond"
                   tone="red"
                   size={84}
-                  className="absolute -top-7 right-6 md:-top-9 md:right-10 z-10 w-14 h-14 md:w-[84px] md:h-[84px]"
-                  style={{transform: 'rotate(8deg)', boxShadow: '0 10px 24px rgba(31,27,24,0.14)'}}
+                  className="absolute -top-6 -left-3 md:-top-8 md:-left-8 z-10 w-14 h-14 md:w-[84px] md:h-[84px]"
+                  style={{transform: 'rotate(-8deg)', boxShadow: '0 10px 24px rgba(31,27,24,0.14)'}}
                 />
                 <PatternTile
                   kind="wave"
                   tone="ink"
                   size={72}
-                  className="absolute -bottom-6 -left-2 md:-bottom-8 md:-left-8 z-10 w-12 h-12 md:w-[72px] md:h-[72px]"
-                  style={{transform: 'rotate(-10deg)', boxShadow: '0 10px 24px rgba(31,27,24,0.14)'}}
-                />
-                <PatternTile
-                  kind="stripes"
-                  tone="sand"
-                  size={56}
-                  className="hidden md:block absolute -bottom-10 right-16 z-10"
-                  style={{transform: 'rotate(6deg)', boxShadow: '0 10px 24px rgba(31,27,24,0.10)'}}
+                  className="hidden md:block absolute -bottom-8 left-[42%] z-10"
+                  style={{transform: 'rotate(10deg)', boxShadow: '0 10px 24px rgba(31,27,24,0.14)'}}
                 />
               </>
             )}
@@ -1051,7 +1045,7 @@ function CanvaswearHero({
                   fetchPriority="high"
                 />
                 <figcaption
-                  className="absolute left-4 top-4 md:left-5 md:top-5 px-3.5 py-1.5 rounded-full text-[11px] md:text-xs font-medium"
+                  className="absolute left-4 bottom-4 md:left-5 md:bottom-5 px-3.5 py-1.5 rounded-full text-[11px] md:text-xs font-medium"
                   style={{backgroundColor: 'var(--color-text)', color: 'var(--color-bg)'}}
                 >
                   同じ柄を、帽子からドレスまで
